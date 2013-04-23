@@ -1,0 +1,250 @@
+.calendar-wrap {
+  position: fixed;
+  display: none;
+}
+
+.calendar {
+  position: relative;
+  display: inline-block;
+  width: 203px;
+  font-family: 'Proxima Nova';
+  font-size: 14px;
+  color: #777777;
+  background-color: #ffffff;
+  border: 1px solid #ebebeb;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+}
+
+.calendar th,
+.calendar td {
+  padding: 0;
+}
+
+.calendar th:first-child,
+.calendar td:first-child {
+  padding-left: 7px;
+}
+
+.calendar th:last-child,
+.calendar td:last-child {
+  padding-right: 7px;
+}
+
+.calendar tbody:before {
+  position: absolute;
+  left: 0;
+  width: 7px;
+  background: #ffffff;
+  content: '';
+}
+
+.calendar tbody:after {
+  position: absolute;
+  right: 0;
+  width: 7px;
+  background: #ffffff;
+  content: '';
+}
+
+.calendar tbody tr:first-child td {
+  padding-top: 5px;
+}
+
+.calendar tbody tr:last-child td {
+  padding-bottom: 7px;
+}
+
+.calendar tbody td {
+  cursor: pointer;
+}
+
+.calendar-head {
+  height: 30px;
+  color: #191919;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.calendar-prev,
+.calendar-next {
+  width: 35px;
+  cursor: pointer;
+}
+
+.calendar-prev {
+  background-image: url('../images/calendar-prev.png');
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.calendar-prev:hover {
+  background-image: url('../images/calendar-prev-hover.png');
+}
+
+.calendar-next {
+  background-image: url('../images/calendar-next.png');
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.calendar-next:hover {
+  background-image: url('../images/calendar-next-hover.png');
+}
+
+.calendar-caption {
+  width: 119px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.calendar-week {
+  height: 30px;
+  background-color: #f6f6f6;
+}
+
+.calendar-week th {
+  cursor: default;
+  -webkit-box-shadow: inset 0 1px 0 #fbfbfb;
+     -moz-box-shadow: inset 0 1px 0 #fbfbfb;
+          box-shadow: inset 0 1px 0 #fbfbfb;
+}
+
+.calendar-days td {
+  width: 27px;
+  height: 22px;
+  font-size: 12px;
+  line-height: 22px;
+  text-align: center;
+}
+
+.calendar-days td:hover {
+  background-color: #e0f4fb;
+}
+
+.calendar-days td:active,
+.calendar-days td.is-active {
+  color: white;
+  background-color: #32b8e2;
+}
+
+.calendar-days td.otherMonthDay {
+  color: #c8c8c8;
+  cursor: default;
+}
+
+.calendar-days td.otherMonthDay:hover,
+.calendar-days td.otherMonthDay:active,
+.calendar-days td.otherMonthDay.is-active {
+  color: #c8c8c8;
+  background-color: inherit;
+}
+
+.calendar-days tbody:before {
+  top: 60px;
+  height: 144px;
+}
+
+.calendar-days tbody:after {
+  top: 60px;
+  height: 144px;
+}
+
+.calendar-days:before {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 203px;
+  height: 5px;
+  background: #ffffff;
+  content: '';
+}
+
+.calendar-days:after {
+  position: absolute;
+  right: 0;
+  bottom: 1px;
+  width: 203px;
+  height: 7px;
+  background: #ffffff;
+  content: '';
+}
+
+.calendar-months tbody:before,
+.calendar-years tbody:before {
+  top: 30px;
+  height: 174px;
+}
+
+.calendar-months tbody:after,
+.calendar-years tbody:after {
+  top: 30px;
+  height: 174px;
+}
+
+.calendar-months td,
+.calendar-years td {
+  width: 63px;
+  height: 40.5px;
+  font-size: 13px;
+  line-height: 40.5px;
+  text-align: center;
+}
+
+.calendar-months td:hover,
+.calendar-years td:hover {
+  background-color: #e0f4fb;
+}
+
+.calendar-months td:active,
+.calendar-years td:active,
+.calendar-months td.is-active,
+.calendar-years td.is-active {
+  color: white;
+  background-color: #32b8e2;
+}
+
+.calendar-months:before,
+.calendar-years:before {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  width: 203px;
+  height: 5px;
+  background: #ffffff;
+  content: '';
+}
+
+.calendar-months:after,
+.calendar-years:after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 203px;
+  height: 7px;
+  background: #ffffff;
+  content: '';
+}
+
+#calendar {
+  width: 200px;
+  height: 25px;
+  padding-right: 30px;
+  padding-left: 8px;
+  font-family: "Proxima Nova";
+  font-size: 14px;
+  color: #a0a0a0;
+  vertical-align: middle;
+  border: 1px solid #ced0d3;
+  border-radius: 3px 3px 3px 3px;
+  outline: none;
+}
+
+#calendar:focus,
+#calendar:active {
+  border: 1px solid #aed6f1;
+  outline-offset: 0;
+  -webkit-box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
+     -moz-box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
+          box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
+}

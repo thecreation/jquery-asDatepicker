@@ -1,0 +1,27 @@
+{
+  "name": "datepicker",
+  "title": "Datepicker",
+  "description": "A jquery plugin that show date picker.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/amazingsurge/jquery-datepicker",
+  "author": {
+    "name": "amazingSurge",
+    "email": "amazingSurge@yahoo.com",
+    "url": "amazingSurge.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/amazingsurge/jquery-datepicker.git"
+  },
+  "bugs": "https://github.com/amazingsurge/jquery-datepicker/issues",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/amazingsurge/jquery-datepicker/blob/master/LICENSE-MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": "*"
+  },
+  "keywords": []
+}

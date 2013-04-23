@@ -1,0 +1,256 @@
+@calendarBackgroundColor: white;
+@calendarHeadHeight: 30px;
+@calendarWeekHeight: 30px;
+@calendarDayHeight: 22px;
+@calendarDayWidth: 27px;
+@calendarDayPaddingtop: 5px;
+@calendarDayPaddingbottom: 7px;
+@calendarDayPaddingleft: 7px;
+@calendarDayPaddingright: 7px;
+@calendarDaysHeight: @calendarDayHeight * 6 + @calendarDayPaddingtop + @calendarDayPaddingbottom;
+@calendarDaysWidth: @calendarDayWidth * 7 + @calendarDayPaddingleft + @calendarDayPaddingright;
+
+@calendarMonthHeight: (@calendarWeekHeight + @calendarDayHeight * 6) / 4;
+@calendarMonthWidth: (@calendarDayWidth * 7 )/ 3;
+
+
+.calendar-wrap {
+	display: none;
+	position: fixed;
+	//height: 206px;
+}
+
+.calendar {
+	background-color: @calendarBackgroundColor;
+	border: 1px solid rgb(235, 235, 235);
+	// border: 1px solid black;
+	color: rgb(119, 119, 119);
+	-webkit-border-radius: 3px;
+  	   -moz-border-radius: 3px;
+  			border-radius: 3px;
+	font-size: 14px;
+	font-family: 'Proxima Nova';
+	width: @calendarDaysWidth;
+	display: inline-block;
+	position: relative;
+
+	th, td {
+		padding: 0;
+		&:first-child {
+			padding-left: 7px;
+
+		}
+		&:last-child {
+			padding-right: 7px;
+		}
+	}
+	
+	tbody {
+		&:before {
+			content: '';
+			width: @calendarDayPaddingleft;
+			position: absolute;
+			background: @calendarBackgroundColor;
+			// background-color: red;
+			left: 0;
+		}
+		&:after {
+			content: '';
+			width: @calendarDayPaddingright;
+			position: absolute;
+			background: @calendarBackgroundColor;
+			// background-color: red;
+			right: 0;
+		}
+		tr {
+			&:first-child {
+				td {
+					padding-top: @calendarDayPaddingtop;
+				}
+			}
+			&:last-child {
+				td {
+					padding-bottom: @calendarDayPaddingbottom;
+				}
+			}
+		}
+		td {
+			cursor: pointer;
+		}
+	}
+}
+
+.calendar-head {
+	color: rgb(25, 25, 25);
+	height: @calendarHeadHeight;	
+	border-bottom: 1px solid rgb(235, 235, 235);
+}
+.calendar-prev, .calendar-next {
+	width: 35px;
+	cursor: pointer;
+}
+
+.calendar-prev {
+	background-image: url('../images/calendar-prev.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	&:hover {
+		background-image: url('../images/calendar-prev-hover.png');
+	}
+}
+
+.calendar-next {
+	background-image: url('../images/calendar-next.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	&:hover {
+		background-image: url('../images/calendar-next-hover.png');
+	}
+}
+.calendar-caption {
+	font-size: 14px;
+	width: @calendarDayWidth * 7 - 70px;
+	cursor: pointer;
+}
+
+.calendar-week {
+	// display: none;
+	height: @calendarWeekHeight;
+	background-color: rgb(246, 246, 246);
+	th {
+		-webkit-box-shadow: inset 0 1px 0 rgb(251, 251, 251);
+		   -moz-box-shadow: inset 0 1px 0 rgb(251, 251, 251);
+				box-shadow: inset 0 1px 0 rgb(251, 251, 251);
+		cursor: default;
+	}
+}
+
+.calendar-days {
+	td {
+		width: @calendarDayWidth;
+		height: @calendarDayHeight;
+		line-height: @calendarDayHeight;
+		font-size: 12px;
+		text-align: center;
+		&:hover {
+			background-color: rgb(224, 244, 251);
+		}
+		&:active, &.is-active {
+			background-color: rgb(50, 184, 226);
+			color: white;
+		}
+		&.otherMonthDay {
+			color: rgb(200, 200, 200);
+			cursor: default;
+			&:hover, &:active, &.is-active {
+				background-color: inherit;
+				color: rgb(200, 200, 200);
+			}
+			
+		}
+	}
+	tbody {
+		&:before {
+			height: @calendarDaysHeight;
+			top: @calendarHeadHeight + @calendarWeekHeight;
+		}
+		&:after {
+			height: @calendarDaysHeight;
+			top: @calendarHeadHeight + @calendarWeekHeight;
+		}
+	}
+
+	&:before {
+		content: '';
+		width: @calendarDaysWidth;
+		height: @calendarDayPaddingtop;
+		position: absolute;
+		background: @calendarBackgroundColor;
+		// background-color: red;
+		left: 0;
+		top: @calendarHeadHeight + @calendarWeekHeight;
+	}
+	&:after {
+		content: '';
+		width: @calendarDaysWidth;
+		height: @calendarDayPaddingbottom;
+		position: absolute;
+		background: @calendarBackgroundColor;
+		// background-color: red;
+		right: 0;
+		bottom: 1px;
+	}
+}
+
+.calendar-months, .calendar-years {
+	// display: none;
+	tbody {
+		&:before {
+			height: @calendarWeekHeight + @calendarDayHeight * 6 + @calendarDayPaddingtop + @calendarDayPaddingbottom;
+			top: @calendarHeadHeight;
+		}
+		&:after {
+			height: @calendarWeekHeight + @calendarDayHeight * 6 + @calendarDayPaddingtop + @calendarDayPaddingbottom;
+			top: @calendarHeadHeight;
+		}
+	}
+	td {
+		width: @calendarMonthWidth;
+		height: @calendarMonthHeight;
+		line-height: @calendarMonthHeight;
+		text-align: center;
+		font-size: 13px;
+		&:hover {
+			background-color: rgb(224, 244, 251);
+		}
+		&:active, &.is-active {
+			background-color: rgb(50, 184, 226);
+			color: white;
+		}
+	}
+	&:before {
+		content: '';
+		width: @calendarDaysWidth;
+		height: @calendarDayPaddingtop;
+		position: absolute;
+		background: @calendarBackgroundColor;
+		// background-color: red;
+		left: 0;
+		top: @calendarHeadHeight;
+	}
+	&:after {
+		content: '';
+		width: @calendarDaysWidth;
+		height: @calendarDayPaddingbottom;
+		position: absolute;
+		background: @calendarBackgroundColor;
+		// background-color: red;
+		right: 0;
+		bottom: 0;
+	}
+}
+
+//demo css
+#calendar {
+	// -webkit-box-sizing: border-box;
+	//    -moz-box-sizing: border-box;
+	// 	    box-sizing: border-box;
+	border: 1px solid rgb(206, 208, 211);
+    border-radius: 3px 3px 3px 3px;
+    color: rgb(160, 160, 160);
+    font-family: "Proxima Nova";
+    font-size: 14px;
+    height: 25px;
+    padding-right: 30px;
+    width: 200px;
+    padding-left: 8px;
+    vertical-align: middle;
+    outline: none;
+    &:focus, &:active {
+    	outline-offset: 0;
+    	border: 1px solid rgb(174, 214, 241);
+    	-webkit-box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
+    	   -moz-box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
+    			box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
+    }
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title></title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width">
+
+<link rel="stylesheet" href="css/normalize.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="../css/datepicker.css">
+</head>
+<body>
+    <input type="text" id="calendar" style="margin: 300px;">
+    <input type="text" id="calendar2" style="margin: 100px;">
+
+<script src="js/jquery.js"></script>
+<script src="../src/jquery.datepicker.js"></script>
+<script>
+$(document).ready(function(){
+  $("#calendar").datepicker();
+  $("#calendar2").datepicker();
+});
+</script>
+</body>
+</html>
