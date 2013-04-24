@@ -13,7 +13,7 @@
         var el = self.el;
         self.options = $.extend(true, {}, Datepicker.defaults, options);
         var options = self.options;
-        self.format = self.parse_format(options.format || Datepicker.defaults.format || 'mm/dd/yyyy')
+        self.format = self.parse_format(options.format || Datepicker.defaults.format || 'mm/dd/yyyy');
         self.init();
     };
 
@@ -31,7 +31,7 @@
         format: 'yyyy/mm/dd',
         tpl_wrapper: '<div class="calendar-wrap">' + '</div>',
         tpl_content: '<div class="calendar">' + '<table>' + '<thead>' + '<tr class="calendar-head">' + '<th class="calendar-prev"></th>' + '<th class="calendar-caption"></th>' + '<th class="calendar-next"></th>' + '</tr>' + '</thead>' + '</table>' + '<table class="calendar-days"></table>' + '<table class="calendar-months"></table>' + '<table class="calendar-years"></table>' + '</div>'
-    }
+    };
 
     Datepicker.prototype = {
         constructor: Datepicker,
@@ -42,7 +42,7 @@
                 .on({
                 click: $.proxy(this.click, this)
             });
-            this.picker.css('width', Datepicker.defaults.calendars * 205 + 'px')
+            this.picker.css('width', Datepicker.defaults.calendars * 205 + 'px');
             this.is_input = this.el.is('input');
 
             if (this.is_input) {
@@ -71,7 +71,7 @@
 
             this.selected_date = this.current_date = Datepicker.defaults.date;
 
-            if (Datepicker.defaults.mode == 'single') {
+            if (Datepicker.defaults.mode === 'single') {
                 this.current_day = [this.current_date[0].getDate()];
                 this.current_month = [this.current_date[0].getMonth()];
                 this.current_year = [this.current_date[0].getFullYear()];
@@ -83,7 +83,7 @@
                 this.manage_views(0);
                 this.set_value();
             } else {
-                if (Datepicker.defaults.mode == 'range') {
+                if (Datepicker.defaults.mode === 'range') {
                     Datepicker.defaults.date[1] = new Date(Datepicker.defaults.date[1]);
 
                     this.current_day = [this.current_date[0].getDate(), this.current_date[1].getDate()];
@@ -97,9 +97,9 @@
                     this.set_value();
                 }
 
-                for (var i = 0; i < Datepicker.defaults.calendars; i++) {
+                for (i = 0; i < Datepicker.defaults.calendars; i++) {
                     // Datepicker.defaults.date[i] = Datepicker.defaults.date[i];
-                    if (typeof(this.view[i]) == 'undefined') {
+                    if (typeof(this.view[i]) === 'undefined') {
                         this.view[i] = 'days';
                     }
                     this.manage_views(i);
@@ -117,10 +117,10 @@
 
             $(window).scroll(function() {
                 self.place();
-            })
+            });
 
             $(document).on('mousedown', function(ev) {
-                if ($(ev.target).closest('.calendar').length == 0) {
+                if ($(ev.target).closest('.calendar').length === 0) {
                     self.hide();
                 }
             });
@@ -140,12 +140,12 @@
                 input_left = this.el.offset().left,
                 input_height = this.el.outerHeight(),
                 input_width = this.el.outerWidth(),
-                scroll_top = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-            scroll_left = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
-            to_top = input_top - scroll_top,
-            to_bottom = win_height - to_top - input_height,
-            to_left = input_left - scroll_left,
-            to_right = win_width - to_left - input_width;
+                scroll_top = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0,
+                scroll_left = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0,
+                to_top = input_top - scroll_top,
+                to_bottom = win_height - to_top - input_height,
+                to_left = input_left - scroll_left,
+                to_right = win_width - to_left - input_width;
 
             if (to_bottom > calendar_height) {
                 if (to_right > calendar_width - input_width) {
@@ -202,12 +202,12 @@
         },
 
         set_value: function(j) {
-            if (Datepicker.defaults.mode == 'single') {
+            if (Datepicker.defaults.mode === 'single') {
                 this.date = new Date(this.selected_year[0], this.selected_month[0], this.selected_day[0], 0, 0, 0, 0);
                 var formated = this.format_date(this.date, this.format);
                 this.el.val(formated);
             } else {
-                if (Datepicker.defaults.mode == 'range') {
+                if (Datepicker.defaults.mode === 'range') {
                     var date_start = new Date(this.selected_year[0], this.selected_month[0], this.selected_day[0], 0, 0, 0, 0);
                     var date_end = new Date(this.selected_year[1], this.selected_month[1], this.selected_day[1], 0, 0, 0, 0);
                     var formated_start = this.format_date(date_start, this.format);
@@ -219,13 +219,13 @@
 
         str_pad: function(str, len) {
             str += '';
-            while (str.length < len) str = '0' + str;
+            while (str.length < len) {str = '0' + str;}
             return str;
         },
 
         str_concat: function() {
             var str = '';
-            for (var i = 0; i < arguments.length; i++) str += (arguments[i] + '');
+            for (var i = 0; i < arguments.length; i++) {str += (arguments[i] + '');}
             return str;
         },
 
@@ -233,7 +233,7 @@
             var separator = format.match(/[.\/\-\s].*?/),
                 parts = format.split(/\W+/) || parts;
             if (!parts || parts.length === 0) {
-                throw new Error('Invalid date format.')
+                throw new Error('Invalid date format.');
             }
             return {
                 separator: separator,
@@ -243,8 +243,8 @@
 
         parse_date: function(date, format) {
             var parts = date.split(format.separator) || parts,
-                date = new Date(),
                 val;
+            date = new Date();
             if (parts.length === format.parts.length) {
                 for (var i = 0, length = format.parts.length; i < length; i++) {
                     val = parseInt(parts[i], 10) || 1;
@@ -281,7 +281,7 @@
             };
             val.dd = (val.d < 10 ? '0' : '') + val.d;
             val.mm = (val.m < 10 ? '0' : '') + val.m;
-            var date = [];
+            date = [];
             for (var i = 0, length = format.parts.length; i < length; i++) {
                 date.push(val[format.parts[i]]);
             }
@@ -306,10 +306,10 @@
             html += '</tr>' + '</thead>';
             html += '<tbody>' + '<tr>';
 
-            for (var i = 0; i < 42; i++) {
-                if (i > 0 && i % 7 == 0) {
+            for (i = 0; i < 42; i++) {
+                if (i > 0 && i % 7 === 0) {
                     html += '</tr><tr>';
-                };
+                }
                 var day = (i - days_from_prev_month + 1);
 
                 if (i < days_from_prev_month) {
@@ -317,7 +317,7 @@
                 } else if (day > days_in_month) {
                     html += '<td class="otherMonthDay">' + (day - days_in_month) + '</td>';
                 } else {
-                    if (this.selected_month[j] == this.current_month[j] && this.selected_year[j] == this.current_year[j] && this.current_day[j] == day) {
+                    if (this.selected_month[j] === this.current_month[j] && this.selected_year[j] === this.current_year[j] && this.current_day[j] === day) {
                         html += '<td class="is-active">' + day + '</td>';
                     } else {
                         html += '<td>' + day + '</td>';
@@ -332,10 +332,10 @@
             this.manage_header(this.selected_year[j], j);
             var html = '<tr>';
             for (var i = 0; i < 12; i++) {
-                if (i > 0 && i % 3 == 0) {
+                if (i > 0 && i % 3 === 0) {
                     html += '</tr><tr>';
                 }
-                if (i == this.current_month[j] && this.selected_year[j] == this.current_year[j]) {
+                if (i === this.current_month[j] && this.selected_year[j] === this.current_year[j]) {
                     html += '<td class="' + 'calendar-month-' + i + ' is-active">' + Datepicker.defaults.months_short[i] + '</td>';
                 } else {
                     html += '<td class="' + 'calendar-month-' + i + '">' + Datepicker.defaults.months_short[i] + '</td>';
@@ -349,10 +349,10 @@
             this.manage_header(this.selected_year[j] - 7 + ' - ' + (this.selected_year[j] + 4), j);
             var html = '<tr>';
             for (var i = 0; i < 12; i++) {
-                if (i > 0 && i % 3 == 0) {
+                if (i > 0 && i % 3 === 0) {
                     html += '</tr><tr>';
                 }
-                if ((this.selected_year[j] - 7 + i) == this.current_year[j]) {
+                if ((this.selected_year[j] - 7 + i) === this.current_year[j]) {
                     html += '<td class="is-active">' + (this.selected_year[j] - 7 + i) + '</td>';
                 } else {
                     html += '<td>' + (this.selected_year[j] - 7 + i) + '</td>';
@@ -369,44 +369,44 @@
                 month = this.selected_month[j],
                 next, previous;
 
-            if (this.view == 'days') {
+            if (this.view === 'days') {
                 previous = (month - 1 < 0 ? this.str_concat(year - 1, '11') : this.str_concat(year, this.str_pad(month - 1, 2)));
                 next = (month + 1 > 11 ? this.str_concat(year + 1, '00') : this.str_concat(year, this.str_pad(month + 1, 2)));
-            } else if (this.view == 'months') {
+            } else if (this.view === 'months') {
                 previous = year - 1;
                 next = year + 2;
-            } else if (this.view == 'years') {
+            } else if (this.view === 'years') {
                 previous = year - 7;
                 next = year + 7;
             }
         },
 
         manage_views: function(j) {
-            if (this.view[j] == 'days') {
+            if (this.view[j] === 'days') {
                 this.generate_daypicker(j);
                 this.daypicker.eq(j).css('display', 'inline-block');
                 this.monthpicker.eq(j).hide();
                 this.yearpicker.eq(j).hide();
 
-            } else if (this.view[j] == 'months') {
+            } else if (this.view[j] === 'months') {
                 this.generate_monthpicker(j);
                 this.daypicker.eq(j).hide();
-                this.monthpicker.eq(j).css('display', 'inline-block');;
+                this.monthpicker.eq(j).css('display', 'inline-block');
                 this.yearpicker.eq(j).hide();
 
-            } else if (this.view[j] == 'years') {
+            } else if (this.view[j] === 'years') {
                 this.generate_yearpicker(j);
                 this.daypicker.eq(j).hide();
-                this.monthpicker.eq(j).hide();;
+                this.monthpicker.eq(j).hide();
                 this.yearpicker.eq(j).css('display', 'inline-block');
             }
         },
 
         prev: function(j) {
             if (!$(this).hasClass('calendar-blocked')) {
-                if (this.view[j] == 'months') {
+                if (this.view[j] === 'months') {
                     this.selected_year[j]--;
-                } else if (this.view[j] == 'years') {
+                } else if (this.view[j] === 'years') {
                     this.selected_year[j] -= 12;
                 } else if (--this.selected_month[j] < 0) {
                     this.selected_month[j] = 11;
@@ -418,11 +418,11 @@
 
         next: function(j) {
             if (!$(this).hasClass('calendar-blocked')) {
-                if (this.view[j] == 'months') {
+                if (this.view[j] === 'months') {
                     this.selected_year[j]++;
-                } else if (this.view[j] == 'years') {
+                } else if (this.view[j] === 'years') {
                     this.selected_year[j] += 12;
-                } else if (++this.selected_month[j] == 12) {
+                } else if (++this.selected_month[j] === 12) {
                     this.selected_month[j] = 0;
                     this.selected_year[j]++;
                 }
@@ -431,9 +431,9 @@
         },
 
         caption: function(j) {
-            if (this.view[j] == 'days') {
+            if (this.view[j] === 'days') {
                 this.view[j] = 'months';
-            } else if (this.view[j] == 'months') {
+            } else if (this.view[j] === 'months') {
                 this.view[j] = 'years';
             } else {
                 return false;
@@ -445,27 +445,30 @@
             var get_place = function(array, obj) {
                 var j;
                 $.each(array, function(i, val) {
-                    if (val == obj) {
+                    if (val === obj) {
                         j = i;
                     }
-                })
+                });
                 return j;
             };
             if (target.length === 1) {
+                var current_cal = target.parent().parent().parent().parent();
+                var i = get_place(this.calendar, current_cal.get(0));
                 switch (target[0].nodeName.toLowerCase()) {
                     case 'th':
-                        var current_cal = target.parent().parent().parent().parent();
+                        // var current_cal = target.parent().parent().parent().parent();
+                        // var i = get_place(this.calendar, current_cal.get(0));
                         switch (target[0].className) {
                             case 'calendar-caption':
-                                var i = get_place(this.calendar, current_cal.get(0));
+                                // i = get_place(this.calendar, current_cal.get(0));
                                 this.caption(i);
                                 break;
                             case 'calendar-prev':
-                                var i = get_place(this.calendar, current_cal.get(0));
+                                // i = get_place(this.calendar, current_cal.get(0));
                                 this.prev(i);
                                 break;
                             case 'calendar-next':
-                                var i = get_place(this.calendar, current_cal.get(0));
+                                // i = get_place(this.calendar, current_cal.get(0));
                                 this.next(i);
                                 break;
                         }
@@ -473,11 +476,11 @@
                     case 'td':
                         var type = target.parent().parent().parent().attr('class');
                         var current_day = target.attr('class');
-                        var current_cal = target.parent().parent().parent().parent();
+                        // var current_cal = target.parent().parent().parent().parent();
                         switch (type) {
                             case 'calendar-days':
                                 if (current_day !== 'otherMonthDay') {
-                                    var i = get_place(this.calendar, current_cal.get(0));
+                                    // i = get_place(this.calendar, current_cal.get(0));
                                     var day = parseInt(target.text(), 10);
                                     this.selected_day[i] = day;
                                     this.current_day[i] = this.selected_day[i];
@@ -488,7 +491,7 @@
                                 }
                                 break;
                             case 'calendar-months':
-                                var i = get_place(this.calendar, current_cal.get(0));
+                                // i = get_place(this.calendar, current_cal.get(0));
                                 var match = target.attr('class').match(/calendar\-month\-([0-9]+)/);
                                 this.selected_month[i] = Number(match[1]);
                                 this.current_month[i] = this.selected_month[i];
@@ -498,7 +501,7 @@
                                 this.set_value(i);
                                 break;
                             case 'calendar-years':
-                                var i = get_place(this.calendar, current_cal.get(0));
+                                // i = get_place(this.calendar, current_cal.get(0));
                                 var year = parseInt(target.text(), 10);
                                 this.view[i] = 'months';
                                 this.selected_year[i] = year;
@@ -524,6 +527,6 @@
             });
         }
         return (options === true) ? instance : this;
-    }
+    };
 
 })(jQuery);
