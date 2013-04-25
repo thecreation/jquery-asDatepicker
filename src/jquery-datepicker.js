@@ -20,7 +20,7 @@
         week_days: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         months_short: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-
+        
         // mode: 'single',
         calendars: 2,
         // date: [new Date()],
@@ -30,7 +30,20 @@
         views: ['days', 'days'],
         format: 'yyyy/mm/dd',
         tpl_wrapper: '<div class="calendar-wrap">' + '</div>',
-        tpl_content: '<div class="calendar">' + '<table>' + '<thead>' + '<tr class="calendar-head">' + '<th class="calendar-prev"></th>' + '<th class="calendar-caption"></th>' + '<th class="calendar-next"></th>' + '</tr>' + '</thead>' + '</table>' + '<table class="calendar-days"></table>' + '<table class="calendar-months"></table>' + '<table class="calendar-years"></table>' + '</div>'
+        tpl_content: '<div class="calendar">' + 
+                        '<table>' + 
+                            '<thead>' + 
+                                '<tr class="calendar-head">' + 
+                                    '<th class="calendar-prev"></th>' + 
+                                    '<th class="calendar-caption"></th>' + 
+                                    '<th class="calendar-next"></th>' + 
+                                '</tr>' + 
+                            '</thead>' + 
+                        '</table>' + 
+                        '<table class="calendar-days"></table>' + 
+                        '<table class="calendar-months"></table>' + 
+                        '<table class="calendar-years"></table>' + 
+                     '</div>'
     };
 
     Datepicker.prototype = {
@@ -60,12 +73,12 @@
 
             if (this.options.mode === 'single') {
                 html += this.options.tpl_content;
-            } else {
+            }else {
                 for (var i = 0; i < this.options.calendars; i++) {
                     html += this.options.tpl_content;
                 }
             }
-
+            
 
             this.picker.append(html);
 
@@ -86,30 +99,33 @@
             if (this.options.mode === 'range') {
                 this.current_date[1] = new Date();
                 this.selected_date[1] = new Date();
-                this.current_date[0].setHours(0, 0, 0, 0);
-                this.current_date[1].setHours(0, 0, 0, 0);
-                this.selected_date[0].setHours(0, 0, 0, 0);
-                this.selected_date[1].setHours(0, 0, 0, 0);
+                this.current_date[0].setHours(0,0,0,0);
+                this.current_date[1].setHours(0,0,0,0);
+                this.selected_date[0].setHours(0,0,0,0);
+                this.selected_date[1].setHours(0,0,0,0);
             }
 
             this.date_update();
 
             if (this.options.mode === 'single') {
                 this.manage_views(0);
-            } else {
-                for (i = 0; i < this.options.calendars; i++) {
+            }else {
+                for (var i=0; i<this.options.calendars; i++) {
                     this.manage_views(i);
                 }
             }
-
+            
             this.set_value();
         },
 
         show: function() {
+            
+            this.picker.fadeIn("normal");
             this.picker.show();
-            this.place();
-            var self = this;
 
+            this.place();
+
+            var self = this;
             $(window).scroll(function() {
                 self.place();
             });
@@ -119,11 +135,13 @@
                     self.hide();
                 }
             });
-
         },
 
         hide: function() {
-            this.picker.hide();
+            var self = this;
+            this.picker.fadeOut("normal", function () {
+                self.picker.hide();
+            });
         },
 
         place: function() {
@@ -225,17 +243,13 @@
 
         str_pad: function(str, len) {
             str += '';
-            while (str.length < len) {
-                str = '0' + str;
-            }
+            while (str.length < len) {str = '0' + str;}
             return str;
         },
 
         str_concat: function() {
             var str = '';
-            for (var i = 0; i < arguments.length; i++) {
-                str += (arguments[i] + '');
-            }
+            for (var i = 0; i < arguments.length; i++) {str += (arguments[i] + '');}
             return str;
         },
 
@@ -321,8 +335,8 @@
         },
 
         generate_daypicker: function(j) {
-            var
-            days_in_month = new Date(this.current_year[j], this.current_month[j] + 1, 0).getDate(),
+             var
+                days_in_month = new Date(this.current_year[j], this.current_month[j] + 1, 0).getDate(),
                 first_day = new Date(this.current_year[j], this.current_month[j], 2).getDay(),
                 days_in_prev_month = new Date(this.current_year[j], this.current_month[j], 0).getDate(),
                 days_from_prev_month = first_day - this.options.first_day_of_week,
@@ -335,24 +349,24 @@
                     selected_end = this.selected_date[1],
                     date_array = [];
 
-                if (j > 0) {
-                    if (this.current_year[j] === this.selected_year[j - 1]) {
-                        if (this.current_month[j] <= this.selected_month[j - 1]) {
-                            this.calendar_prev.eq(j).addClass('calendar-blocked');
-                        } else if (this.calendar_prev.eq(j).hasClass('calendar-blocked') === true) {
+                if (j>0) {
+                    if (this.current_year[j] === this.selected_year[j-1]) {
+                        if(this.current_month[j] <= this.selected_month[j-1]){
+                           this.calendar_prev.eq(j).addClass('calendar-blocked'); 
+                        }else if(this.calendar_prev.eq(j).hasClass('calendar-blocked') === true) {
                             this.calendar_prev.eq(j).removeClass('calendar-blocked');
-                        }
-                    } else if (this.calendar_prev.eq(j).hasClass('calendar-blocked') === true) {
+                        }  
+                    } else if(this.calendar_prev.eq(j).hasClass('calendar-blocked') === true) {
                         this.calendar_prev.eq(j).removeClass('calendar-blocked');
-                    }
+                    }   
                 } else {
-                    if (this.current_year[j] === this.selected_year[j + 1]) {
-                        if (this.current_month[j] >= this.selected_month[j + 1]) {
-                            this.calendar_next.eq(j).addClass('calendar-blocked');
-                        } else if (this.calendar_next.eq(j).hasClass('calendar-blocked') === true) {
+                    if (this.current_year[j] === this.selected_year[j+1]) {
+                        if(this.current_month[j] >= this.selected_month[j+1]){
+                           this.calendar_next.eq(j).addClass('calendar-blocked'); 
+                        }else if(this.calendar_next.eq(j).hasClass('calendar-blocked') === true) {
                             this.calendar_next.eq(j).removeClass('calendar-blocked');
                         }
-                    } else if (this.calendar_next.eq(j).hasClass('calendar-blocked') === true) {
+                    } else if(this.calendar_next.eq(j).hasClass('calendar-blocked') === true) {
                         this.calendar_next.eq(j).removeClass('calendar-blocked');
                     }
                 }
@@ -368,7 +382,7 @@
             html += '</tr>' + '</thead>';
             html += '<tbody>' + '<tr>';
 
-            for (i = 0; i < 42; i++) {
+            for (i = 0; i < 42; i++) { 
                 var day = (i - days_from_prev_month + 1);
 
                 if (i > 0 && i % 7 === 0) {
@@ -395,14 +409,14 @@
                         if (i < days_from_prev_month) {
                             date_array[i] = new Date(this.current_year[j], (this.current_month[j] - 1), (days_in_prev_month - days_from_prev_month + i + 1), 0, 0, 0, 0);
                             class_name = 'otherMonthDay';
-                            if (j === 0) {
-                                if (Date.parse(date_array[i]) === Date.parse(selected_start)) {
+                            if (j===0){
+                                if (Date.parse(date_array[i]) == Date.parse(selected_start)) {
                                     class_name += ' is-active';
                                 } else if (date_array[i] > selected_start && date_array[i] <= selected_end) {
                                     class_name += ' in-range';
                                 }
-                            } else if (j === 1) {
-                                if (Date.parse(date_array[i]) === Date.parse(selected_end)) {
+                            }else if (j===1) {
+                                if (Date.parse(date_array[i]) == Date.parse(selected_end)) {
                                     class_name += ' is-active';
                                 } else if (date_array[i] >= selected_start && date_array[i] < selected_end) {
                                     class_name += ' in-range';
@@ -412,14 +426,14 @@
                         } else if (i > (days_in_month + days_from_prev_month - 1)) {
                             date_array[i] = new Date(this.current_year[j], (this.current_month[j] + 1), (day - days_in_month), 0, 0, 0, 0);
                             class_name = 'otherMonthDay';
-                            if (j === 0) {
-                                if (Date.parse(date_array[i]) === Date.parse(selected_start)) {
+                            if (j===0){
+                                if (Date.parse(date_array[i]) == Date.parse(selected_start)) {
                                     class_name += ' is-active';
                                 } else if (date_array[i] > selected_start && date_array[i] <= selected_end) {
                                     class_name += ' in-range';
                                 }
-                            } else if (j === 1) {
-                                if (Date.parse(date_array[i]) === Date.parse(selected_end)) {
+                            }else if (j===1) {
+                                if (Date.parse(date_array[i]) == Date.parse(selected_end)) {
                                     class_name += ' is-active';
                                 } else if (date_array[i] >= selected_start && date_array[i] < selected_end) {
                                     class_name += ' in-range';
@@ -427,17 +441,17 @@
                             }
                             content = (day - days_in_month);
                         } else {
-                            date_array[i] = new Date(this.current_year[j], this.current_month[j], day, 0, 0, 0, 0);
-                            if (j === 0) {
-                                if (Date.parse(date_array[i]) === Date.parse(selected_start)) {
+                            date_array[i] =  new Date(this.current_year[j], this.current_month[j], day, 0, 0, 0, 0);                
+                            if (j===0){
+                                if (Date.parse(date_array[i]) == Date.parse(selected_start)) {
                                     class_name = 'is-active';
                                 } else if (date_array[i] > selected_start && date_array[i] <= selected_end) {
                                     class_name = 'in-range';
                                 } else if (date_array[i] > selected_end) {
                                     class_name = 'is-untouchable';
                                 }
-                            } else if (j === 1) {
-                                if (Date.parse(date_array[i]) === Date.parse(selected_end)) {
+                            }else if (j===1) {
+                                if (Date.parse(date_array[i]) == Date.parse(selected_end)) {
                                     class_name = 'is-active';
                                 } else if (date_array[i] >= selected_start && date_array[i] < selected_end) {
                                     class_name = 'in-range';
@@ -452,33 +466,33 @@
                         }
                         html += '<td class="' + class_name + '">' + content + '</td>';
                     }
-                }
+                }            
             }
             html += '</tr>';
-            this.daypicker.eq(j).html(html);
+            this.daypicker.eq(j).html(html); 
         },
 
         generate_monthpicker: function(j) {
             this.manage_header(this.current_year[j], j);
-            var content = this.options.months_short;
+            var content =  this.options.months_short;
 
-            if (this.options.mode === 'range') {
-                var current_start = new Date(this.current_date[0].getFullYear(), this.current_date[0].getMonth(), 1, 0, 0, 0, 0),
-                    current_end = new Date(this.current_date[1].getFullYear(), this.current_date[1].getMonth(), 1, 1, 0, 0, 0),
-                    selected_start = new Date(this.selected_date[0].getFullYear(), this.selected_date[0].getMonth(), 1, 0, 0, 0, 0),
-                    selected_end = new Date(this.selected_date[1].getFullYear(), this.selected_date[1].getMonth(), 1, 0, 0, 0, 0),
+            if (this.options.mode === 'range'){
+                var current_start = new Date (this.current_date[0].getFullYear(), this.current_date[0].getMonth(),1, 0, 0, 0, 0),
+                    current_end = new Date (this.current_date[1].getFullYear(), this.current_date[1].getMonth(),1, 1, 0, 0, 0),
+                    selected_start =new Date (this.selected_date[0].getFullYear(), this.selected_date[0].getMonth(),1, 0, 0, 0, 0),
+                    selected_end = new Date (this.selected_date[1].getFullYear(), this.selected_date[1].getMonth(),1, 0, 0, 0, 0),
                     date_array = [];
 
-                if (j > 0) {
-                    if (this.current_year[j] === this.selected_year[j - 1]) {
-                        this.calendar_prev.eq(j).addClass('calendar-blocked');
-                    } else if (this.calendar_prev.eq(j).hasClass('calendar-blocked') === true) {
+                if (j>0) {
+                    if (this.current_year[j] === this.selected_year[j-1]) {
+                           this.calendar_prev.eq(j).addClass('calendar-blocked');   
+                    } else if(this.calendar_prev.eq(j).hasClass('calendar-blocked') === true) {
                         this.calendar_prev.eq(j).removeClass('calendar-blocked');
-                    }
+                    }   
                 } else {
-                    if (this.current_year[j] === this.selected_year[j + 1]) {
-                        this.calendar_next.eq(j).addClass('calendar-blocked');
-                    } else if (this.calendar_next.eq(j).hasClass('calendar-blocked') === true) {
+                    if (this.current_year[j] === this.selected_year[j+1]) {
+                           this.calendar_next.eq(j).addClass('calendar-blocked'); 
+                    } else if(this.calendar_next.eq(j).hasClass('calendar-blocked') === true) {
                         this.calendar_next.eq(j).removeClass('calendar-blocked');
                     }
                 }
@@ -502,7 +516,7 @@
                         if (j > 0) {
                             if (Date.parse(date_array[i]) === Date.parse(selected_end)) {
                                 class_name += ' is-active';
-                            } else if (date_array[i] < selected_start) {
+                            } else if (date_array[i] < selected_start){
                                 class_name += ' is-untouchable';
                             } else if (date_array[i] < selected_end && date_array[i] >= selected_start) {
                                 class_name += ' in-range';
@@ -520,7 +534,7 @@
                         html += '<td class="' + class_name + '">' + content[i] + '</td>';
                     }
                 }
-
+                
             }
             html += '</tr>';
             this.monthpicker.eq(j).html(html);
@@ -529,28 +543,28 @@
         generate_yearpicker: function(j) {
             this.manage_header(this.current_year[j] - 7 + ' - ' + (this.current_year[j] + 4), j);
 
-            if (this.options.mode === 'range') {
+            if (this.options.mode === 'range'){
                 var current_start = this.current_date[0].getFullYear(),
                     current_end = this.current_date[1].getFullYear(),
                     selected_start = this.selected_date[0].getFullYear(),
                     selected_end = this.selected_date[1].getFullYear();
 
-                if (j > 0) {
-                    if (this.current_year[j] === this.selected_year[j - 1]) {
-                        this.calendar_prev.eq(j).addClass('calendar-blocked');
-                    } else if (this.calendar_prev.eq(j).hasClass('calendar-blocked') === true) {
+                if (j>0) {
+                    if ((this.current_year[j] - 7) <= this.selected_year[j-1]) {
+                           this.calendar_prev.eq(j).addClass('calendar-blocked');   
+                    } else if(this.calendar_prev.eq(j).hasClass('calendar-blocked') === true) {
                         this.calendar_prev.eq(j).removeClass('calendar-blocked');
-                    }
+                    }   
                 } else {
-                    if (this.current_year[j] === this.selected_year[j + 1]) {
-                        this.calendar_next.eq(j).addClass('calendar-blocked');
-                    } else if (this.calendar_next.eq(j).hasClass('calendar-blocked') === true) {
+                    if ((this.current_year[j] + 4) >= this.selected_year[j+1]) {
+                           this.calendar_next.eq(j).addClass('calendar-blocked'); 
+                    } else if(this.calendar_next.eq(j).hasClass('calendar-blocked') === true) {
                         this.calendar_next.eq(j).removeClass('calendar-blocked');
                     }
                 }
             }
 
-
+            
             var html = '<tr>';
             for (var i = 0; i < 12; i++) {
                 var year = (this.current_year[j] - 7 + i);
@@ -561,7 +575,7 @@
                 if (this.options.mode === 'single') {
 
                     if ((this.current_year[j] - 7 + i) === this.current_year[j]) {
-                        html += '<td class="is-active">' + (this.current_year[j] - 7 + i) + '</td>';
+                        html += '<td class="is-active">' + (this.current_year[j] - 7 + i)+ '</td>';
                     } else {
                         html += '<td>' + (this.current_year[j] - 7 + i) + '</td>';
                     }
@@ -572,7 +586,7 @@
                         if (j > 0) {
                             if (year === selected_end) {
                                 class_name += ' is-active';
-                            } else if (year < selected_start) {
+                            } else if (year < selected_start){
                                 class_name += ' is-untouchable';
                             } else if (year < selected_end && year >= selected_start) {
                                 class_name += ' in-range';
@@ -590,7 +604,7 @@
                         html += '<td class="' + class_name + '">' + year + '</td>';
                     }
                 }
-
+                
             }
             html += '</tr>';
             this.yearpicker.eq(j).html(html);
@@ -661,7 +675,7 @@
                     this.current_year[j] += 12;
                     this.set_date(this.current_date[j], 'year', this.current_year[j]);
                 }
-
+                
                 this.date_update();
                 this.manage_views(j);
             } else {
@@ -726,18 +740,18 @@
                                     this.set_date(this.selected_date[i], 'year', this.current_year[i]);
                                     this.set_date(this.current_date[i], 'year', this.current_year[i]);
                                     this.date_update();
-                                    if (this.options.mode === 'range') {
-                                        if (i === 0) {
+                                    if(this.options.mode === 'range') {
+                                        if(i === 0) {
                                             if (this.current_date[0] > this.current_date[1]) {
-                                                this.set_date(this.current_date[i + 1], 'month', this.current_month[i]);
-                                                this.set_date(this.current_date[i + 1], 'year', this.current_year[i]);
+                                                this.set_date(this.current_date[i+1], 'month', this.current_month[i]);
+                                                this.set_date(this.current_date[i+1], 'year', this.current_year[i]);
                                                 this.date_update();
                                             }
                                             this.manage_views(i + 1);
-                                        } else if (i === 1) {
+                                        }else if (i === 1){
                                             if (this.current_date[0] > this.current_date[1]) {
-                                                this.set_date(this.current_date[i - 1], 'month', this.current_month[i]);
-                                                this.set_date(this.current_date[i - 1], 'year', this.current_year[i]);
+                                                this.set_date(this.current_date[i-1], 'month', this.current_month[i]);
+                                                this.set_date(this.current_date[i-1], 'year', this.current_year[i]);
                                                 this.date_update();
                                             }
                                             this.manage_views(i - 1);
@@ -745,7 +759,7 @@
                                     }
                                     this.manage_views(i);
                                     this.set_value(i);
-                                } else {
+                                }else{
                                     return false;
                                 }
                                 break;
@@ -770,7 +784,7 @@
                                     this.manage_views(i);
                                 } else {
                                     return false;
-                                }
+                                }   
                                 break;
                         }
                         break;
