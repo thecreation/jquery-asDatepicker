@@ -1,10 +1,6 @@
-/*
- * datepicker
- * https://github.com/amazingsurge/jquery-datepicker
- *
- * Copyright (c) 2013 amazingSurge
- * Licensed under the MIT license.
- */
+/*! Datepicker - v0.1.0 - 2013-04-25
+* https://github.com/amazingsurge/jquery-datepicker
+* Copyright (c) 2013 amazingSurge; Licensed MIT */
 (function($) {
 
     var Datepicker = $.daypicker = function(element, options) {
