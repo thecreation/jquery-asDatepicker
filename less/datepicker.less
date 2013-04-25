@@ -81,7 +81,6 @@
 }
 
 .calendar-head {
-	color: rgb(25, 25, 25);
 	height: @calendarHeadHeight;	
 	border-bottom: 1px solid rgb(235, 235, 235);
 }
@@ -94,6 +93,10 @@
 	background-image: url('../images/calendar-prev.png');
 	background-repeat: no-repeat;
 	background-position: center;
+	&.calendar-blocked, &.calendar-blocked:hover{
+		background-image: none;
+		cursor: auto;
+	}
 	&:hover {
 		background-image: url('../images/calendar-prev-hover.png');
 	}
@@ -103,6 +106,10 @@
 	background-image: url('../images/calendar-next.png');
 	background-repeat: no-repeat;
 	background-position: center;
+	&.calendar-blocked, &.calendar-blocked:hover{
+		background-image: none;
+		cursor: auto;
+	}
 	&:hover {
 		background-image: url('../images/calendar-next-hover.png');
 	}
@@ -111,6 +118,10 @@
 	font-size: 14px;
 	width: @calendarDayWidth * 7 - 70px;
 	cursor: pointer;
+	color: rgb(105, 105, 105);
+	&:hover {
+		color: rgb(0, 0, 0);
+	}
 }
 
 .calendar-week {
@@ -135,9 +146,12 @@
 		&:hover {
 			background-color: rgb(224, 244, 251);
 		}
-		&:active, &.is-active {
-			background-color: rgb(50, 184, 226);
-			color: white;
+		&.is-active {
+			background-color: rgb(50, 184, 226) !important;
+			color: white !important;
+			// -webkit-border-radius: 3px;
+			//    -moz-border-radius: 3px;
+			// 		border-radius: 3px;
 		}
 		&.otherMonthDay {
 			color: rgb(200, 200, 200);
@@ -147,6 +161,26 @@
 				color: rgb(200, 200, 200);
 			}
 			
+		}
+		&.is-untouchable {
+			color: rgb(160, 160, 160);
+			cursor: default;
+			&:hover, &:active, &.is-active {
+				background-color: inherit;
+				color: rgb(160, 160, 160);
+			}
+			
+		}
+		&.in-range {
+			background-color: rgb(224, 244, 251);
+			&:hover {
+				background-color: inherit;
+			}
+		}
+		&.otherMonthDay.in-range {
+			&:hover {
+				background-color: rgb(224, 244, 251);
+			}
 		}
 	}
 	tbody {
@@ -178,7 +212,7 @@
 		background: @calendarBackgroundColor;
 		// background-color: red;
 		right: 0;
-		bottom: 1px;
+		bottom: 0;
 	}
 }
 
@@ -203,9 +237,23 @@
 		&:hover {
 			background-color: rgb(224, 244, 251);
 		}
-		&:active, &.is-active {
-			background-color: rgb(50, 184, 226);
-			color: white;
+		&.is-active {
+			background-color: rgb(50, 184, 226) !important;
+			color: white !important;
+		}
+		&.is-untouchable {
+			color: rgb(200, 200, 200);
+			cursor: default;
+			&:hover, &:active, &.is-active {
+				background-color: inherit;
+				color: rgb(200, 200, 200);
+			}	
+		}
+		&.in-range {
+			background-color: rgb(224, 244, 251);
+			&:hover {
+				background-color: inherit;
+			}
 		}
 	}
 	&:before {

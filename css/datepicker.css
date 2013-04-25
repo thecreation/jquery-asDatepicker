@@ -62,7 +62,6 @@
 
 .calendar-head {
   height: 30px;
-  color: #191919;
   border-bottom: 1px solid #ebebeb;
 }
 
@@ -78,6 +77,12 @@
   background-repeat: no-repeat;
 }
 
+.calendar-prev.calendar-blocked,
+.calendar-prev.calendar-blocked:hover {
+  cursor: auto;
+  background-image: none;
+}
+
 .calendar-prev:hover {
   background-image: url('../images/calendar-prev-hover.png');
 }
@@ -88,6 +93,12 @@
   background-repeat: no-repeat;
 }
 
+.calendar-next.calendar-blocked,
+.calendar-next.calendar-blocked:hover {
+  cursor: auto;
+  background-image: none;
+}
+
 .calendar-next:hover {
   background-image: url('../images/calendar-next-hover.png');
 }
@@ -95,7 +106,12 @@
 .calendar-caption {
   width: 119px;
   font-size: 14px;
+  color: #696969;
   cursor: pointer;
+}
+
+.calendar-caption:hover {
+  color: #000000;
 }
 
 .calendar-week {
@@ -122,10 +138,9 @@
   background-color: #e0f4fb;
 }
 
-.calendar-days td:active,
 .calendar-days td.is-active {
-  color: white;
-  background-color: #32b8e2;
+  color: white !important;
+  background-color: #32b8e2 !important;
 }
 
 .calendar-days td.otherMonthDay {
@@ -138,6 +153,30 @@
 .calendar-days td.otherMonthDay.is-active {
   color: #c8c8c8;
   background-color: inherit;
+}
+
+.calendar-days td.is-untouchable {
+  color: #a0a0a0;
+  cursor: default;
+}
+
+.calendar-days td.is-untouchable:hover,
+.calendar-days td.is-untouchable:active,
+.calendar-days td.is-untouchable.is-active {
+  color: #a0a0a0;
+  background-color: inherit;
+}
+
+.calendar-days td.in-range {
+  background-color: #e0f4fb;
+}
+
+.calendar-days td.in-range:hover {
+  background-color: inherit;
+}
+
+.calendar-days td.otherMonthDay.in-range:hover {
+  background-color: #e0f4fb;
 }
 
 .calendar-days tbody:before {
@@ -163,7 +202,7 @@
 .calendar-days:after {
   position: absolute;
   right: 0;
-  bottom: 1px;
+  bottom: 0;
   width: 203px;
   height: 7px;
   background: #ffffff;
@@ -196,12 +235,36 @@
   background-color: #e0f4fb;
 }
 
-.calendar-months td:active,
-.calendar-years td:active,
 .calendar-months td.is-active,
 .calendar-years td.is-active {
-  color: white;
-  background-color: #32b8e2;
+  color: white !important;
+  background-color: #32b8e2 !important;
+}
+
+.calendar-months td.is-untouchable,
+.calendar-years td.is-untouchable {
+  color: #c8c8c8;
+  cursor: default;
+}
+
+.calendar-months td.is-untouchable:hover,
+.calendar-years td.is-untouchable:hover,
+.calendar-months td.is-untouchable:active,
+.calendar-years td.is-untouchable:active,
+.calendar-months td.is-untouchable.is-active,
+.calendar-years td.is-untouchable.is-active {
+  color: #c8c8c8;
+  background-color: inherit;
+}
+
+.calendar-months td.in-range,
+.calendar-years td.in-range {
+  background-color: #e0f4fb;
+}
+
+.calendar-months td.in-range:hover,
+.calendar-years td.in-range:hover {
+  background-color: inherit;
 }
 
 .calendar-months:before,
