@@ -796,14 +796,22 @@
 
 
     $.fn.datepicker = function(options) {
-        var pluginName = 'datepicker';
-        var instance = this.data(pluginName);
-        if (!instance) {
+        if (typeof options === 'string') {
+            var method = options;
+            var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
+
             return this.each(function() {
-                return $(this).data(pluginName, new Datepicker(this, options));
+                var api = $.data(this, 'datepicker');
+                if (typeof api[method] === 'function') {
+                    api[method].apply(api, method_arguments);
+                }
+            });
+        } else {
+            return this.each(function() {
+                if (!$.data(this, 'datepicker')) {
+                    $.data(this, 'datepicker', new Datepicker(this, options));
+                }
             });
         }
-        return (options === true) ? instance : this;
     };
-
 })(jQuery);
