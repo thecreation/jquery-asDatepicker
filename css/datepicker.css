@@ -288,26 +288,3 @@
   background: #ffffff;
   content: '';
 }
-
-#calendar {
-  width: 200px;
-  height: 25px;
-  padding-right: 30px;
-  padding-left: 8px;
-  font-family: "Proxima Nova";
-  font-size: 14px;
-  color: #a0a0a0;
-  vertical-align: middle;
-  border: 1px solid #ced0d3;
-  border-radius: 3px 3px 3px 3px;
-  outline: none;
-}
-
-#calendar:focus,
-#calendar:active {
-  border: 1px solid #aed6f1;
-  outline-offset: 0;
-  -webkit-box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
-     -moz-box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
-          box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
-}

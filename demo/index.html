@@ -12,16 +12,55 @@
 
 <link rel="stylesheet" href="css/normalize.css">
 <link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/prism.css">
 <link rel="stylesheet" href="../css/datepicker.css">
 </head>
 <body>
-    <input type="text" id="calendar" style="margin: 300px;">
-    <input type="text" id="calendar2" style="margin: 100px;">
+	<div id="toc"></div>
+    <div class="container">       
+        <h1>jQuery.Datepicker</h1>
+        <section>
+            <h2>Examples</h2>
+            <p>You can pass these options as key/value object to $.datepicker() method. </p>
+            
+            <section>
+                <h3>Example 1</h3>
+                <pre class="has-example"><code class="language-markup">
+&lt;input&nbsp;type=&quot;text&quot;&nbsp;id=&quot;calendar&quot;&gt;</code></pre>
+                <div class="example">
+                    <input type="text" id="calendar">
+                </div>
+            </section>
+            <section>
+                <h3>Example 2</h3>
+                <pre class="has-example"><code class="language-markup">
+&lt;input&nbsp;type=&quot;text&quot;&nbsp;id=&quot;calendar2&quot;&gt;
+&lt;script&gt;
+$(document).ready(function(){
+&nbsp;&nbsp;$(&quot;#calendar2&quot;).datepicker({mode:&nbsp;&#39;single&#39;});
+});
+&lt;script&gt;</code></pre>
+                <div class="example">
+                    <input type="text" id="calendar2">
+                </div>
+            </section>
+        </section>
+        <section>
+            <h2>Available options</h2>
+            <p>You can pass these options as key/value object to $.datepicker() method. </p>
+
+        </section>
+    </div>
 
 <script src="js/jquery.js"></script>
+<script src="js/jquery.toc.min.js"></script>
+<script src="js/prism.js"></script>
 <script src="../src/jquery-datepicker.js"></script>
 <script>
 $(document).ready(function(){
+	(function(){
+		$('#toc').toc();
+	})();
   $("#calendar").datepicker();
   $("#calendar2").datepicker({mode: 'single'});
 });
