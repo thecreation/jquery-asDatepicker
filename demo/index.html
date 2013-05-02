@@ -24,31 +24,136 @@
             <p>You can pass these options as key/value object to $.datepicker() method. </p>
             
             <section>
-                <h3>Example 1</h3>
+                <h3>default single</h3>
                 <pre class="has-example"><code class="language-markup">
-&lt;input&nbsp;type=&quot;text&quot;&nbsp;id=&quot;calendar&quot;&gt;</code></pre>
+&lt;input&nbsp;type=&quot;text&quot;&nbsp;id=&quot;calendar&quot;&gt;
+&lt;script&gt;
+$(document).ready(function(){
+&nbsp;&nbsp;$(&quot;#calendar&quot;).datepicker();
+});
+&lt;script&gt;</code></pre>
                 <div class="example">
-                    <input type="text" id="calendar">
+                    <input type="date" id="calendar">
                 </div>
             </section>
             <section>
-                <h3>Example 2</h3>
+                <h3>range</h3>
                 <pre class="has-example"><code class="language-markup">
 &lt;input&nbsp;type=&quot;text&quot;&nbsp;id=&quot;calendar2&quot;&gt;
 &lt;script&gt;
 $(document).ready(function(){
-&nbsp;&nbsp;$(&quot;#calendar2&quot;).datepicker({mode:&nbsp;&#39;single&#39;});
+&nbsp;&nbsp;$(&quot;#calendar&quot;).datepicker({mode:&nbsp;&#39;range&#39;});
 });
 &lt;script&gt;</code></pre>
                 <div class="example">
-                    <input type="text" id="calendar2">
+                    <input type="date" id="calendar2">
                 </div>
+            </section>
+            <section>
+                <h3>multiple selection</h3>
             </section>
         </section>
         <section>
             <h2>Available options</h2>
             <p>You can pass these options as key/value object to $.datepicker() method. </p>
 
+        </section>
+        <section>
+        	<h2>API</h2>
+        	 <section>
+                <h3>show()</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#calendar-api-show&#39;).datepicker(&#39;show&#39;);</code></pre>
+                <div class="example">
+                    <input type="date" class="datepicker" id="calendar-api-show">
+                    <a href="#" id="calendar-api-show-click">Click to show calendar</a>
+                </div>
+            </section>
+             <section>
+                <h3>hide()</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#calendar-api-show&#39;).datepicker(&#39;hide&#39;);</code></pre>
+                <div class="example">
+                    <input type="date" class="datepicker" id="calendar-api-hide">
+                    <a href="#" id="calendar-api-hide-click">Click to hide calendar</a>
+                </div>
+            </section>
+            <section>
+                <h3>clear()</h3><!-- Clear multiple selection -->
+            </section>
+            <section>
+                <h3>get_calendar()</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#get-calendar&#39;).datepicker(&#39;get_calendar&#39;);</code></pre>
+                <div class="example">
+                    Returns the root element for the calendar.
+                </div>
+                <section>
+                    
+                <h3>get_input()</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#get-inputr&#39;).datepicker(&#39;get_input&#39;);</code></pre>
+                <div class="example">
+                    Returns the input field.
+                </div>
+                <section>
+                    
+                <h3>get_value()</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#get-value&#39;).datepicker(&#39;get_value&#39;);</code></pre>
+                <div class="example">
+                    Returns the currently selected date.
+                </div>
+                <section>
+                    
+                <h3>get_value(format)</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#get-value-format&#39;).datepicker(&#39;get_value&#39;,&nbsp;&#39;yyyy-mm-dd&#39;);</code></pre>
+                <div class="example">
+                    String  Returns the current date, formatted with the pattern given as the argument.
+                </div>
+                <section>
+                    
+                <h3>set_max()</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#set-max&#39;).datepicker(&#39;set_max&#39;);</code></pre>
+                <div class="example">
+
+                </div>
+                <section>
+                    
+                <h3>set_min()</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#set-min&#39;).datepicker(&#39;set_min&#39;);</code></pre>
+                <div class="example">
+
+                </div>
+                
+            
+        </section>
+        <section>
+            <h2>Events</h2>
+            <section>
+                <h3>on_show</h3>
+            </section>
+            <section>
+                <h3>on_before_show</h3>
+            </section>
+            <section>
+                <h3>on_hide</h3>
+            </section>
+            <section>
+                <h3>on_change</h3>
+            </section>
+            <section>
+                <h3>on_render</h3>
+            </section>
+        </section>
+        <section>
+            <h2>Skin</h2>
+        </section>
+        <section>
+            <h2>Location</h2>
         </section>
     </div>
 
@@ -61,8 +166,19 @@ $(document).ready(function(){
 	(function(){
 		$('#toc').toc();
 	})();
-  $("#calendar").datepicker();
-  $("#calendar2").datepicker({mode: 'single'});
+	$("#calendar").datepicker();
+	$("#calendar2").datepicker({mode: 'range'});
+	
+	$('.datepicker').datepicker();
+	$('#calendar-api-show-click').click(function(){
+		$('#calendar-api-show').datepicker('show');
+		return false;
+	});
+	$('#calendar-api-hide-click').click(function(){
+		$('#calendar-api-hide').datepicker('hide');
+		return false;
+	});
+
 });
 </script>
 </body>

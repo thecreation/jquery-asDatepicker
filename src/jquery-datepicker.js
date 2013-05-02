@@ -21,11 +21,11 @@
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         months_short: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
         
-        // mode: 'single',
+        mode: 'single',
         calendars: 2,
         // date: [new Date()],
         // date: '2000/12/12',
-        mode: 'range',
+        // mode: 'range',
         language: 'english', //'chinese'
         views: ['days', 'days'],
         format: 'yyyy/mm/dd',
@@ -796,14 +796,23 @@
 
 
     $.fn.datepicker = function(options) {
-        var pluginName = 'datepicker';
-        var instance = this.data(pluginName);
-        if (!instance) {
+        if (typeof options === 'string') {
+            var method = options;
+            var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
+
             return this.each(function() {
-                return $(this).data(pluginName, new Datepicker(this, options));
+                var api = $.data(this, 'datepicker');
+                if (typeof api[method] === 'function') {
+                    // console.log(api[method].apply(api, method_arguments))
+                    api[method].apply(api, method_arguments);
+                }
+            });
+        } else {
+            return this.each(function() {
+                if (!$.data(this, 'datepicker')) {
+                    $.data(this, 'datepicker', new Datepicker(this, options));
+                }
             });
         }
-        return (options === true) ? instance : this;
     };
-
 })(jQuery);
