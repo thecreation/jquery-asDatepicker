@@ -803,7 +803,10 @@
             return this.each(function() {
                 var api = $.data(this, 'datepicker');
                 if (typeof api[method] === 'function') {
+<<<<<<< HEAD
                     // console.log(api[method].apply(api, method_arguments))
+=======
+>>>>>>> 34dac7abc98301e556c2cd6aa36df5d13ebd142c
                     api[method].apply(api, method_arguments);
                 }
             });

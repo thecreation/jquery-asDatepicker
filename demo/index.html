@@ -66,6 +66,13 @@ $(document).ready(function(){
 $(&#39;#calendar-api-show&#39;).datepicker(&#39;show&#39;);</code></pre>
                 <div class="example">
                     <input type="date" class="datepicker" id="calendar-api-show">
+        	<h2>APi</h2>
+        	 <section>
+                <h3>show</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#calendar-api-show&#39;).datepicker(&#39;show&#39;);</code></pre>
+                <div class="example">
+                    <input type="text" class="datepicker" id="calendar-api-show">
                     <a href="#" id="calendar-api-show-click">Click to show calendar</a>
                 </div>
             </section>
@@ -154,6 +161,14 @@ $(&#39;#set-min&#39;).datepicker(&#39;set_min&#39;);</code></pre>
         </section>
         <section>
             <h2>Location</h2>
+                <h3>show</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#calendar-api-show&#39;).datepicker(&#39;hide&#39;);</code></pre>
+                <div class="example">
+                    <input type="text" class="datepicker" id="calendar-api-hide">
+                    <a href="#" id="calendar-api-hide-click">Click to hide calendar</a>
+                </div>
+            </section>
         </section>
     </div>
 
@@ -168,6 +183,7 @@ $(document).ready(function(){
 	})();
 	$("#calendar").datepicker();
 	$("#calendar2").datepicker({mode: 'range'});
+	$("#calendar2").datepicker({mode: 'single'});
 	
 	$('.datepicker').datepicker();
 	$('#calendar-api-show-click').click(function(){
@@ -178,7 +194,6 @@ $(document).ready(function(){
 		$('#calendar-api-hide').datepicker('hide');
 		return false;
 	});
-
 });
 </script>
 </body>
