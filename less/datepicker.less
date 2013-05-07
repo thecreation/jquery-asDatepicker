@@ -15,9 +15,8 @@
 
 
 .calendar-wrap {
-	display: none;
-	position: fixed;
-	//height: 206px;
+  position: absolute;
+  display: none;
 }
 
 .calendar {
@@ -121,6 +120,10 @@
 	color: rgb(105, 105, 105);
 	&:hover {
 		color: rgb(0, 0, 0);
+	}
+	&.calendar-blocked, &.calendar-blocked:hover {
+		color: rgb(105, 105, 105);	
+		cursor: auto;
 	}
 }
 

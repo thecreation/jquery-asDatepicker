@@ -11,6 +11,7 @@
         this.el = $(element);
         this.options = $.extend(true, {}, Datepicker.defaults, options);
         this.format = this.parse_format(this.options.format || 'mm/dd/yyyy');
+        this.namespace = this.options.namespace;
         this.init();
     };
 
@@ -23,36 +24,46 @@
         
         mode: 'single',
         calendars: 2,
-        // date: [new Date()],
+        date: [new Date(2013, 11, 11)],
         // date: '2000/12/12',
         // mode: 'range',
+        // mode: 'multiple',
         language: 'english', //'chinese'
         views: ['days', 'days'],
         format: 'yyyy/mm/dd',
-        tpl_wrapper: '<div class="calendar-wrap">' + '</div>',
-        tpl_content: '<div class="calendar">' + 
+        namespace: 'calendar',
+        tpl_wrapper: '<div class="namespace-wrap">' + '</div>',
+        tpl_content: '<div class="namespace">' + 
                         '<table>' + 
                             '<thead>' + 
-                                '<tr class="calendar-head">' + 
-                                    '<th class="calendar-prev"></th>' + 
-                                    '<th class="calendar-caption"></th>' + 
-                                    '<th class="calendar-next"></th>' + 
+                                '<tr class="namespace-head">' + 
+                                    '<th class="namespace-prev"></th>' + 
+                                    '<th class="namespace-caption"></th>' + 
+                                    '<th class="namespace-next"></th>' + 
                                 '</tr>' + 
                             '</thead>' + 
                         '</table>' + 
-                        '<table class="calendar-days"></table>' + 
-                        '<table class="calendar-months"></table>' + 
-                        '<table class="calendar-years"></table>' + 
-                     '</div>'
+                        '<table class="namespace-days"></table>' + 
+                        '<table class="namespace-months"></table>' + 
+                        '<table class="namespace-years"></table>' + 
+                     '</div>', 
+        onRender: function(){return {};},
+        onChange: function(){return true;},
+        onShow: function(){return true;},
+        onBeforeShow: function(){return true;},
+        onHide: function(){return true;}
     };
 
     Datepicker.prototype = {
         constructor: Datepicker,
 
         init: function() {
-            var html = '';
 
-            this.picker = $(this.options.tpl_wrapper)
+            var tpl_wrapper = this.options.tpl_wrapper.replace(/namespace/g, this.namespace);
+            var tpl_content = this.options.tpl_content.replace(/namespace/g, this.namespace);
+
+            var html = '';
+            this.picker = $(tpl_wrapper)
                 .appendTo('body')
                 .on({
                 click: $.proxy(this.click, this)
@@ -71,46 +82,63 @@
                 this._input = '';
             }
 
+            this.selected_date = [new Date(this.options.date[0])];
+            this.current_date = [new Date(this.options.date[0])];
+
             if (this.options.mode === 'single') {
-                html += this.options.tpl_content;
+                html += tpl_content;
             }else {
+                if (this.options.mode === 'range') {
+                    this.options.calendars = 2;
+                } else if (this.options.mode === 'multiple') {
+                    this.multiple_date = [];
+                }
                 for (var i = 0; i < this.options.calendars; i++) {
-                    html += this.options.tpl_content;
+                    html += tpl_content;
+                    if(this.options.views[i] === undefined) {
+                        this.options.views[i] = 'days';
+                    }
+                    if (this.options.date[i] === undefined) {
+                        this.options.date[i] = new Date(this.options.date[0]);
+                    }
+                    if (this.current_date[i] === undefined) {
+                        this.current_date[i] = new Date(this.options.date[0]);
+                    }
+                    if (this.selected_date[i] === undefined) {
+                        this.selected_date[i] = new Date(this.options.date[0]);
+                    }
+                    this.current_date[i].setHours(0,0,0,0);
+                    this.selected_date[i].setHours(0,0,0,0);
                 }
             }
-            
 
             this.picker.append(html);
 
             this.view = this.options.views;
-            this.calendar = this.picker.find('.calendar');
-            this.calendar_prev = this.calendar.find('.calendar-prev');
-            this.calendar_next = this.calendar.find('.calendar-next');
-            this.daypicker = this.calendar.find('.calendar-days');
-            this.monthpicker = this.calendar.find('.calendar-months');
-            this.yearpicker = this.calendar.find('.calendar-years');
+            this.calendar = this.picker.find('.' + this.namespace);
+            this.calendar_prev = this.calendar.find('.' + this.namespace + '-prev');
+            this.calendar_caption = this.calendar.find('.' + this.namespace + '-caption');
+            this.calendar_next = this.calendar.find('.' + this.namespace + '-next');
+            this.daypicker = this.calendar.find('.' + this.namespace + '-days');
+            this.monthpicker = this.calendar.find('.' + this.namespace + '-months');
+            this.yearpicker = this.calendar.find('.' + this.namespace + '-years');
 
             var calendar_width = this.calendar.outerWidth();
             this.picker.css('width', this.options.calendars * calendar_width + 'px');
 
-            this.selected_date = [new Date()];
-            this.current_date = [new Date()];
-
-            if (this.options.mode === 'range') {
-                this.current_date[1] = new Date();
-                this.selected_date[1] = new Date();
-                this.current_date[0].setHours(0,0,0,0);
-                this.current_date[1].setHours(0,0,0,0);
-                this.selected_date[0].setHours(0,0,0,0);
-                this.selected_date[1].setHours(0,0,0,0);
-            }
-
             this.date_update();
+
+            if(this.options.mode === 'multiple') {
+                for (i = 0; i < this.options.calendars; i++) {
+                   this.set_date(this.current_date[i], 'month', this.current_month[i] + i );
+                }
+                this.date_update();
+            }
 
             if (this.options.mode === 'single') {
                 this.manage_views(0);
             }else {
-                for (var i=0; i<this.options.calendars; i++) {
+                for (i=0; i<this.options.calendars; i++) {
                     this.manage_views(i);
                 }
             }
@@ -122,14 +150,16 @@
             
             this.picker.fadeIn("normal");
             this.picker.show();
-
-            this.place();
-
             var self = this;
-            $(window).scroll(function() {
-                self.place();
-            });
-
+            if(this.picker.css('display') === 'block'){
+                this.place();
+                // $(window).scroll(function() {
+                //     self.hide();
+                // });
+            } else {
+                return false;
+            }
+            
             $(document).on('mousedown', function(ev) {
                 if ($(ev.target).closest('.calendar').length === 0 && $(ev.target).closest(self.el).length === 0) {
                     self.hide();
@@ -163,52 +193,52 @@
             if (to_bottom > calendar_height) {
                 if (to_right > calendar_width - input_width) {
                     this.picker.css({
-                        "left": to_left,
-                        "top": to_top + input_height
+                        "left": to_left + scroll_left,
+                        "top": to_top + input_height + scroll_top
                     });
                 } else if (to_left > calendar_width - input_width) {
                     this.picker.css({
-                        "left": to_left + input_width - calendar_width,
-                        "top": to_top + input_height
+                        "left": to_left + input_width - calendar_width + scroll_left,
+                        "top": to_top + input_height + scroll_top
                     });
                 } else {
                     this.picker.css({
-                        "left": to_left,
-                        "top": to_top + input_height
+                        "left": to_left + scroll_left,
+                        "top": to_top + input_height + scroll_top
                     });
                 }
             } else if (to_top > calendar_height) {
                 if (to_right > calendar_width - input_width) {
                     this.picker.css({
-                        "left": to_left,
-                        "top": to_top - calendar_height
+                        "left": to_left + scroll_left,
+                        "top": to_top - calendar_height + scroll_top
                     });
                 } else if (to_left > calendar_width - input_width) {
                     this.picker.css({
-                        "left": to_left + input_width - calendar_width,
-                        "top": to_top - calendar_height
+                        "left": to_left + input_width - calendar_width + scroll_left,
+                        "top": to_top - calendar_height + scroll_top
                     });
                 } else {
                     this.picker.css({
-                        "left": to_left,
-                        "top": to_top - calendar_height
+                        "left": to_left + scroll_left,
+                        "top": to_top - calendar_height + scroll_top
                     });
                 }
             } else {
                 if (to_right > calendar_width - input_width) {
                     this.picker.css({
-                        "left": to_left,
-                        "top": to_top + input_height
+                        "left": to_left + scroll_left,
+                        "top": to_top + input_height + scroll_top
                     });
                 } else if (to_left > calendar_width - input_width) {
                     this.picker.css({
-                        "left": to_left + input_width - calendar_width,
-                        "top": to_top + input_height
+                        "left": to_left + input_width - calendar_width + scroll_left,
+                        "top": to_top + input_height + scroll_top
                     });
                 } else {
                     this.picker.css({
-                        "left": to_left,
-                        "top": to_top + input_height
+                        "left": to_left + scroll_left,
+                        "top": to_top + input_height + scroll_top
                     });
                 }
             }
@@ -223,6 +253,17 @@
                     var formated_start = this.format_date(this.selected_date[0], this.format);
                     var formated_end = this.format_date(this.selected_date[1], this.format);
                     this.el.val(formated_start + ' - ' + formated_end);
+                } else if (this.options.mode === 'multiple') {
+                    var val = '', formated;
+                    for (var i = 0; i < this.multiple_date.length; i++) {
+                        formated = this.format_date(new Date(this.multiple_date[i]), this.format);
+                        if (val.length === 0) {
+                            val += formated;
+                        } else {
+                            val += (',' + formated);
+                        }
+                    }
+                    this.el.val(val);
                 }
             }
         },
@@ -322,14 +363,22 @@
                 this.selected_month = [this.selected_date[0].getMonth()];
                 this.selected_year = [this.selected_date[0].getFullYear()];
             } else {
-                if (this.options.mode === 'range') {
-                    this.current_day = [this.current_date[0].getDate(), this.current_date[1].getDate()];
-                    this.current_month = [this.current_date[0].getMonth(), this.current_date[1].getMonth()];
-                    this.current_year = [this.current_date[0].getFullYear(), this.current_date[1].getFullYear()];
+                    this.current_day = [];
+                    this.current_month = [];
+                    this.current_year = [];
 
-                    this.selected_day = [this.selected_date[0].getDate(), this.selected_date[1].getDate()];
-                    this.selected_month = [this.selected_date[0].getMonth(), this.selected_date[1].getMonth()];
-                    this.selected_year = [this.selected_date[0].getFullYear(), this.selected_date[1].getFullYear()];
+                    this.selected_day = [];
+                    this.selected_month = [];
+                    this.selected_year = [];
+
+                for (var i = 0; i < this.options.calendars; i++) {
+                    this.current_day[i] = this.current_date[i].getDate();
+                    this.current_month[i] = this.current_date[i].getMonth();
+                    this.current_year[i] = this.current_date[i].getFullYear();
+
+                    this.selected_day[i] = this.selected_date[i].getDate();
+                    this.selected_month[i] = this.selected_date[i].getMonth();
+                    this.selected_year[i] = this.selected_date[i].getFullYear();
                 }
             }
         },
@@ -370,6 +419,16 @@
                         this.calendar_next.eq(j).removeClass('calendar-blocked');
                     }
                 }
+            } else if (this.options.mode === 'multiple') {
+                this.calendar_caption.eq(j).addClass('calendar-blocked');
+                if (j === 0) {
+                    this.calendar_next.eq(j).addClass('calendar-blocked');
+                }else if (j === this.options.calendars - 1) {
+                    this.calendar_prev.eq(j).addClass('calendar-blocked'); 
+                } else {
+                    this.calendar_prev.eq(j).addClass('calendar-blocked'); 
+                    this.calendar_next.eq(j).addClass('calendar-blocked');
+                }
             }
 
             days_from_prev_month = days_from_prev_month < 0 ? 7 + days_from_prev_month : days_from_prev_month;
@@ -395,7 +454,7 @@
                     } else if (day > days_in_month) {
                         html += '<td class="otherMonthDay">' + (day - days_in_month) + '</td>';
                     } else {
-                        if (day === this.selected_day[j]) {
+                        if (day === this.selected_day[j] && this.current_month[j] === this.selected_month[j] && this.current_year[j] === this.selected_year[j]) {
                             html += '<td class="is-active">' + day + '</td>';
                         } else {
                             html += '<td>' + day + '</td>';
@@ -461,11 +520,36 @@
                             }
                             content = day;
                         }
-                        if (date_array[i] === selected_start) {
+                        
+                    } else if (this.options.mode === 'multiple') {
+                        var class_name = '',
+                            content = 0,
+                            date_array = [];
 
+                        if (i < days_from_prev_month) {
+                            date_array[i] = new Date(this.current_year[j], (this.current_month[j] - 1), (days_in_prev_month - days_from_prev_month + i + 1), 0, 0, 0, 0);
+                            class_name += ' otherMonthDay';
+
+                            content = (days_in_prev_month - days_from_prev_month + i + 1);
+                        } else if (i > (days_in_month + days_from_prev_month - 1)) {
+                            date_array[i] = new Date(this.current_year[j], (this.current_month[j] + 1), (day - days_in_month), 0, 0, 0, 0);
+                            class_name += ' otherMonthDay';
+
+                            content = (day - days_in_month);
+                        } else {
+                            date_array[i] =  new Date(this.current_year[j], this.current_month[j], day, 0, 0, 0, 0);                
+
+                            content = day;
                         }
-                        html += '<td class="' + class_name + '">' + content + '</td>';
+
+                        for (var k = 0; k < this.multiple_date.length; k++) {
+                            if (this.multiple_date[k] === Date.parse(date_array[i])) {
+                                class_name += ' is-active';
+                            }
+                        }
+
                     }
+                    html += '<td class="' + class_name + '">' + content + '</td>';
                 }            
             }
             html += '</tr>';
@@ -637,23 +721,41 @@
 
         prev: function(j) {
             if (!$(this).hasClass('calendar-blocked')) {
-                if (this.view[j] === 'days') {
-                    if (--this.current_month[j] < 0) {
-                        this.current_month[j] = 11;
+                if (this.options.mode !== 'multiple') {
+                    if (this.view[j] === 'days') {
+                        if (--this.current_month[j] < 0) {
+                            this.current_month[j] = 11;
+                            this.current_year[j]--;
+                        }
+                        this.set_date(this.current_date[j], 'month', this.current_month[j]);
+                        this.set_date(this.current_date[j], 'year', this.current_year[j]);
+                    } else if (this.view[j] === 'months') {
                         this.current_year[j]--;
+                        this.set_date(this.current_date[j], 'year', this.current_year[j]);
+                    } else if (this.view[j] === 'years') {
+                        this.current_year[j] -= 12;
+                        this.set_date(this.current_date[j], 'year', this.current_year[j]);
                     }
-                    this.set_date(this.current_date[j], 'month', this.current_month[j]);
-                    this.set_date(this.current_date[j], 'year', this.current_year[j]);
-                } else if (this.view[j] === 'months') {
-                    this.current_year[j]--;
-                    this.set_date(this.current_date[j], 'year', this.current_year[j]);
-                } else if (this.view[j] === 'years') {
-                    this.current_year[j] -= 12;
-                    this.set_date(this.current_date[j], 'year', this.current_year[j]);
-                }
 
-                this.date_update();
-                this.manage_views(j);
+                    this.date_update();
+                    this.manage_views(j);
+                } else {
+                    for (var i = 0; i < this.options.calendars; i++) {
+                        if (this.view[i] === 'days') {
+                            if (--this.current_month[i] < 0) {
+                                this.current_month[i] = 11;
+                                this.current_year[i]--;
+                            }
+                            this.set_date(this.current_date[i], 'month', this.current_month[i]);
+                            this.set_date(this.current_date[i], 'year', this.current_year[i]);
+                        } else {
+                            return false;
+                        }
+                        this.date_update();
+                        this.manage_views(i);  
+                    } 
+                }
+                
             } else {
                 return false;
             }
@@ -661,36 +763,58 @@
 
         next: function(j) {
             if (!$(this).hasClass('calendar-blocked')) {
-                if (this.view[j] === 'days') {
-                    if (++this.current_month[j] === 12) {
-                        this.current_month[j] = 0;
+                if (this.options.mode !== 'multiple') {
+                    if (this.view[j] === 'days') {
+                        if (++this.current_month[j] === 12) {
+                            this.current_month[j] = 0;
+                            this.current_year[j]++;
+                        }
+                        this.set_date(this.current_date[j], 'month', this.current_month[j]);
+                        this.set_date(this.current_date[j], 'year', this.current_year[j]);
+                    } else if (this.view[j] === 'months') {
                         this.current_year[j]++;
+                        this.set_date(this.current_date[j], 'year', this.current_year[j]);
+                    } else if (this.view[j] === 'years') {
+                        this.current_year[j] += 12;
+                        this.set_date(this.current_date[j], 'year', this.current_year[j]);
                     }
-                    this.set_date(this.current_date[j], 'month', this.current_month[j]);
-                    this.set_date(this.current_date[j], 'year', this.current_year[j]);
-                } else if (this.view[j] === 'months') {
-                    this.current_year[j]++;
-                    this.set_date(this.current_date[j], 'year', this.current_year[j]);
-                } else if (this.view[j] === 'years') {
-                    this.current_year[j] += 12;
-                    this.set_date(this.current_date[j], 'year', this.current_year[j]);
+                    
+                    this.date_update();
+                    this.manage_views(j);
+                } else {                              
+                    for (var i = 0; i < this.options.calendars; i++) {
+                        if (this.view[i] === 'days') {
+                            if (++this.current_month[i] === 12) {
+                                this.current_month[i] = 0;
+                                this.current_year[i]++;
+                            }
+                            this.set_date(this.current_date[i], 'month', this.current_month[i]);
+                            this.set_date(this.current_date[i], 'year', this.current_year[i]);
+                        } else {
+                            return false;
+                        }
+                        this.date_update();
+                        this.manage_views(i);  
+                    }
                 }
-                
-                this.date_update();
-                this.manage_views(j);
             } else {
                 return false;
             }
         },
 
         caption: function(j) {
-            if (this.view[j] === 'days') {
-                this.view[j] = 'months';
-            } else if (this.view[j] === 'months') {
-                this.view[j] = 'years';
+            if(this.options.mode !== 'multiple') {
+                if (this.view[j] === 'days') {
+                    this.view[j] = 'months';
+                } else if (this.view[j] === 'months') {
+                    this.view[j] = 'years';
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
+
 
             this.date_update();
             this.manage_views(j);
@@ -727,7 +851,8 @@
                     case 'td':
                         var type = target.parent().parent().parent().attr('class'),
                             judge_day = target.hasClass('otherMonthDay'),
-                            judge_range = target.hasClass('is-untouchable');
+                            judge_range = target.hasClass('is-untouchable'),
+                            self = this;
 
                         switch (type) {
                             case 'calendar-days':
@@ -756,6 +881,20 @@
                                             }
                                             this.manage_views(i - 1);
                                         }
+                                    }else if (this.options.mode === 'multiple') {
+                                        var date = Date.parse(new Date(this.current_date[i]));
+                                        if ($.inArray(date, this.multiple_date) > -1) {
+                                            $.each(this.multiple_date, function(nr, dat) {
+                                                if (dat === date) {
+                                                    self.multiple_date.splice(nr,1);
+                                                    return false;
+                                                }
+                                            });
+                                        }else {
+                                            this.multiple_date.push(date);
+                                        }
+                                        this.manage_views(i-1);
+                                        this.manage_views(i+1);
                                     }
                                     this.manage_views(i);
                                     this.set_value(i);
@@ -803,10 +942,6 @@
             return this.each(function() {
                 var api = $.data(this, 'datepicker');
                 if (typeof api[method] === 'function') {
-<<<<<<< HEAD
-                    // console.log(api[method].apply(api, method_arguments))
-=======
->>>>>>> 34dac7abc98301e556c2cd6aa36df5d13ebd142c
                     api[method].apply(api, method_arguments);
                 }
             });
