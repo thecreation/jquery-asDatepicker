@@ -80,12 +80,18 @@
 }
 
 .calendar-head {
-	height: @calendarHeadHeight;	
+	height: @calendarHeadHeight;
+	line-height: @calendarHeadHeight;
+	text-align: center;
 	border-bottom: 1px solid rgb(235, 235, 235);
 }
 .calendar-prev, .calendar-next {
-	width: 35px;
+	display: inline-block;
+	width: 20%;
+	height: 100%;
 	cursor: pointer;
+	// font-size: 0;
+	color: transparent;
 }
 
 .calendar-prev {
@@ -114,10 +120,12 @@
 	}
 }
 .calendar-caption {
+	display: inline-block;
 	font-size: 14px;
 	width: @calendarDayWidth * 7 - 70px;
 	cursor: pointer;
 	color: rgb(105, 105, 105);
+	vertical-align: top;
 	&:hover {
 		color: rgb(0, 0, 0);
 	}
@@ -163,13 +171,22 @@
 				background-color: inherit;
 				color: rgb(200, 200, 200);
 			}
+			&.is-untouchable {
+				color: rgb(200, 200, 200);
+		  		background-color: rgb(248, 248, 248);
+				&:hover {
+					color: rgb(200, 200, 200);
+		  			background-color: rgb(248, 248, 248);
+				}
+			}
 			
 		}
 		&.is-untouchable {
 			color: rgb(160, 160, 160);
+			background-color: rgb(248, 248, 248);
 			cursor: default;
 			&:hover, &:active, &.is-active {
-				background-color: inherit;
+				background-color: rgb(248, 248, 248);
 				color: rgb(160, 160, 160);
 			}
 			
@@ -246,9 +263,10 @@
 		}
 		&.is-untouchable {
 			color: rgb(200, 200, 200);
+			background-color: rgb(248, 248, 248);
 			cursor: default;
 			&:hover, &:active, &.is-active {
-				background-color: inherit;
+				background-color: rgb(248, 248, 248);
 				color: rgb(200, 200, 200);
 			}	
 		}

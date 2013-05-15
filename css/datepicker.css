@@ -62,12 +62,17 @@
 
 .calendar-head {
   height: 30px;
+  line-height: 30px;
+  text-align: center;
   border-bottom: 1px solid #ebebeb;
 }
 
 .calendar-prev,
 .calendar-next {
-  width: 35px;
+  display: inline-block;
+  width: 20%;
+  height: 100%;
+  color: transparent;
   cursor: pointer;
 }
 
@@ -104,9 +109,11 @@
 }
 
 .calendar-caption {
+  display: inline-block;
   width: 119px;
   font-size: 14px;
   color: #696969;
+  vertical-align: top;
   cursor: pointer;
 }
 
@@ -161,16 +168,27 @@
   background-color: inherit;
 }
 
+.calendar-days td.otherMonthDay.is-untouchable {
+  color: #c8c8c8;
+  background-color: #f8f8f8;
+}
+
+.calendar-days td.otherMonthDay.is-untouchable:hover {
+  color: #c8c8c8;
+  background-color: #f8f8f8;
+}
+
 .calendar-days td.is-untouchable {
   color: #a0a0a0;
   cursor: default;
+  background-color: #f8f8f8;
 }
 
 .calendar-days td.is-untouchable:hover,
 .calendar-days td.is-untouchable:active,
 .calendar-days td.is-untouchable.is-active {
   color: #a0a0a0;
-  background-color: inherit;
+  background-color: #f8f8f8;
 }
 
 .calendar-days td.in-range {
@@ -251,6 +269,7 @@
 .calendar-years td.is-untouchable {
   color: #c8c8c8;
   cursor: default;
+  background-color: #f8f8f8;
 }
 
 .calendar-months td.is-untouchable:hover,
@@ -260,7 +279,7 @@
 .calendar-months td.is-untouchable.is-active,
 .calendar-years td.is-untouchable.is-active {
   color: #c8c8c8;
-  background-color: inherit;
+  background-color: #f8f8f8;
 }
 
 .calendar-months td.in-range,
