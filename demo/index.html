@@ -17,7 +17,7 @@
 </head>
 <body>
 	<div id="toc"></div>
-    <div class="container">       
+    <div class="container">      
         <h1>jQuery.Datepicker</h1>
         <section>
             <h2>Examples</h2>
@@ -33,7 +33,7 @@ $(document).ready(function(){
 });
 &lt;script&gt;</code></pre>
                 <div class="example">
-                    <input type="date" id="calendar">
+                    <input type="text" id="calendar">
                 </div>
             </section>
             <section>
@@ -46,7 +46,7 @@ $(document).ready(function(){
 });
 &lt;script&gt;</code></pre>
                 <div class="example">
-                    <input type="date" id="calendar2">
+                    <input type="text" id="calendar2">
                 </div>
             </section>
             <section>
@@ -55,11 +55,11 @@ $(document).ready(function(){
 &lt;input&nbsp;type=&quot;text&quot;&nbsp;id=&quot;calendar3&quot;&gt;
 &lt;script&gt;
 $(document).ready(function(){
-&nbsp;&nbsp;$(&quot;#calendar3&quot;).datepicker({mode:&nbsp;&#39;multiple&#39;});
+&nbsp;&nbsp;$(&quot;#calendar3&quot;).datepicker({mode:&nbsp;&#39;multiple&#39;, calendars:&nbsp;&#39;4&#39;});
 });
 &lt;script&gt;</code></pre>
                 <div class="example">
-                    <input type="date" id="calendar3">
+                    <input type="text" id="calendar3">
                 </div>
             </section>
         </section>
@@ -70,76 +70,92 @@ $(document).ready(function(){
         </section>
         <section>
         	<h2>API</h2>
+            
         	 <section>
                 <h3>show()</h3>
                 <pre class="has-example"><code class="language-markup">
 $(&#39;#calendar-api-show&#39;).datepicker(&#39;show&#39;);</code></pre>
                 <div class="example">
-                    <input type="date" class="datepicker" id="calendar-api-show">
+                    <input type="text" class="datepicker" id="calendar-api-show">
                     <a href="#" id="calendar-api-show-click">Click to show calendar</a>
                 </div>
             </section>
+            
              <section>
                 <h3>hide()</h3>
                 <pre class="has-example"><code class="language-markup">
 $(&#39;#calendar-api-show&#39;).datepicker(&#39;hide&#39;);</code></pre>
                 <div class="example">
-                    <input type="date" class="datepicker" id="calendar-api-hide">
+                    <input type="text" class="datepicker" id="calendar-api-hide">
                     <a href="#" id="calendar-api-hide-click">Click to hide calendar</a>
                 </div>
             </section>
+            
             <section>
-                <h3>clear()</h3><!-- Clear multiple selection -->
-            </section>
-            <section>
-                <h3>get_calendar()</h3>
+                <h3>multipleClear()</h3>
                 <pre class="has-example"><code class="language-markup">
-$(&#39;#get-calendar&#39;).datepicker(&#39;get_calendar&#39;);</code></pre>
+$(&#39;#calendar-api-multipleClear&#39;).datepicker(&#39;multipleClear&#39;);</code></pre>
                 <div class="example">
-                    Returns the root element for the calendar.
+                    <input type="text" class="calendar-multiple" id="calendar-api-multipleClear">
+                    <button id="api-multipleClear-click">Clear</button>
+                </div>
+                
+            </section>
+            
+            <section>
+                <h3>getWrap()</h3>
+                <pre class="has-example"><code class="language-markup">
+$.datepicker(&#39;getWrap&#39;);</code></pre>
+                <div class="example">
+                    <p>Returns the wrapper of the calendar.</p> 
                 </div>
                 <section>
-                    
-                <h3>get_input()</h3>
+
+                <h3>getInput()</h3>
                 <pre class="has-example"><code class="language-markup">
-$(&#39;#get-inputr&#39;).datepicker(&#39;get_input&#39;);</code></pre>
+$.datepicker(&#39;getInput&#39;);</code></pre>
                 <div class="example">
                     Returns the input field.
                 </div>
                 <section>
-                    
-                <h3>get_value()</h3>
-                <pre class="has-example"><code class="language-markup">
-$(&#39;#get-value&#39;).datepicker(&#39;get_value&#39;);</code></pre>
-                <div class="example">
-                    Returns the currently selected date.
-                </div>
-                <section>
-                    
-                <h3>get_value(format)</h3>
-                <pre class="has-example"><code class="language-markup">
-$(&#39;#get-value-format&#39;).datepicker(&#39;get_value&#39;,&nbsp;&#39;yyyy-mm-dd&#39;);</code></pre>
-                <div class="example">
-                    String  Returns the current date, formatted with the pattern given as the argument.
-                </div>
-                <section>
-                    
-                <h3>set_max()</h3>
-                <pre class="has-example"><code class="language-markup">
-$(&#39;#set-max&#39;).datepicker(&#39;set_max&#39;);</code></pre>
-                <div class="example">
 
+                <h3>getDate()</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#calendar-api-getDate&#39;).datepicker(&#39;getDate&#39;);</code></pre>
+                <div class="example">
+                    <p>Returns the currently selected date.</p>
+                    <input type="text" class="datepicker" id="calendar-api-getDate">
+                    <button id="api-getDate-click">getDate</button>
+                </div>
+                <div class="example info">
+                    <div class="content" id="api-getDate-info"></div>
                 </div>
                 <section>
-                    
-                <h3>set_min()</h3>
+ 
+                <h3>getDate(format)</h3>
                 <pre class="has-example"><code class="language-markup">
-$(&#39;#set-min&#39;).datepicker(&#39;set_min&#39;);</code></pre>
+$(&#39;#calendar-api-getDate-format&#39;).datepicker(&#39;getDate&#39;,&nbsp;&#39;yyyy-mm-dd&#39;);</code></pre>
                 <div class="example">
-
+                    <p>Returns the current date, formatted with the pattern given as the argument.</p>
+                    <input type="text" class="datepicker" id="calendar-api-getDate-format">
+                    <button id="api-getDate-format-click">getDate</button>
                 </div>
-                
-            
+                <div class="example info">
+                    <div class="content" id="api-getDate-format-info"></div>
+                </div>
+                <section>
+   
+                <h3>changeOptions()</h3>
+                <pre class="has-example"><code class="language-markup">
+$(&#39;#calendar-api-changeOptions&#39;).datepicker();
+$(&#39;#calendar-api-changeOptions&#39;).datepicker(&#39;changeOptions&#39;, {mode:&nbsp;&#39;range&#39;});</code></pre>
+                <div class="example">
+                    <p>Sets one or more options for the datepicker.</p>
+                    <input type="text" class="datepicker" id="calendar-api-changeOptions">
+                    <button id="api-changeOptions-click">changeOptions</button>
+                </div>
+                <section>
+    
         </section>
         <section>
             <h2>Events</h2>
@@ -165,8 +181,7 @@ $(&#39;#set-min&#39;).datepicker(&#39;set_min&#39;);</code></pre>
         <section>
             <h2>Location</h2>
         </section>
-    </div>
-
+    </div> 
 <script src="js/jquery.js"></script>
 <script src="js/jquery.toc.min.js"></script>
 <script src="js/prism.js"></script>
@@ -176,11 +191,16 @@ $(document).ready(function(){
 	(function(){
 		$('#toc').toc();
 	})();
+
 	$("#calendar").datepicker();
+    $("#calendar").datepicker('test');
+    
 	$("#calendar2").datepicker({mode: 'range'});
-    $("#calendar3").datepicker({mode: 'multiple', calendars: 3});
+    $("#calendar3").datepicker({mode: 'multiple', calendars: 4});
 	
 	$('.datepicker').datepicker();
+    $('.calendar-multiple').datepicker({mode: 'multiple', calendars: 3});
+
 	$('#calendar-api-show-click').click(function(){
 		$('#calendar-api-show').datepicker('show');
 		return false;
@@ -189,6 +209,30 @@ $(document).ready(function(){
 		$('#calendar-api-hide').datepicker('hide');
 		return false;
 	});
+
+    $('#api-multipleClear-click').click(function() {
+        $("#calendar-api-multipleClear").datepicker('multipleClear');
+        return false;
+    });
+
+    $('#api-getDate-click').click(function() {
+        var html = '<div>' + $('#calendar-api-getDate').datepicker('getDate') + '</div>';
+        console.log($('#calendar-api-getDate').datepicker('getDate'));
+        $(html).prependTo($('#api-getDate-info'));
+        return false;
+    });
+
+    $('#api-getDate-format-click').click(function() {
+        var html = '<div>' + $('#calendar-api-getDate-format').datepicker('getDate', 'yyyy-mm-dd') + '</div>';
+        $(html).prependTo($('#api-getDate-format-info'));
+        return false;
+    });
+
+    $('#api-changeOptions-click').click(function() {
+        $('#calendar-api-changeOptions').datepicker('changeOptions', {mode: 'range'});
+        return false;
+    });
+
 
 });
 </script>

@@ -88,7 +88,6 @@
 .calendar-prev, .calendar-next {
 	display: inline-block;
 	width: 20%;
-	height: 100%;
 	cursor: pointer;
 	// font-size: 0;
 	color: transparent;
@@ -125,7 +124,6 @@
 	width: @calendarDayWidth * 7 - 70px;
 	cursor: pointer;
 	color: rgb(105, 105, 105);
-	vertical-align: top;
 	&:hover {
 		color: rgb(0, 0, 0);
 	}
@@ -171,22 +169,13 @@
 				background-color: inherit;
 				color: rgb(200, 200, 200);
 			}
-			&.is-untouchable {
-				color: rgb(200, 200, 200);
-		  		background-color: rgb(248, 248, 248);
-				&:hover {
-					color: rgb(200, 200, 200);
-		  			background-color: rgb(248, 248, 248);
-				}
-			}
 			
 		}
 		&.is-untouchable {
 			color: rgb(160, 160, 160);
-			background-color: rgb(248, 248, 248);
 			cursor: default;
 			&:hover, &:active, &.is-active {
-				background-color: rgb(248, 248, 248);
+				background-color: inherit;
 				color: rgb(160, 160, 160);
 			}
 			
@@ -263,10 +252,9 @@
 		}
 		&.is-untouchable {
 			color: rgb(200, 200, 200);
-			background-color: rgb(248, 248, 248);
 			cursor: default;
 			&:hover, &:active, &.is-active {
-				background-color: rgb(248, 248, 248);
+				background-color: inherit;
 				color: rgb(200, 200, 200);
 			}	
 		}

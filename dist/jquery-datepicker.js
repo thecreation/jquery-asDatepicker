@@ -20,16 +20,29 @@
 
         calendars: 2,
 
-        date: 'today', //today|Date with this.options.format
+        date: 'today', //today|Date (yyyy-mm-dd)
 
-        max: null,//null|days|Date with this.options.format
-        min: null,//null|days|Date with this.options.format
+        max: null,//null|days|Date with (yyyy-mm-dd)
+        min: null,//null|days|Date with (yyyy-mm-dd)
 
         position: 'bottom',//top|right|bottom|left|rightTop|leftTop
         alwaysShow: false, // true or false 
 
-        selectable: [],
+        selectableYear: [],
+        //[{from: 1980, to: 1985}, 1988, {from: 2000, to: 2010}, 2013],
+        selectableMonth: [],
+        //[1, {from: 3, to: 10}, 12 ],
+        selectableDay: [],//days of week 0-6
 
+        selectableDate:  [], 
+        //['2013-1-1', {from: '2013-2-2', to: '2013-3-3'}, {from: -30, to: 30}], {from: 10, to: 30}, {from: -30, to: 0}, {from:-30, to: 30}],
+
+        disabledYear: [],
+        disabledMonth: [],
+        disabledDay: [],
+
+        disabledDate: [],
+        
         lang: 'en', //'chinese'
         views: ['days'],
         format: 'yyyy/mm/dd',
@@ -44,7 +57,7 @@
                         '<table class="namespace-days"></table>' + 
                         '<table class="namespace-months"></table>' + 
                         '<table class="namespace-years"></table>' + 
-                     '</div>', 
+                     '</div>',
         localize: function(lang, label) {
             LABEL[lang] = label;
         },
@@ -75,8 +88,72 @@
     Datepicker.prototype = {
         constructor: Datepicker,
 
-        init: function() {
+        test: function() {
+            // this.parse_array(this.options.selectableYear);
+            this.parse_array_date(this.options.selectableDate, 'yyyy-mm-dd');
+        },
 
+        parse_array_date: function(object, format) {
+            var _format = this.parse_format(format),
+                day = this.default_date.getDate(),
+                array = [],
+                count = 0;
+            for(var i =0; i < object.length; i++) {
+                if (typeof(object[i]) === 'string') {
+                    array[count] = object[i];
+                    count++;
+                }
+                if (typeof(object[i]) === 'object') {
+                    var obj = object[i], from, to, from_date, to_date;
+                    for (var key in obj) {
+                        switch (key) {
+                            case 'from':
+                                from = obj[key];
+                                break;
+                            case 'to':
+                                to = obj[key];
+                                break;
+                        }
+                    }
+                    array[count] = [this.parse_date(from, _format), this.parse_date(to, _format)];
+                    count++;
+                }
+            }
+            // console.log(array)
+            return array;
+        },
+
+        parse_array: function(object) {
+            var array = [],
+                count = 0;
+            for(var i =0; i < object.length; i++) {
+                if (typeof(object[i]) === 'number') {
+                    array[count] = object[i];
+                    count++;
+                }
+                if (typeof(object[i]) === 'object') {
+                    var obj = object[i], from, to;
+                    for (var key in obj) {
+                        switch (key) {
+                            case 'from':
+                                from = obj[key];
+                                break;
+                            case 'to':
+                                to = obj[key];
+                                break;
+                        }
+                    }
+                    for (var j = from; j <= to ; j++) {
+                        array[count] = j;
+                        count++;
+                    }
+                }
+            };
+            // console.log(array)
+            return array;
+        },
+
+        init: function() {
             var tpl_wrapper = this.options.tpl_wrapper.replace(/namespace/g, this.namespace);
             var tpl_content = this.options.tpl_content.replace(/namespace/g, this.namespace);
 
@@ -88,7 +165,7 @@
             });
 
             if(this.options.date !== 'today') {
-                var date = this.parse_date(this.options.date, this.format);
+                var date = this.parse_date(this.options.date, this.parse_format('yyyy-mm-dd'));
                 this.default_date = date;
             } else {
                 this.default_date = new Date();
@@ -139,6 +216,7 @@
                 this.min_year = this.getMin().getFullYear(), this.min_month = this.getMin().getMonth();
             }
             if (this.options.max !== null) {
+                console.log(this.getMax())
                 this.max_year = this.getMax().getFullYear(), this.max_month = this.getMax().getMonth();
             }
 
@@ -257,6 +335,7 @@
         getMax: function() {
             var max = this.el.attr("max") || this.options.max,
                 day = this.default_date.getDate(),
+                _format = this.parse_format('yyyy-mm-dd'),
                 max_date;
             if (max) {
                 if(typeof(max) === 'number'){
@@ -269,7 +348,7 @@
                             max = parseInt(max);
                         }
                     }
-                    max_date = this.parse_date(max, this.format);
+                    max_date = this.parse_date(max, _format);
                 }
                 return max_date;
             } else {
@@ -280,6 +359,7 @@
         getMin: function() {
             var min = this.el.attr("min") || this.options.min,
                 day = this.default_date.getDate(),
+                _format = this.parse_format('yyyy-mm-dd'),
                 min_date;
             if (min) {
                 if(typeof(min) === 'number'){
@@ -292,7 +372,7 @@
                             min = parseInt(min);
                         }
                     }
-                    min_date = this.parse_date(min, this.format);
+                    min_date = this.parse_date(min, _format);
                 }
                 return min_date;
             } else {
@@ -416,36 +496,47 @@
             };
         },
 
-        parse_date: function(date, format) {
-            var parts = date.split(format.separator) || parts,
-                date = new Date(),
-                val;
-            // date = new Date();
-            date.setHours(0,0,0,0);
-            if (parts.length === format.parts.length) {
-                for (var i = 0, length = format.parts.length; i < length; i++) {
-                    val = parseInt(parts[i], 10) || 1;
-                    if (val === '1') {
-                        return;
-                    }
-                    switch (format.parts[i]) {
-                        case 'dd':
-                        case 'd':
-                            date.setDate(val);
-                            break;
-                        case 'mm':
-                        case 'm':
-                            date.setMonth(val - 1);
-                            break;
-                        case 'yy':
-                            date.setFullYear(2000 + val);
-                            break;
-                        case 'yyyy':
-                            date.setFullYear(val);
-                            break;
-                    }
-                }
+        parse_date: function(data, format) {
+            switch(typeof(data)) {
+                case 'string':
+                    var parts = data.split(format.separator) || parts,
+                        date = new Date(),
+                        val;
+                    // date = new Date();
+                    date.setHours(0,0,0,0);
+                    if (parts.length === format.parts.length) {
+                        for (var i = 0, length = format.parts.length; i < length; i++) {
+                            val = parseInt(parts[i], 10) || 1;
+                            if (val === '1') {
+                                return;
+                            }
+                            switch (format.parts[i]) {
+                                case 'dd':
+                                case 'd':
+                                    date.setDate(val);
+                                    break;
+                                case 'mm':
+                                case 'm':
+                                    date.setMonth(val - 1);
+                                    break;
+                                case 'yy':
+                                    date.setFullYear(2000 + val);
+                                    break;
+                                case 'yyyy':
+                                    date.setFullYear(val);
+                                    break;
+                            }
+                        }
+                    }  
+                    break;
+                case 'number':
+                    var date = new Date(this.default_date),
+                        day = date.getDate();
+                    date.setHours(0,0,0,0);
+                    date .setDate(day + data);
+                    break;
             }
+            
             return date;
         },
 
@@ -495,6 +586,186 @@
             }
         },
 
+        judge_status: function (view, target, name) {
+            switch (view) {
+                case 'days':
+                    if (this.options.selectableDay.length !== 0) {
+                        if ($.inArray(target.getDay(), this.parse_array(this.options.selectableDay)) === -1) {
+                            name += ' is-untouchable'; 
+                        }
+                    }
+                    if (this.options.disabledDay.length !== 0) {
+                        if ($.inArray(target.getDay(), this.parse_array(this.options.disabledDay)) !== -1) {
+                            name += ' is-untouchable'; 
+                        }
+                    }
+                    if (this.options.min !== null) {
+                        if (Date.parse(this.getMin()) > Date.parse(target)) {
+                            name += ' is-untouchable';  
+                        }
+                    }
+
+                    if (this.options.max !== null) {
+                        if (Date.parse(this.getMax()) < Date.parse(target)) {
+                            name += ' is-untouchable';  
+                        }
+                    }
+                    break;
+                case 'months':
+                    if (this.options.selectableDay.length !== 0) {
+                        if ($.inArray(target.getMonth(), this.parse_array(this.options.selectableMonth)) === -1) {
+                            name += ' is-untouchable'; 
+                        }
+                    }
+                    if (this.options.disabledDay.length !== 0) {
+                        if ($.inArray(target.getMonth(), this.parse_array(this.options.disabledMonth)) !== -1) {
+                            name += ' is-untouchable'; 
+                        }
+                    }
+                    if (this.options.min !== null) {
+                        if (Date.parse(new Date(this.min_year, this.min_month, 1, 0, 0, 0, 0)) > Date.parse(date_array[i])) {
+                            class_name += ' is-untouchable';
+                        }
+                    }
+
+                    if (this.options.max !== null) {
+                        if (Date.parse(new Date(this.max_year, this.max_month, 1, 0, 0, 0, 0)) < Date.parse(date_array[i])) {
+                            class_name += ' is-untouchable'; 
+                        }
+                    }
+                    break;
+                case 'years':
+                    if (this.options.selectableDay.length !== 0) {
+                        if ($.inArray(target.getFullYear(), this.parse_array(this.options.selectableYear)) === -1) {
+                            name += ' is-untouchable'; 
+                        }
+                    }
+                    if (this.options.disabledDay.length !== 0) {
+                        if ($.inArray(target.getFullYear(), this.parse_array(this.options.disabledYear)) !== -1) {
+                            name += ' is-untouchable'; 
+                        }
+                    }
+                    if (this.options.min !== null) {
+                        if (year < this.min_year) {
+                            class_name = 'is-untouchable';
+                        }
+                    }
+                    if (this.options.max !== null) {
+                        if (year > this.max_year) {
+                           class_name = 'is-untouchable'; 
+                        }
+                    }
+                    break;
+            }
+
+                if (this.options.selectableDate.length !== 0) {
+                    var date = this.parse_array_date(this.options.selectableDate, 'yyyy-mm-dd'),
+                        _format = this.parse_format('yyyy-mm-dd'),
+                        _val, _from, _to, is_selectable = false;
+                    for (var k = 0; k < date.length; k++) {
+                        switch (typeof(date[k])) {
+                            case 'string':
+                                switch (view) {
+                                    case 'days':
+                                        _val = new Date(this.parse_date(date[k], _format));
+                                        break;
+                                    case 'months':
+                                        _val = new Date(this.parse_date(date[k], _format));
+                                        _val.setDate(0);
+                                        break;
+                                    case 'years': 
+                                        _val = new Date(this.parse_date(date[k], _format)).getFullYear();
+                                        break;
+                                }
+                                if (Date.parse(target) === Date.parse(_val)) {  
+                                    is_selectable = true;
+                                }
+                                break;
+                            case 'object':
+                                _from = date[k][0];
+                                _to = date[k][1];
+                                switch (view) {
+                                    case 'days':
+                                        _from = new Date(date[k][0]);
+                                        _to = new Date(date[k][1]);
+                                        break;
+                                    case 'months':
+                                        _from = new Date(date[k][0]);
+                                        _to = new Date(date[k][1]);
+                                        _from.setDate(0);
+                                        _to.setDate(0);
+                                        break;
+                                    case 'years': 
+                                        _from = new Date(date[k][0]).getFullYear();
+                                        _to = new Date(date[k][1]).getFullYear();
+                                        console.log(target, _from, _to)
+                                        break;
+                                }
+                                if (Date.parse(target) >= Date.parse(_from) &&  Date.parse(target) <= Date.parse(_to)) {  
+                                    is_selectable = true;
+                                }
+                                break;
+                        }
+                    }
+                    if (is_selectable === false) {  
+                        name += ' is-untouchable'; 
+                    }
+                }
+
+                if (this.options.disabledDate.length !== 0) {
+                    var date = this.parse_array_date(this.options.disabledDate , 'yyyy-mm-dd'),
+                        _val, _from, _to, is_selectable = true;
+                    for (var k = 0; k < date.length; k++) {
+                        switch (typeof(date[k])) {
+                            case 'string':
+                                switch (view) {
+                                    case 'days':
+                                        _val = new Date(this.parse_date(date[k], _format));
+                                        break;
+                                    case 'months':
+                                        _val = new Date(this.parse_date(date[k], _format));
+                                        _val.setDate(0);
+                                        break;
+                                    case 'years': 
+                                        _val = new Date(this.parse_date(date[k], _format)).getFullYear();
+                                        break;
+                                }
+                                if (Date.parse(target) === Date.parse(_val)) {  
+                                    is_selectable = false;
+                                }
+                                break;
+                            case 'object':
+                                _from = date[k][0];
+                                _to = date[k][1];
+                                switch (view) {
+                                    case 'days':
+                                        _from = new Date(date[k][0]);
+                                        _to = new Date(date[k][1]);
+                                        break;
+                                    case 'months':
+                                        _from = new Date(date[k][0]);
+                                        _to = new Date(date[k][1]);
+                                        _from.setDate(0);
+                                        _to.setDate(0);
+                                        break;
+                                    case 'years': 
+                                        _from = new Date(date[k][0]).getFullYear();
+                                        _to = new Date(date[k][1]).getFullYear();
+                                        break;
+                                }
+                                if (Date.parse(target) >= Date.parse(_from) &&  Date.parse(target) <= Date.parse(_to)) {  
+                                    is_selectable = false;
+                                }
+                                break;
+                        }
+                    }
+                    if (is_selectable === false) {  
+                        name += ' is-untouchable'; 
+                    }
+                }       
+                return name;
+        },
+
         generate_daypicker: function(j) {
              var
                 days_in_month = new Date(this.current_year[j], this.current_month[j] + 1, 0).getDate(),
@@ -511,6 +782,7 @@
                     } else if (year < this.max_year){
                         this.calendar_next.removeClass(this.namespace + '-blocked');
                     } else {
+                        console.log(month, this.max_month)
                         if(month >= this.max_month) {
                             this.calendar_next.addClass(this.namespace + '-blocked'); 
                         } else {
@@ -590,6 +862,7 @@
                         }
                     }
                 }
+
             } else if (this.options.mode === 'multiple') {
                 this.calendar_caption.eq(j).addClass(this.namespace + '-blocked');
                 if (j === 0) {
@@ -628,6 +901,7 @@
                     this.calendar_prev.eq(j).addClass(this.namespace + '-blocked'); 
                     this.calendar_next.eq(j).addClass(this.namespace + '-blocked');
                 }
+
             }
 
             days_from_prev_month = days_from_prev_month < 0 ? 7 + days_from_prev_month : days_from_prev_month;
@@ -667,20 +941,9 @@
                         content = day;
                     }
 
-                    if (this.options.min !== null) {
-                        if (Date.parse(this.getMin()) > Date.parse(date_array[i])) {
-                            class_name += ' is-untouchable';  
-                        }
-                    }
+                    class_name = this.judge_status(this.view[j], date_array[i], class_name);
 
-                    if (this.options.max !== null) {
-                        if (Date.parse(this.getMax()) < Date.parse(date_array[i])) {
-                            class_name += ' is-untouchable';  
-                        }
-                    }
-
-                } 
-                else if (this.options.mode === 'range') {
+                } else if (this.options.mode === 'range') {
                     var class_name = '';
                         content = 0;
                         date_array = [];
@@ -702,19 +965,7 @@
                                 class_name += ' is-untouchable'; 
                             }
                         }
-
-
-                        if (this.options.min !== null) {
-                            if (Date.parse(this.getMin()) > Date.parse(date_array[i])) {
-                                class_name += ' is-untouchable';  
-                            }
-                        }
-
-                        if (this.options.max !== null) {
-                            if (Date.parse(this.getMax()) < Date.parse(date_array[i])) {
-                                class_name += ' is-untouchable';  
-                            }
-                        }
+                        class_name = this.judge_status(this.view[j], date_array[i], class_name);
                         content = (days_in_prev_month - days_from_prev_month + i + 1);
 
                     } else if (i > (days_in_month + days_from_prev_month - 1)) {
@@ -735,17 +986,7 @@
                                 class_name += ' in-range';
                             }
                         }
-                        if (this.options.min !== null) {
-                            if (Date.parse(this.getMin()) > Date.parse(date_array[i])) {
-                                class_name += ' is-untouchable';  
-                            }
-                        }
-
-                        if (this.options.max !== null) {
-                            if (Date.parse(this.getMax()) < Date.parse(date_array[i])) {
-                                class_name += ' is-untouchable';  
-                            }
-                        }
+                        class_name = this.judge_status(this.view[j], date_array[i], class_name);
                         content = (day - days_in_month);
                         
                     } else {
@@ -767,24 +1008,11 @@
                                 class_name = 'is-untouchable';
                             }
                         }
-
-                        if (this.options.min !== null) {
-                            if (Date.parse(this.getMin()) > Date.parse(date_array[i])) {
-                                class_name += 'is-untouchable';  
-                            }
-                        }
-
-                        if (this.options.max !== null) {
-                            if (Date.parse(this.getMax()) < Date.parse(date_array[i])) {
-                                class_name += 'is-untouchable';
-                            }
-                        }
-
+                        class_name = this.judge_status(this.view[j], date_array[i], class_name);
                         content = day;
                     }
                     
-                } 
-                else if (this.options.mode === 'multiple') {
+                } else if (this.options.mode === 'multiple') {
                     var class_name = '';    
                         content = 0;
                         date_array = [];
@@ -809,18 +1037,7 @@
                             class_name += ' is-active';
                         }
                     }
-
-                    if (this.options.min !== null) {
-                        if (Date.parse(this.getMin()) > Date.parse(date_array[i])) {
-                            class_name += ' is-untouchable'; 
-                        }
-                    }
-
-                    if (this.options.max !== null) {
-                        if (Date.parse(this.getMax()) < Date.parse(date_array[i])) {
-                            class_name += ' is-untouchable';
-                        }
-                    }
+                    class_name = this.judge_status(this.view[j], date_array[i], class_name);
 
                 }
                 html += '<td class="' + class_name + '">' + content + '</td>';         
@@ -897,18 +1114,7 @@
                     if (Date.parse(date_array[i]) === Date.parse(new Date (this.selected_year[0], this.selected_month[0], 1, 0, 0, 0, 0))) {
                         class_name += ' is-active';
                     }
-
-                    if (this.options.min !== null) {
-                        if (Date.parse(new Date(this.min_year, this.min_month,1, 0, 0, 0, 0)) > Date.parse(date_array[i])) {
-                            class_name += ' is-untouchable';
-                        }
-                    }
-
-                    if (this.options.max !== null) {
-                        if (Date.parse(new Date(this.max_year, this.max_month, 1, 0, 0, 0, 0)) < Date.parse(date_array[i])) {
-                            class_name += ' is-untouchable'; 
-                        }
-                    }
+                    class_name = this.judge_status(this.view[j], date_array[i], class_name);
 
                 } else if (this.options.mode === 'range') {
                     var class_name = 'month-' + i;
@@ -930,18 +1136,8 @@
                             class_name += ' in-range';
                         }
                     }
+                    class_name = this.judge_status(this.view[j], date_array[i], class_name);
 
-                    if (this.options.min !== null) {
-                        if (Date.parse(new Date(this.min_year, this.min_month, 1, 0, 0, 0, 0)) > Date.parse(date_array[i])) {
-                            class_name += ' is-untouchable';
-                        }
-                    }
-
-                    if (this.options.max !== null) {
-                        if (Date.parse(new Date(this.max_year, this.max_month, 1, 0, 0, 0, 0)) < Date.parse(date_array[i])) {
-                            class_name += ' is-untouchable'; 
-                        }
-                    }
                 }
 
                 html += '<td class="' + class_name + '">' + content[i] + '</td>';     
@@ -1023,16 +1219,7 @@
                         class_name = 'is-active';
                     } else {
                         class_name = '';
-                        if (this.options.min !== null) {
-                            if (year < this.min_year) {
-                                class_name = 'is-untouchable';
-                            }
-                        }
-                        if (this.options.max !== null) {
-                            if (year > this.max_year) {
-                               class_name = 'is-untouchable'; 
-                            }
-                        }
+                        class_name = this.judge_status(this.view[j], year, class_name);
                     }
 
                 } else if (this.options.mode === 'range') {
@@ -1056,16 +1243,7 @@
                         }
                     }
 
-                    if (this.options.min !== null) {
-                        if (year < this.min_year) {
-                            class_name = 'is-untouchable';
-                        }
-                    }
-                    if (this.options.max !== null) {
-                        if (year > this.max_year) {
-                           class_name = 'is-untouchable'; 
-                        }
-                    }
+                    class_name = this.judge_status(this.view[j], year, class_name);
                 }
                 html += '<td class="' + class_name + '">' + year + '</td>';
             }
