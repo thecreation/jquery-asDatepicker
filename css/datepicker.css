@@ -1,15 +1,21 @@
 .calendar-wrap {
-  position: absolute;
   display: none;
+  line-height: 1;
+}
+
+.calendar-wrap span {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
 .calendar {
   position: relative;
   display: inline-block;
-  width: 203px;
   font-family: 'Proxima Nova';
   font-size: 14px;
   color: #777777;
+  vertical-align: middle;
   background-color: #ffffff;
   border: 1px solid #ebebeb;
   -webkit-border-radius: 3px;
@@ -17,52 +23,9 @@
           border-radius: 3px;
 }
 
-.calendar th,
-.calendar td {
-  padding: 0;
-}
-
-.calendar th:first-child,
-.calendar td:first-child {
-  padding-left: 7px;
-}
-
-.calendar th:last-child,
-.calendar td:last-child {
-  padding-right: 7px;
-}
-
-.calendar tbody:before {
-  position: absolute;
-  left: 0;
-  width: 7px;
-  background: #ffffff;
-  content: '';
-}
-
-.calendar tbody:after {
-  position: absolute;
-  right: 0;
-  width: 7px;
-  background: #ffffff;
-  content: '';
-}
-
-.calendar tbody tr:first-child td {
-  padding-top: 5px;
-}
-
-.calendar tbody tr:last-child td {
-  padding-bottom: 7px;
-}
-
-.calendar tbody td {
-  cursor: pointer;
-}
-
 .calendar-head {
-  height: 30px;
-  line-height: 30px;
+  height: 34px;
+  line-height: 34px;
   text-align: center;
   border-bottom: 1px solid #ebebeb;
 }
@@ -71,12 +34,13 @@
 .calendar-next {
   display: inline-block;
   width: 20%;
-  height: 100%;
+  height: 34px;
   color: transparent;
   cursor: pointer;
 }
 
 .calendar-prev {
+  float: left;
   background-image: url('../images/calendar-prev.png');
   background-position: center;
   background-repeat: no-repeat;
@@ -93,6 +57,7 @@
 }
 
 .calendar-next {
+  float: right;
   background-image: url('../images/calendar-next.png');
   background-position: center;
   background-repeat: no-repeat;
@@ -109,11 +74,9 @@
 }
 
 .calendar-caption {
-  display: inline-block;
-  width: 119px;
   font-size: 14px;
   color: #696969;
-  vertical-align: top;
+  text-align: center;
   cursor: pointer;
 }
 
@@ -127,212 +90,143 @@
   cursor: auto;
 }
 
+.calendar-days span {
+  display: inline-block;
+  width: 30px;
+  font-size: 12px;
+  text-align: center;
+}
+
 .calendar-week {
-  height: 30px;
+  height: 34px;
+  padding-right: 6px;
+  padding-left: 6px;
+  line-height: 34px;
   background-color: #f6f6f6;
 }
 
-.calendar-week th {
+.calendar-week span {
   cursor: default;
   -webkit-box-shadow: inset 0 1px 0 #fbfbfb;
      -moz-box-shadow: inset 0 1px 0 #fbfbfb;
           box-shadow: inset 0 1px 0 #fbfbfb;
 }
 
-.calendar-days td {
-  width: 27px;
-  height: 22px;
-  font-size: 12px;
-  line-height: 22px;
-  text-align: center;
+.calendar-day {
+  padding: 6px;
 }
 
-.calendar-days td:hover {
+.calendar-day span {
+  height: 26px;
+  line-height: 26px;
+  cursor: pointer;
+  border: 1px dashed transparent;
+}
+
+.calendar-day span:hover {
   background-color: #e0f4fb;
 }
 
-.calendar-days td.is-active {
+.calendar-day span.is-active {
   color: white !important;
+  text-shadow: 0 2px 1px rgba(0, 0, 0, 0.15);
   background-color: #32b8e2 !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) inset;
 }
 
-.calendar-days td.otherMonthDay {
+.calendar-day span.is-otherMonth,
+.calendar-day span.is-untouchable {
   color: #c8c8c8;
   cursor: default;
+  background-color: inherit;
 }
 
-.calendar-days td.otherMonthDay:hover,
-.calendar-days td.otherMonthDay:active,
-.calendar-days td.otherMonthDay.is-active {
+.calendar-day span.is-otherMonth:hover,
+.calendar-day span.is-untouchable:hover,
+.calendar-day span.is-otherMonth:active,
+.calendar-day span.is-untouchable:active,
+.calendar-day span.is-otherMonth.is-active,
+.calendar-day span.is-untouchable.is-active {
   color: #c8c8c8;
   background-color: inherit;
 }
 
-.calendar-days td.otherMonthDay.is-untouchable {
-  color: #c8c8c8;
-  background-color: #f8f8f8;
-}
-
-.calendar-days td.otherMonthDay.is-untouchable:hover {
-  color: #c8c8c8;
-  background-color: #f8f8f8;
-}
-
-.calendar-days td.is-untouchable {
-  color: #a0a0a0;
-  cursor: default;
-  background-color: #f8f8f8;
-}
-
-.calendar-days td.is-untouchable:hover,
-.calendar-days td.is-untouchable:active,
-.calendar-days td.is-untouchable.is-active {
-  color: #a0a0a0;
-  background-color: #f8f8f8;
-}
-
-.calendar-days td.in-range {
+.calendar-day span.is-inRange {
   background-color: #e0f4fb;
 }
 
-.calendar-days td.in-range:hover {
+.calendar-day span.is-inRange:hover {
   background-color: inherit;
 }
 
-.calendar-days td.otherMonthDay.in-range:hover {
+.calendar-day span.is-otherMonth.is-inRange:hover {
   background-color: #e0f4fb;
 }
 
-.calendar-days tbody:before {
-  top: 60px;
-  height: 144px;
+.calendar-day span.is-focus {
+  color: #32b8e2;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.calendar-days tbody:after {
-  top: 60px;
-  height: 144px;
+.calendar-months,
+.calendar-years {
+  display: none;
+  padding: 6px;
 }
 
-.calendar-days:before {
-  position: absolute;
-  top: 60px;
-  left: 0;
-  width: 203px;
-  height: 5px;
-  background: #ffffff;
-  content: '';
-}
-
-.calendar-days:after {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 203px;
-  height: 7px;
-  background: #ffffff;
-  content: '';
-}
-
-.calendar-months tbody:before,
-.calendar-years tbody:before {
-  top: 30px;
-  height: 174px;
-}
-
-.calendar-months tbody:after,
-.calendar-years tbody:after {
-  top: 30px;
-  height: 174px;
-}
-
-.calendar-months td,
-.calendar-years td {
-  width: 63px;
-  height: 40.5px;
+.calendar-months span,
+.calendar-years span {
+  display: inline-block;
+  width: 70px;
+  height: 47.5px;
   font-size: 13px;
-  line-height: 40.5px;
+  line-height: 47.5px;
   text-align: center;
+  cursor: pointer;
+  border: 1px dashed transparent;
 }
 
-.calendar-months td:hover,
-.calendar-years td:hover {
+.calendar-months span:hover,
+.calendar-years span:hover {
   background-color: #e0f4fb;
 }
 
-.calendar-months td.is-active,
-.calendar-years td.is-active {
+.calendar-months span.is-active,
+.calendar-years span.is-active {
   color: white !important;
   background-color: #32b8e2 !important;
 }
 
-.calendar-months td.is-untouchable,
-.calendar-years td.is-untouchable {
+.calendar-months span.is-untouchable,
+.calendar-years span.is-untouchable {
   color: #c8c8c8;
   cursor: default;
-  background-color: #f8f8f8;
-}
-
-.calendar-months td.is-untouchable:hover,
-.calendar-years td.is-untouchable:hover,
-.calendar-months td.is-untouchable:active,
-.calendar-years td.is-untouchable:active,
-.calendar-months td.is-untouchable.is-active,
-.calendar-years td.is-untouchable.is-active {
-  color: #c8c8c8;
-  background-color: #f8f8f8;
-}
-
-.calendar-months td.in-range,
-.calendar-years td.in-range {
-  background-color: #e0f4fb;
-}
-
-.calendar-months td.in-range:hover,
-.calendar-years td.in-range:hover {
   background-color: inherit;
 }
 
-.calendar-months:before,
-.calendar-years:before {
-  position: absolute;
-  top: 30px;
-  left: 0;
-  width: 203px;
-  height: 5px;
-  background: #ffffff;
-  content: '';
+.calendar-months span.is-untouchable:hover,
+.calendar-years span.is-untouchable:hover,
+.calendar-months span.is-untouchable:active,
+.calendar-years span.is-untouchable:active,
+.calendar-months span.is-untouchable.is-active,
+.calendar-years span.is-untouchable.is-active {
+  color: #c8c8c8;
+  background-color: inherit;
 }
 
-.calendar-months:after,
-.calendar-years:after {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 203px;
-  height: 7px;
-  background: #ffffff;
-  content: '';
+.calendar-months span.is-inRange,
+.calendar-years span.is-inRange {
+  background-color: #e0f4fb;
 }
 
-#calendar {
-  width: 200px;
-  height: 25px;
-  padding-right: 30px;
-  padding-left: 8px;
-  font-family: "Proxima Nova";
-  font-size: 14px;
-  color: #a0a0a0;
-  vertical-align: middle;
-  border: 1px solid #ced0d3;
-  border-radius: 3px 3px 3px 3px;
-  outline: none;
+.calendar-months span.is-inRange:hover,
+.calendar-years span.is-inRange:hover {
+  background-color: inherit;
 }
 
-#calendar:focus,
-#calendar:active {
-  border: 1px solid #aed6f1;
-  outline-offset: 0;
-  -webkit-box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
-     -moz-box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
-          box-shadow: 0 0 0 2px rgba(174, 214, 241, 0.2);
+.calendar-months span.is-focus,
+.calendar-years span.is-focus {
+  color: #32b8e2;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }

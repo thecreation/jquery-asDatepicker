@@ -33,6 +33,7 @@ $(document).ready(function(){
 });
 &lt;script&gt;</code></pre>
                 <div class="example">
+                    <!-- <input type="text" id="calendar" data-range-mode="section" data-selectable-year="2001>2010,2013,2015>2018"> -->
                     <input type="text" id="calendar">
                 </div>
             </section>
@@ -62,16 +63,92 @@ $(document).ready(function(){
                     <input type="text" id="calendar3">
                 </div>
             </section>
+            <section>
+                <h3>Data attributes</h3>
+                <p>Any option of the datepicker can also be set via data-attributes.</p>
+                <p>Such as:</p>
+                <pre class="has-example"><code class="language-markup">
+&lt;input&nbsp;type=&quot;text&quot;&nbsp;id=&quot;calendar4&quot;&nbsp;data-mode=&quot;range&quot;&nbsp;data-range-mode=&quot;section&quot;&nbsp;data-selectable-year=&quot;2001&gt;2010,2013,2015&gt;2018&quot;&gt;
+&lt;script&gt;
+$(document).ready(function(){
+&nbsp;&nbsp;$(&quot;#calendar4&quot;).datepicker();
+});
+&lt;script&gt;</code></pre>
+                <div class="example">
+                    <input type="text" id="calendar4" data-mode="range" data-range-mode="section" data-selectable-year="2001>2010,2013,2015>2018">
+                </div>
+            </section>
+        </section>
+        <section>
+            <h2>Keyboard navigation</h2>
+            <p>
+                <span>left arrow ----- </span>
+                highlights previous day 
+            </p>
+            <p>
+                <span>right arrow ----- </span>
+                highlights next day 
+            </p>
+            <p>
+                <span>up arrow ----- </span>
+                highlights same day from the previous week 
+            </p>
+            <p>
+                <span>down arrow ----- </span>
+                highlights same day from the next week 
+            </p>
+            <p>
+                <span>ctrl + left arrow ----- </span>
+                navigates to previous month
+            </p>
+            <p>
+                <span>ctrl + right arrow ----- </span>
+                navigates to next month
+            </p>
+            <p>
+                <span>ctrl + up arrow ----- </span>
+                navigates to higher view
+            </p>
+            <p>
+                <span>ctrl + down arrow ----- </span>
+                navigates to lower view
+            </p>
+            <p>
+                <span>alt + left arrow ----- </span>
+                focus in previous calendar
+            </p>
+            <p>
+                <span>alt + right arrow ----- </span>
+                focus in next calendar
+            </p>
+            <p>
+                <span>enter ----- </span>
+                if in "days" view selects the highlighted day. In other views navigates to a lower view 
+            </p>
+            <p>
+                <span>esc ----- </span>
+                closes the popup 
+            </p>
+
         </section>
         <section>
             <h2>Available options</h2>
             <p>You can pass these options as key/value object to $.datepicker() method. </p>
-
         </section>
         <section>
         	<h2>API</h2>
-            
-        	 <section>
+
+            <section>
+                <h3>DisplayMode</h3>
+                <p>With default dropdown and inline</p>
+                <pre class="has-example"><code class="language-markup">
+$(&quot;#calendar-api-displayMode&quot;).datepicker({displayMode:&nbsp;&#39;inline&#39;});</code></pre>
+                <div class="example">
+                    <input type="text" id="calendar-api-displayMode">
+                </div>
+            </section>
+        	
+            <section>
                 <h3>show()</h3>
                 <pre class="has-example"><code class="language-markup">
 $(&#39;#calendar-api-show&#39;).datepicker(&#39;show&#39;);</code></pre>
@@ -81,7 +158,7 @@ $(&#39;#calendar-api-show&#39;).datepicker(&#39;show&#39;);</code></pre>
                 </div>
             </section>
             
-             <section>
+            <section>
                 <h3>hide()</h3>
                 <pre class="has-example"><code class="language-markup">
 $(&#39;#calendar-api-show&#39;).datepicker(&#39;hide&#39;);</code></pre>
@@ -145,14 +222,14 @@ $(&#39;#calendar-api-getDate-format&#39;).datepicker(&#39;getDate&#39;,&nbsp;&#3
                 </div>
                 <section>
    
-                <h3>changeOptions()</h3>
+                <h3>update()</h3>
                 <pre class="has-example"><code class="language-markup">
-$(&#39;#calendar-api-changeOptions&#39;).datepicker();
-$(&#39;#calendar-api-changeOptions&#39;).datepicker(&#39;changeOptions&#39;, {mode:&nbsp;&#39;range&#39;});</code></pre>
+$(&#39;#calendar-api-update&#39;).datepicker();
+$(&#39;#calendar-api-update&#39;).datepicker(&#39;update&#39;, {mode:&nbsp;&#39;range&#39;});</code></pre>
                 <div class="example">
                     <p>Sets one or more options for the datepicker.</p>
-                    <input type="text" class="datepicker" id="calendar-api-changeOptions">
-                    <button id="api-changeOptions-click">changeOptions</button>
+                    <input type="text" class="datepicker" id="calendar-api-update">
+                    <button id="api-update-click">update</button>
                 </div>
                 <section>
     
@@ -195,10 +272,15 @@ $(document).ready(function(){
 	$("#calendar").datepicker();
     
 	$("#calendar2").datepicker({mode: 'range'});
+
     $("#calendar3").datepicker({mode: 'multiple', calendars: 4});
-	
+
+	$("#calendar4").datepicker();
+
 	$('.datepicker').datepicker();
     $('.calendar-multiple').datepicker({mode: 'multiple', calendars: 3});
+
+    $('#calendar-api-displayMode').datepicker({displayMode: 'inline'});
 
 	$('#calendar-api-show-click').click(function(){
 		$('#calendar-api-show').datepicker('show');
@@ -227,8 +309,8 @@ $(document).ready(function(){
         return false;
     });
 
-    $('#api-changeOptions-click').click(function() {
-        $('#calendar-api-changeOptions').datepicker('changeOptions', {mode: 'range'});
+    $('#api-update-click').click(function() {
+        $('#calendar-api-update').datepicker('update', {mode: 'range'});
         return false;
     });
 
