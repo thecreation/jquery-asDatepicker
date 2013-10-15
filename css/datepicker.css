@@ -1,5 +1,8 @@
+*:focus {
+  outline: none;
+}
+
 .calendar-wrap {
-  display: none;
   line-height: 1;
 }
 
@@ -23,7 +26,31 @@
           border-radius: 3px;
 }
 
-.calendar-head {
+.calendar.calendar_days > .calendar-days {
+  display: block;
+}
+
+.calendar.calendar_months .calendar-months {
+  display: block;
+}
+
+.calendar.calendar_years .calendar-years {
+  display: block;
+}
+
+.calendar_hide {
+  display: none;
+}
+
+.calendar_show {
+  display: block;
+}
+
+.calendar_absolute {
+  position: absolute;
+}
+
+.calendar-header {
   height: 34px;
   line-height: 34px;
   text-align: center;
@@ -46,8 +73,8 @@
   background-repeat: no-repeat;
 }
 
-.calendar-prev.calendar-blocked,
-.calendar-prev.calendar-blocked:hover {
+.calendar-prev.calendar_blocked,
+.calendar-prev.calendar_blocked:hover {
   cursor: auto;
   background-image: none;
 }
@@ -63,8 +90,8 @@
   background-repeat: no-repeat;
 }
 
-.calendar-next.calendar-blocked,
-.calendar-next.calendar-blocked:hover {
+.calendar-next.calendar_blocked,
+.calendar-next.calendar_blocked:hover {
   cursor: auto;
   background-image: none;
 }
@@ -84,10 +111,14 @@
   color: #000000;
 }
 
-.calendar-caption.calendar-blocked,
-.calendar-caption.calendar-blocked:hover {
+.calendar-caption.calendar_blocked,
+.calendar-caption.calendar_blocked:hover {
   color: #696969;
   cursor: auto;
+}
+
+.calendar-days {
+  display: none;
 }
 
 .calendar-days span {
@@ -97,7 +128,7 @@
   text-align: center;
 }
 
-.calendar-week {
+.calendar-head {
   height: 34px;
   padding-right: 6px;
   padding-left: 6px;
@@ -105,29 +136,29 @@
   background-color: #f6f6f6;
 }
 
-.calendar-week span {
+.calendar-head span {
   cursor: default;
   -webkit-box-shadow: inset 0 1px 0 #fbfbfb;
      -moz-box-shadow: inset 0 1px 0 #fbfbfb;
           box-shadow: inset 0 1px 0 #fbfbfb;
 }
 
-.calendar-day {
+.calendar-body {
   padding: 6px;
 }
 
-.calendar-day span {
+.calendar-body span {
   height: 26px;
   line-height: 26px;
   cursor: pointer;
   border: 1px dashed transparent;
 }
 
-.calendar-day span:hover {
+.calendar-body span:hover {
   background-color: #e0f4fb;
 }
 
-.calendar-day span.is-active {
+.calendar-body span.calendar_active {
   color: white !important;
   text-shadow: 0 2px 1px rgba(0, 0, 0, 0.15);
   background-color: #32b8e2 !important;
@@ -135,36 +166,36 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) inset;
 }
 
-.calendar-day span.is-otherMonth,
-.calendar-day span.is-untouchable {
+.calendar-body span.calendar_otherMonth,
+.calendar-body span.calendar_untouchable {
   color: #c8c8c8;
   cursor: default;
   background-color: inherit;
 }
 
-.calendar-day span.is-otherMonth:hover,
-.calendar-day span.is-untouchable:hover,
-.calendar-day span.is-otherMonth:active,
-.calendar-day span.is-untouchable:active,
-.calendar-day span.is-otherMonth.is-active,
-.calendar-day span.is-untouchable.is-active {
+.calendar-body span.calendar_otherMonth:hover,
+.calendar-body span.calendar_untouchable:hover,
+.calendar-body span.calendar_otherMonth:active,
+.calendar-body span.calendar_untouchable:active,
+.calendar-body span.calendar_otherMonth.calendar_active,
+.calendar-body span.calendar_untouchable.calendar_active {
   color: #c8c8c8;
   background-color: inherit;
 }
 
-.calendar-day span.is-inRange {
+.calendar-body span.calendar_inRange {
   background-color: #e0f4fb;
 }
 
-.calendar-day span.is-inRange:hover {
+.calendar-body span.calendar_inRange:hover {
   background-color: inherit;
 }
 
-.calendar-day span.is-otherMonth.is-inRange:hover {
+.calendar-body span.calendar_otherMonth.calendar_inRange:hover {
   background-color: #e0f4fb;
 }
 
-.calendar-day span.is-focus {
+.calendar-body span.calendar_focus {
   color: #32b8e2;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -192,41 +223,41 @@
   background-color: #e0f4fb;
 }
 
-.calendar-months span.is-active,
-.calendar-years span.is-active {
+.calendar-months span.calendar_active,
+.calendar-years span.calendar_active {
   color: white !important;
   background-color: #32b8e2 !important;
 }
 
-.calendar-months span.is-untouchable,
-.calendar-years span.is-untouchable {
+.calendar-months span.calendar_untouchable,
+.calendar-years span.calendar_untouchable {
   color: #c8c8c8;
   cursor: default;
   background-color: inherit;
 }
 
-.calendar-months span.is-untouchable:hover,
-.calendar-years span.is-untouchable:hover,
-.calendar-months span.is-untouchable:active,
-.calendar-years span.is-untouchable:active,
-.calendar-months span.is-untouchable.is-active,
-.calendar-years span.is-untouchable.is-active {
+.calendar-months span.calendar_untouchable:hover,
+.calendar-years span.calendar_untouchable:hover,
+.calendar-months span.calendar_untouchable:active,
+.calendar-years span.calendar_untouchable:active,
+.calendar-months span.calendar_untouchable.calendar_active,
+.calendar-years span.calendar_untouchable.calendar_active {
   color: #c8c8c8;
   background-color: inherit;
 }
 
-.calendar-months span.is-inRange,
-.calendar-years span.is-inRange {
+.calendar-months span.calendar_inRange,
+.calendar-years span.calendar_inRange {
   background-color: #e0f4fb;
 }
 
-.calendar-months span.is-inRange:hover,
-.calendar-years span.is-inRange:hover {
+.calendar-months span.calendar_inRange:hover,
+.calendar-years span.calendar_inRange:hover {
   background-color: inherit;
 }
 
-.calendar-months span.is-focus,
-.calendar-years span.is-focus {
+.calendar-months span.calendar_focus,
+.calendar-years span.calendar_focus {
   color: #32b8e2;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }

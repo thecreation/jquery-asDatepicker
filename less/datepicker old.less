@@ -1,18 +1,17 @@
-@namespace: calendar;
 @calendarBackgroundColor: white;
 @calendarHeadHeight: 34px;
 @calendarWeekHeight: 34px;
 @calendarDayHeight: 26px;
 @calendarDayWidth: 30px;
-@prevNextWidth: 20%;
 
 @calendarMonthHeight: (@calendarWeekHeight + @calendarDayHeight * 6) / 4;
 @calendarMonthWidth: (@calendarDayWidth * 7 )/ 3;
 
 *:focus {outline: none;}
 
-.@{namespace}-wrap {
-  	line-height: 1;
+.calendar-wrap {
+  display: none;
+  line-height: 1;
 	span {
 	  	-webkit-box-sizing: border-box;
 	  	   -moz-box-sizing: border-box;
@@ -20,7 +19,7 @@
 	}
 }
 
-.@{namespace} {
+.calendar {
 	background-color: @calendarBackgroundColor;
 	border: 1px solid rgb(235, 235, 235);
 	color: rgb(119, 119, 119);
@@ -33,56 +32,28 @@
 	position: relative;
 	vertical-align: middle;
 
-	&.@{namespace}_days {
-		> .@{namespace}-days {
-			display: block;
-		}
-	}
-	&.@{namespace}_months {
-		.@{namespace}-months {
-			display: block;
-		}
-	}
-	&.@{namespace}_years {
-		.@{namespace}-years {
-			display: block;
-		}
-	}
-
 }
 
-.@{namespace}_hide {
-	display: none;
-}
-
-.@{namespace}_show {
-	display: block;
-}
-
-.@{namespace}_absolute {
-	position: absolute;
-}
-
-.@{namespace}-header {
+.calendar-head {
 	height: @calendarHeadHeight;
 	line-height: @calendarHeadHeight;
 	text-align: center;
 	border-bottom: 1px solid rgb(235, 235, 235);
 }
-.@{namespace}-prev, .@{namespace}-next {
+.calendar-prev, .calendar-next {
 	display: inline-block;
-	width: @prevNextWidth;
+	width: 20%;
 	height: @calendarHeadHeight;
 	cursor: pointer;
 	color: transparent;
 }
 
-.@{namespace}-prev {
+.calendar-prev {
 	background-image: url('../images/calendar-prev.png');
 	background-repeat: no-repeat;
 	background-position: center;
 	float: left;
-	&.@{namespace}_blocked, &.@{namespace}_blocked:hover{
+	&.calendar-blocked, &.calendar-blocked:hover{
 		background-image: none;
 		cursor: auto;
 	}
@@ -91,12 +62,12 @@
 	}
 }
 
-.@{namespace}-next {
+.calendar-next {
 	background-image: url('../images/calendar-next.png');
 	background-repeat: no-repeat;
 	background-position: center;
 	float: right;
-	&.@{namespace}_blocked, &.@{namespace}_blocked:hover{
+	&.calendar-blocked, &.calendar-blocked:hover{
 		background-image: none;
 		cursor: auto;
 	}
@@ -104,7 +75,7 @@
 		background-image: url('../images/calendar-next-hover.png');
 	}
 }
-.@{namespace}-caption {
+.calendar-caption {
 	font-size: 14px;
 	cursor: pointer;
 	color: rgb(105, 105, 105);
@@ -112,14 +83,13 @@
 	&:hover {
 		color: rgb(0, 0, 0);
 	}
-	&.@{namespace}_blocked, &.@{namespace}_blocked:hover {
+	&.calendar-blocked, &.calendar-blocked:hover {
 		color: rgb(105, 105, 105);	
 		cursor: auto;
 	}
 }
 
-.@{namespace}-days {
-	display: none;
+.calendar-days {
 	span {
 		width: @calendarDayWidth;
 		font-size: 12px;
@@ -128,7 +98,7 @@
 	}
 }
 
-.@{namespace}-head {
+.calendar-week {
 	line-height:  @calendarWeekHeight;
 	height: @calendarWeekHeight;
 	background-color: rgb(246, 246, 246);
@@ -142,7 +112,7 @@
 	}
 }
 
-.@{namespace}-body {
+.calendar-day {
 	padding: 6px;
 	span {
 		cursor: pointer;
@@ -152,34 +122,34 @@
 		&:hover {
 			background-color: rgb(224, 244, 251);
 		}
-		&.@{namespace}_active {
+		&.is-active {
 			background-color: rgb(50, 184, 226) !important;
 			color: white !important;
 			border: 1px solid rgba(0, 0, 0, 0.15) !important;
     		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) inset;
     		text-shadow: 0 2px 1px rgba(0, 0, 0, 0.15);
 		}
-		&.@{namespace}_otherMonth, &.@{namespace}_untouchable {
+		&.is-otherMonth, &.is-untouchable {
 			color: rgb(200, 200, 200);
 			background-color: inherit;
 			cursor: default;
-			&:hover, &:active, &.@{namespace}_active {
+			&:hover, &:active, &.is-active {
 				background-color: inherit;
 				color: rgb(200, 200, 200);
 			}
 		}
-		&.@{namespace}_inRange {
+		&.is-inRange {
 			background-color: rgb(224, 244, 251);
 			&:hover {
 				background-color: inherit;
 			}
 		}
-		&.@{namespace}_otherMonth.@{namespace}_inRange {
+		&.is-otherMonth.is-inRange {
 			&:hover {
 				background-color: rgb(224, 244, 251);
 			}
 		}
-		&.@{namespace}_focus {
+		&.is-focus {
 			border: 1px solid rgba(0, 0, 0, 0.1);
 			color: rgb(50, 184, 226);
 		}
@@ -188,7 +158,7 @@
 
 
 
-.@{namespace}-months, .@{namespace}-years {
+.calendar-months, .calendar-years {
 	padding: 6px;
 	display: none;
 	span {
@@ -203,27 +173,27 @@
 		&:hover {
 			background-color: rgb(224, 244, 251);
 		}
-		&.@{namespace}_active {
+		&.is-active {
 			background-color: rgb(50, 184, 226) !important;
 			color: white !important;
 		}
-		&.@{namespace}_untouchable {
+		&.is-untouchable {
 			color: rgb(200, 200, 200);
 			background-color: inherit;
 			cursor: default;
-			&:hover, &:active, &.@{namespace}_active {
+			&:hover, &:active, &.is-active {
 				background-color: inherit;
 				color: rgb(200, 200, 200);
 			}
 			
 		}
-		&.@{namespace}_inRange {
+		&.is-inRange {
 			background-color: rgb(224, 244, 251);
 			&:hover {
 				background-color: inherit;
 			}
 		}
-		&.@{namespace}_focus {
+		&.is-focus {
 			border: 1px solid rgba(0, 0, 0, 0.1);
 			color: rgb(50, 184, 226);
 		}
