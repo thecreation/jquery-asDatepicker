@@ -15,15 +15,7 @@
 .calendar {
   position: relative;
   display: inline-block;
-  font-family: 'Proxima Nova';
-  font-size: 14px;
-  color: #777777;
   vertical-align: middle;
-  background-color: #ffffff;
-  border: 1px solid #ebebeb;
-  -webkit-border-radius: 3px;
-     -moz-border-radius: 3px;
-          border-radius: 3px;
 }
 
 .calendar.calendar_days > .calendar-days {
@@ -54,7 +46,6 @@
   height: 34px;
   line-height: 34px;
   text-align: center;
-  border-bottom: 1px solid #ebebeb;
 }
 
 .calendar-prev,
@@ -62,15 +53,96 @@
   display: inline-block;
   width: 20%;
   height: 34px;
-  color: transparent;
   cursor: pointer;
 }
 
 .calendar-prev {
   float: left;
-  background-image: url('../images/calendar-prev.png');
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.calendar-next {
+  float: right;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.calendar-caption {
+  text-align: center;
+  cursor: pointer;
+}
+
+.calendar-days {
+  display: none;
+}
+
+.calendar-days span {
+  display: inline-block;
+  width: 30px;
+  text-align: center;
+}
+
+.calendar-head {
+  height: 34px;
+  line-height: 34px;
+}
+
+.calendar-head span {
+  cursor: default;
+}
+
+.calendar-body span {
+  height: 26px;
+  cursor: pointer;
+}
+
+.calendar-body span.calendar_otherMonth,
+.calendar-body span.calendar_untouchable {
+  cursor: default;
+}
+
+.calendar-months,
+.calendar-years {
+  display: none;
+}
+
+.calendar-months span,
+.calendar-years span {
+  display: inline-block;
+  width: 70px;
+  height: 47.5px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.calendar-months span.calendar_untouchable,
+.calendar-years span.calendar_untouchable {
+  cursor: default;
+}
+
+.calendar {
+  font-family: 'Proxima Nova';
+  font-size: 14px;
+  color: #777777;
+  background-color: white;
+  border: 1px solid #ebebeb;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+}
+
+.calendar-header {
+  border-bottom: 1px solid #ebebeb;
+}
+
+.calendar-prev,
+.calendar-next {
+  color: transparent;
+}
+
+.calendar-prev {
+  background-image: url('../images/calendar-prev.png');
 }
 
 .calendar-prev.calendar_blocked,
@@ -84,10 +156,7 @@
 }
 
 .calendar-next {
-  float: right;
   background-image: url('../images/calendar-next.png');
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
 .calendar-next.calendar_blocked,
@@ -103,8 +172,6 @@
 .calendar-caption {
   font-size: 14px;
   color: #696969;
-  text-align: center;
-  cursor: pointer;
 }
 
 .calendar-caption:hover {
@@ -117,27 +184,18 @@
   cursor: auto;
 }
 
-.calendar-days {
-  display: none;
-}
-
 .calendar-days span {
-  display: inline-block;
   width: 30px;
   font-size: 12px;
-  text-align: center;
 }
 
 .calendar-head {
-  height: 34px;
   padding-right: 6px;
   padding-left: 6px;
-  line-height: 34px;
   background-color: #f6f6f6;
 }
 
 .calendar-head span {
-  cursor: default;
   -webkit-box-shadow: inset 0 1px 0 #fbfbfb;
      -moz-box-shadow: inset 0 1px 0 #fbfbfb;
           box-shadow: inset 0 1px 0 #fbfbfb;
@@ -148,9 +206,7 @@
 }
 
 .calendar-body span {
-  height: 26px;
   line-height: 26px;
-  cursor: pointer;
   border: 1px dashed transparent;
 }
 
@@ -169,7 +225,6 @@
 .calendar-body span.calendar_otherMonth,
 .calendar-body span.calendar_untouchable {
   color: #c8c8c8;
-  cursor: default;
   background-color: inherit;
 }
 
@@ -202,19 +257,13 @@
 
 .calendar-months,
 .calendar-years {
-  display: none;
   padding: 6px;
 }
 
 .calendar-months span,
 .calendar-years span {
-  display: inline-block;
-  width: 70px;
-  height: 47.5px;
   font-size: 13px;
   line-height: 47.5px;
-  text-align: center;
-  cursor: pointer;
   border: 1px dashed transparent;
 }
 
@@ -232,7 +281,6 @@
 .calendar-months span.calendar_untouchable,
 .calendar-years span.calendar_untouchable {
   color: #c8c8c8;
-  cursor: default;
   background-color: inherit;
 }
 
