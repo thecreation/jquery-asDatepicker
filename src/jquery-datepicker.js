@@ -83,7 +83,7 @@
             return '<div class="namespace-wrap"></div>';
         },
         tplContent: function() {
-            return '<div class="namespace">' +
+            return '<div class="namespace-content">' +
                 '<div class="namespace-header">' +
                 '<span class="namespace-prev"></span>' +
                 '<span class="namespace-caption"></span>' +
@@ -617,7 +617,7 @@
 
             //init the sections
             this.views = this.options.views;
-            this.calendars = this.picker.find('.' + this.namespace);
+            this.calendars = this.picker.find('.' + this.namespace + '-content');
             this.calendarPrevs = this.calendars.find('.' + this.namespace + '-prev');
             this.calendarCaptions = this.calendars.find('.' + this.namespace + '-caption');
             this.calendarNexts = this.calendars.find('.' + this.namespace + '-next');
@@ -1426,7 +1426,7 @@
             } else if ($(e.target).closest(this.$el).length !== 1 && $(e.target).closest(this.picker).length === 1) {
                 var _target = $(e.target).closest('span');
                 if (_target.length === 1) {
-                    var i = _target.parents('.' + this.namespace).index();
+                    var i = _target.parents('.' + this.namespace + '-content').index();
                     switch (_target[0].className) {
                         case this.namespace + '-caption':
                             this._changeView('caption', i);

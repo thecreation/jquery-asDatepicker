@@ -12,21 +12,21 @@
           box-sizing: border-box;
 }
 
-.calendar {
+.calendar-content {
   position: relative;
   display: inline-block;
   vertical-align: middle;
 }
 
-.calendar.calendar_days > .calendar-days {
+.calendar-content.calendar_days > .calendar-days {
   display: block;
 }
 
-.calendar.calendar_months .calendar-months {
+.calendar-content.calendar_months .calendar-months {
   display: block;
 }
 
-.calendar.calendar_years .calendar-years {
+.calendar-content.calendar_years .calendar-years {
   display: block;
 }
 
@@ -121,7 +121,7 @@
   cursor: default;
 }
 
-.calendar {
+.calendar-content {
   font-family: 'Proxima Nova';
   font-size: 14px;
   color: #777777;
