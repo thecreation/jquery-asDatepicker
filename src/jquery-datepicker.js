@@ -1819,7 +1819,6 @@
             this.destroy();
             this._init();
         }
-
     };
 
     $.fn.datepicker = function(options) {
