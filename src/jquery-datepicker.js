@@ -43,6 +43,8 @@
 
         multipleSeparator: ',',
 
+        multipleSelectNum: 5,
+
         max: null,
         // max: '2013-10-1',//null|days|Date with (yyyy-mm-dd)
         min: null,
@@ -1425,6 +1427,7 @@
                 this.hide();
             } else if ($(e.target).closest(this.$el).length !== 1 && $(e.target).closest(this.picker).length === 1) {
                 var _target = $(e.target).closest('span');
+
                 if (_target.length === 1) {
                     var i = _target.parents('.' + this.namespace + '-content').index();
                     switch (_target[0].className) {
@@ -1439,7 +1442,8 @@
                             this.next(i);
                             break;
                         default:
-                            if (!_target.hasClass(this.namespace + '_otherMonth') && !_target.hasClass(this.namespace + '_untouchable') && _target.parents('.calendar-week').length !== 1) {
+                            if (!_target.hasClass(this.namespace + '_otherMonth') && !_target.hasClass(this.namespace + '_untouchable') && !_target.hasClass(this.namespace + '_blocked') &&
+                                _target.parents('.calendar-head').length !== 1) {
                                 this._changeValue(_target, i);
                                 if (this.views[i] === 'days' && this.mode === 'single') {
                                     this.selected = true;
@@ -1556,7 +1560,9 @@
                                     }
                                 });
                             } else {
-                                this.selectedDate.push(date);
+                                if (this.selectedDate.length < this.options.multipleSelectNum) {
+                                    this.selectedDate.push(date);
+                                }
                             }
                             break;
                     }
@@ -1679,6 +1685,7 @@
                                 --this.focused;
                                 this._manageViews(i);
                                 this._manageViews(i - 1);
+                                console.log(this.focused)
                             }
                         } else {
                             var prevMonthDays = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
