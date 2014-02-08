@@ -1443,7 +1443,7 @@
                             break;
                         default:
                             if (!_target.hasClass(this.namespace + '_otherMonth') && !_target.hasClass(this.namespace + '_untouchable') && !_target.hasClass(this.namespace + '_blocked') &&
-                                _target.parents('.calendar-head').length !== 1) {
+                                _target.parents('.' + this.namespace + '-head').length !== 1) {
                                 this._changeValue(_target, i);
                                 if (this.views[i] === 'days' && this.mode === 'single') {
                                     this.selected = true;

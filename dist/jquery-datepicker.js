@@ -1,4 +1,4 @@
-/*! Datepicker - v0.3.0 - 2014-02-07
+/*! Datepicker - v0.3.0 - 2014-02-08
 * https://github.com/amazingsurge/jquery-datepicker
 * Copyright (c) 2014 amazingSurge; Licensed MIT */
 (function($) {
@@ -1439,7 +1439,7 @@
                             break;
                         default:
                             if (!_target.hasClass(this.namespace + '_otherMonth') && !_target.hasClass(this.namespace + '_untouchable') && !_target.hasClass(this.namespace + '_blocked') &&
-                                _target.parents('.calendar-head').length !== 1) {
+                                _target.parents('.' + this.namespace + '-head').length !== 1) {
                                 this._changeValue(_target, i);
                                 if (this.views[i] === 'days' && this.mode === 'single') {
                                     this.selected = true;

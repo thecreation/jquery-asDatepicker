@@ -262,14 +262,16 @@ $(&#39;#calendar-api-update&#39;).datepicker(&#39;update&#39;, {mode:&nbsp;&#39;
 <script src="js/jquery.js"></script>
 <script src="js/jquery.toc.min.js"></script>
 <script src="js/prism.js"></script>
-<script src="../src/jquery-datepicker.js"></script>
+<script src="../dist/jquery-datepicker.min.js"></script>
 <script>
 $(document).ready(function(){
 	(function(){
 		$('#toc').toc();
 	})();
 
-    $("#calendar").datepicker();
+    $("#calendar").datepicker({
+            namespace: 'calendar'
+        });
     
 	$("#calendar2").datepicker({mode: 'range'});
 
