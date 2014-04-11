@@ -1,4 +1,4 @@
-/*! asDatepicker - v0.3.0 - 2014-04-11
+/*! asDatepicker - v0.4.0 - 2014-04-11
 * https://github.com/amazingsurge/jquery-asDatepicker
 * Copyright (c) 2014 amazingSurge; Licensed MIT */
 (function($) {
