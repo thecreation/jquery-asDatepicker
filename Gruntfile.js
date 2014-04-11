@@ -5,7 +5,7 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     // Metadata.
-    pkg: grunt.file.readJSON('datepicker.jquery.json'),
+    pkg: grunt.file.readJSON('asDatepicker.jquery.json'),
     banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
       '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
       '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
@@ -83,7 +83,7 @@ module.exports = function(grunt) {
           compile: true
         },
         files: {
-          'css/datepicker.css': ['less/datepicker.less']
+          'css/asDatepicker.css': ['less/asDatepicker.less']
         }
       }
     },

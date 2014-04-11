@@ -1,5 +1,5 @@
 {
-  "name": "jquery-datepicker",
+  "name": "jquery-asDatepicker",
   "version": "0.3.1",
   "engines": {
     "node": ">= 0.8.0"

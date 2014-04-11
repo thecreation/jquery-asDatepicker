@@ -13,15 +13,15 @@
 <link rel="stylesheet" href="css/normalize.css">
 <link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/prism.css">
-<link rel="stylesheet" href="../css/datepicker.css">
+<link rel="stylesheet" href="../css/asDatepicker.css">
 </head>
 <body>
 	<div id="toc"></div>
     <div class="container">      
-        <h1>jQuery.Datepicker</h1>
+        <h1>jQuery.asDatepicker</h1>
         <section>
             <h2>Examples</h2>
-            <p>You can pass these options as key/value object to $.datepicker() method. </p>
+            <p>You can pass these options as key/value object to $.asDatepicker() method. </p>
             
             <section>
                 <h3>default single</h3>
@@ -29,7 +29,7 @@
 &lt;input&nbsp;type=&quot;text&quot;&nbsp;id=&quot;calendar&quot;&gt;
 &lt;script&gt;
 $(document).ready(function(){
-&nbsp;&nbsp;$(&quot;#calendar&quot;).datepicker();
+&nbsp;&nbsp;$(&quot;#calendar&quot;).asDatepicker();
 });
 &lt;script&gt;</code></pre>
                 <div class="example">
@@ -43,7 +43,7 @@ $(document).ready(function(){
 &lt;input&nbsp;type=&quot;text&quot;&nbsp;id=&quot;calendar2&quot;&gt;
 &lt;script&gt;
 $(document).ready(function(){
-&nbsp;&nbsp;$(&quot;#calendar2&quot;).datepicker({mode:&nbsp;&#39;range&#39;});
+&nbsp;&nbsp;$(&quot;#calendar2&quot;).asDatepicker({mode:&nbsp;&#39;range&#39;});
 });
 &lt;script&gt;</code></pre>
                 <div class="example">
@@ -56,7 +56,7 @@ $(document).ready(function(){
 &lt;input&nbsp;type=&quot;text&quot;&nbsp;id=&quot;calendar3&quot;&gt;
 &lt;script&gt;
 $(document).ready(function(){
-&nbsp;&nbsp;$(&quot;#calendar3&quot;).datepicker({mode:&nbsp;&#39;multiple&#39;, calendars:&nbsp;&#39;4&#39;});
+&nbsp;&nbsp;$(&quot;#calendar3&quot;).asDatepicker({mode:&nbsp;&#39;multiple&#39;, calendars:&nbsp;&#39;4&#39;});
 });
 &lt;script&gt;</code></pre>
                 <div class="example">
@@ -65,13 +65,13 @@ $(document).ready(function(){
             </section>
             <section>
                 <h3>Data attributes</h3>
-                <p>Any option of the datepicker can also be set via data-attributes.</p>
+                <p>Any option of the asDatepicker can also be set via data-attributes.</p>
                 <p>Such as:</p>
                 <pre class="has-example"><code class="language-markup">
 &lt;input&nbsp;type=&quot;text&quot;&nbsp;id=&quot;calendar4&quot;&nbsp;data-mode=&quot;range&quot;&nbsp;data-range-mode=&quot;section&quot;&nbsp;data-selectable-year=&quot;2001&gt;2010,2013,2015&gt;2018&quot;&gt;
 &lt;script&gt;
 $(document).ready(function(){
-&nbsp;&nbsp;$(&quot;#calendar4&quot;).datepicker();
+&nbsp;&nbsp;$(&quot;#calendar4&quot;).asDatepicker();
 });
 &lt;script&gt;</code></pre>
                 <div class="example">
@@ -133,7 +133,7 @@ $(document).ready(function(){
         </section>
         <section>
             <h2>Available options</h2>
-            <p>You can pass these options as key/value object to $.datepicker() method. </p>
+            <p>You can pass these options as key/value object to $.asDatepicker() method. </p>
         </section>
         <section>
         	<h2>API</h2>
@@ -142,7 +142,7 @@ $(document).ready(function(){
                 <h3>DisplayMode</h3>
                 <p>With default dropdown and inline</p>
                 <pre class="has-example"><code class="language-markup">
-$(&quot;#calendar-api-displayMode&quot;).datepicker({displayMode:&nbsp;&#39;inline&#39;});</code></pre>
+$(&quot;#calendar-api-displayMode&quot;).asDatepicker({displayMode:&nbsp;&#39;inline&#39;});</code></pre>
                 <div class="example">
                     <input type="text" id="calendar-api-displayMode">
                 </div>
@@ -151,9 +151,9 @@ $(&quot;#calendar-api-displayMode&quot;).datepicker({displayMode:&nbsp;&#39;inli
             <section>
                 <h3>show()</h3>
                 <pre class="has-example"><code class="language-markup">
-$(&#39;#calendar-api-show&#39;).datepicker(&#39;show&#39;);</code></pre>
+$(&#39;#calendar-api-show&#39;).asDatepicker(&#39;show&#39;);</code></pre>
                 <div class="example">
-                    <input type="text" class="datepicker" id="calendar-api-show">
+                    <input type="text" class="asDatepicker" id="calendar-api-show">
                     <a href="#" id="calendar-api-show-click">Click to show calendar</a>
                 </div>
             </section>
@@ -161,9 +161,9 @@ $(&#39;#calendar-api-show&#39;).datepicker(&#39;show&#39;);</code></pre>
             <section>
                 <h3>hide()</h3>
                 <pre class="has-example"><code class="language-markup">
-$(&#39;#calendar-api-show&#39;).datepicker(&#39;hide&#39;);</code></pre>
+$(&#39;#calendar-api-show&#39;).asDatepicker(&#39;hide&#39;);</code></pre>
                 <div class="example">
-                    <input type="text" class="datepicker" id="calendar-api-hide">
+                    <input type="text" class="asDatepicker" id="calendar-api-hide">
                     <a href="#" id="calendar-api-hide-click">Click to hide calendar</a>
                 </div>
             </section>
@@ -171,7 +171,7 @@ $(&#39;#calendar-api-show&#39;).datepicker(&#39;hide&#39;);</code></pre>
             <section>
                 <h3>multipleClear()</h3>
                 <pre class="has-example"><code class="language-markup">
-$(&#39;#calendar-api-multipleClear&#39;).datepicker(&#39;multipleClear&#39;);</code></pre>
+$(&#39;#calendar-api-multipleClear&#39;).asDatepicker(&#39;multipleClear&#39;);</code></pre>
                 <div class="example">
                     <input type="text" class="calendar-multiple" id="calendar-api-multipleClear">
                     <button id="api-multipleClear-click">Clear</button>
@@ -182,7 +182,7 @@ $(&#39;#calendar-api-multipleClear&#39;).datepicker(&#39;multipleClear&#39;);</c
             <section>
                 <h3>getWrap()</h3>
                 <pre class="has-example"><code class="language-markup">
-$.datepicker(&#39;getWrap&#39;);</code></pre>
+$.asDatepicker(&#39;getWrap&#39;);</code></pre>
                 <div class="example">
                     <p>Returns the wrapper of the calendar.</p> 
                 </div>
@@ -190,7 +190,7 @@ $.datepicker(&#39;getWrap&#39;);</code></pre>
 
                 <h3>getInput()</h3>
                 <pre class="has-example"><code class="language-markup">
-$.datepicker(&#39;getInput&#39;);</code></pre>
+$.asDatepicker(&#39;getInput&#39;);</code></pre>
                 <div class="example">
                     Returns the input field.
                 </div>
@@ -198,10 +198,10 @@ $.datepicker(&#39;getInput&#39;);</code></pre>
 
                 <h3>getDate()</h3>
                 <pre class="has-example"><code class="language-markup">
-$(&#39;#calendar-api-getDate&#39;).datepicker(&#39;getDate&#39;);</code></pre>
+$(&#39;#calendar-api-getDate&#39;).asDatepicker(&#39;getDate&#39;);</code></pre>
                 <div class="example">
                     <p>Returns the currently selected date.</p>
-                    <input type="text" class="datepicker" id="calendar-api-getDate">
+                    <input type="text" class="asDatepicker" id="calendar-api-getDate">
                     <button id="api-getDate-click">getDate</button>
                 </div>
                 <div class="example info">
@@ -211,10 +211,10 @@ $(&#39;#calendar-api-getDate&#39;).datepicker(&#39;getDate&#39;);</code></pre>
  
                 <h3>getDate(format)</h3>
                 <pre class="has-example"><code class="language-markup">
-$(&#39;#calendar-api-getDate-format&#39;).datepicker(&#39;getDate&#39;,&nbsp;&#39;yyyy-mm-dd&#39;);</code></pre>
+$(&#39;#calendar-api-getDate-format&#39;).asDatepicker(&#39;getDate&#39;,&nbsp;&#39;yyyy-mm-dd&#39;);</code></pre>
                 <div class="example">
                     <p>Returns the current date, formatted with the pattern given as the argument.</p>
-                    <input type="text" class="datepicker" id="calendar-api-getDate-format">
+                    <input type="text" class="asDatepicker" id="calendar-api-getDate-format">
                     <button id="api-getDate-format-click">getDate</button>
                 </div>
                 <div class="example info">
@@ -224,11 +224,11 @@ $(&#39;#calendar-api-getDate-format&#39;).datepicker(&#39;getDate&#39;,&nbsp;&#3
    
                 <h3>update()</h3>
                 <pre class="has-example"><code class="language-markup">
-$(&#39;#calendar-api-update&#39;).datepicker();
-$(&#39;#calendar-api-update&#39;).datepicker(&#39;update&#39;, {mode:&nbsp;&#39;range&#39;});</code></pre>
+$(&#39;#calendar-api-update&#39;).asDatepicker();
+$(&#39;#calendar-api-update&#39;).asDatepicker(&#39;update&#39;, {mode:&nbsp;&#39;range&#39;});</code></pre>
                 <div class="example">
-                    <p>Sets one or more options for the datepicker.</p>
-                    <input type="text" class="datepicker" id="calendar-api-update">
+                    <p>Sets one or more options for the asDatepicker.</p>
+                    <input type="text" class="asDatepicker" id="calendar-api-update">
                     <button id="api-update-click">update</button>
                 </div>
                 <section>
@@ -262,57 +262,58 @@ $(&#39;#calendar-api-update&#39;).datepicker(&#39;update&#39;, {mode:&nbsp;&#39;
 <script src="js/jquery.js"></script>
 <script src="js/jquery.toc.min.js"></script>
 <script src="js/prism.js"></script>
-<script src="../dist/jquery-datepicker.min.js"></script>
+<script src="../src/jquery-asDatepicker.js"></script>
+<script src="../demo/js/language.js"></script>
 <script>
 $(document).ready(function(){
 	(function(){
 		$('#toc').toc();
 	})();
-
-    $("#calendar").datepicker({
-            namespace: 'calendar'
+    $("#calendar").asDatepicker({
+            namespace: 'calendar',
+            lang: 'zh'
         });
     
-	$("#calendar2").datepicker({mode: 'range'});
+	$("#calendar2").asDatepicker({mode: 'range'});
 
-    $("#calendar3").datepicker({mode: 'multiple', calendars: 4});
+    $("#calendar3").asDatepicker({mode: 'multiple', calendars: 4});
 
-	$("#calendar4").datepicker();
+	$("#calendar4").asDatepicker();
 
-	$('.datepicker').datepicker();
-    $('.calendar-multiple').datepicker({mode: 'multiple', calendars: 3});
+	$('.asDatepicker').asDatepicker();
+    $('.calendar-multiple').asDatepicker({mode: 'multiple', calendars: 3});
 
-    $('#calendar-api-displayMode').datepicker({displayMode: 'inline'});
+    $('#calendar-api-displayMode').asDatepicker({displayMode: 'inline'});
 
 	$('#calendar-api-show-click').click(function(){
-		$('#calendar-api-show').datepicker('show');
+		$('#calendar-api-show').asDatepicker('show');
 		return false;
 	});
 	$('#calendar-api-hide-click').click(function(){
-		$('#calendar-api-hide').datepicker('hide');
+		$('#calendar-api-hide').asDatepicker('hide');
 		return false;
 	});
 
     $('#api-multipleClear-click').click(function() {
-        $("#calendar-api-multipleClear").datepicker('multipleClear');
+        $("#calendar-api-multipleClear").asDatepicker('multipleClear');
         return false;
     });
 
     $('#api-getDate-click').click(function() {
-        var html = '<div>' + $('#calendar-api-getDate').datepicker('getDate') + '</div>';
-        console.log($('#calendar-api-getDate').datepicker('getDate'));
+        var html = '<div>' + $('#calendar-api-getDate').asDatepicker('getDate') + '</div>';
+        console.log($('#calendar-api-getDate').asDatepicker('getDate'));
         $(html).prependTo($('#api-getDate-info'));
         return false;
     });
 
     $('#api-getDate-format-click').click(function() {
-        var html = '<div>' + $('#calendar-api-getDate-format').datepicker('getDate', 'yyyy-mm-dd') + '</div>';
+        var html = '<div>' + $('#calendar-api-getDate-format').asDatepicker('getDate', 'yyyy-mm-dd') + '</div>';
         $(html).prependTo($('#api-getDate-format-info'));
         return false;
     });
 
     $('#api-update-click').click(function() {
-        $('#calendar-api-update').datepicker('update', {mode: 'range'});
+        $('#calendar-api-update').asDatepicker('update', {mode: 'range'});
         return false;
     });
 

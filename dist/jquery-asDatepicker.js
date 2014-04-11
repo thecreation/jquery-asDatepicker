@@ -1,20 +1,21 @@
-/*
- * datepicker
- * https://github.com/amazingsurge/jquery-datepicker
- *
- * Copyright (c) 2013 amazingSurge
- * Licensed under the MIT license.
- */
+/*! asDatepicker - v0.3.0 - 2014-04-11
+* https://github.com/amazingsurge/jquery-asDatepicker
+* Copyright (c) 2014 amazingSurge; Licensed MIT */
 (function($) {
 
-    var Datepicker = $.datepicker = function(element, options) {
+    var AsDatepicker = $.asDatepicker = function(element, options) {
         this.$el = $(element);
         var meta_data = [],
             self = this;
         $.each(this.$el.data(), function(k, v) {
             meta_data[k] = self._parseHtmlString(k, v);
         });
-        this.options = $.extend(true, {}, Datepicker.defaults, options, meta_data);
+        this.options = $.extend(true, {}, AsDatepicker.defaults, options, meta_data);
+
+        var inputWrap = this.$el.wrap(this.options.tplWrapper().replace(/namespace/g, this.options.namespace)).parent(),
+            inputIcon = $('<i class="' + this.options.namespace +'-icon"></i>');
+        inputIcon.appendTo(inputWrap);
+
         this._init();
     };
 
@@ -24,7 +25,7 @@
 
     var SHOWED = 0;
 
-    Datepicker.defaults = {
+    AsDatepicker.defaults = {
         firstDayOfWeek: 0, //0---6 === sunday---saturday
 
         mode: 'single', //single|range|multiple
@@ -96,9 +97,6 @@
                 '<div class="namespace-years"></div>' +
                 '</div>';
         },
-        localize: function(lang, label) {
-            LABEL[lang] = label;
-        },
         onRender: function() {},
         onChange: function() {},
         onBeforeShow: function() {},
@@ -107,7 +105,10 @@
         onHide: function() {}
     };
 
-    Datepicker.defaults.localize("en", {
+    AsDatepicker.localize = function(lang, label) {
+        LABEL[lang] = label;
+    },
+    AsDatepicker.localize("en", {
         days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         daysShort: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -115,16 +116,16 @@
         // caption_format: 'mm yyyy'
     });
 
-    Datepicker.defaults.localize("zh", {
-        days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
-        daysShort: ["日", "一", "二", "三", "四", "五", "六"],
-        months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-        monthsShort: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"]
-        // caption_format: 'yyyy年m月dd日'
-    });
+    // AsDatepicker.localize("zh", {
+    //     days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+    //     daysShort: ["日", "一", "二", "三", "四", "五", "六"],
+    //     months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+    //     monthsShort: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"]
+    //     // caption_format: 'yyyy年m月dd日'
+    // });
 
-    Datepicker.prototype = {
-        constructor: Datepicker,
+    AsDatepicker.prototype = {
+        constructor: AsDatepicker,
 
         _keyboard: {
             init: function(self) {
@@ -791,7 +792,7 @@
         },
         _parseHtmlString: function(option, value) {
             var array = [],
-                options = Datepicker.defaults;
+                options = AsDatepicker.defaults;
             if (typeof options[option] === 'object') {
                 var parts = this._stringSeparate(value, ','),
                     sub_parts;
@@ -1685,7 +1686,6 @@
                                 --this.focused;
                                 this._manageViews(i);
                                 this._manageViews(i - 1);
-                                console.log(this.focused)
                             }
                         } else {
                             var prevMonthDays = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
@@ -1782,7 +1782,7 @@
         multipleClear: function() {
             this.selectedDate = [];
             for (var i = 0; i < this.options.calendars; i++) {
-                this.manageViews(i);
+                this._manageViews(i);
             }
             this._setValue();
         },
@@ -1805,7 +1805,7 @@
             }
         },
         destroy: function() {
-            this.$el.removeData('datepicker');
+            this.$el.removeData('asDatepicker');
             this.picker.remove();
 
             if (this.options.displayMode === 'inline') {
@@ -1828,20 +1828,20 @@
         }
     };
 
-    $.fn.datepicker = function(options) {
+    $.fn.asDatepicker = function(options) {
         if (typeof options === 'string') {
             var method = options;
             var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
             if (/^\_/.test(method)) {
                 return false;
             } else if (/^(getWrap|getInput|getDate)$/.test(method)) {
-                var api = this.first().data('datepicker');
+                var api = this.first().data('asDatepicker');
                 if (api && typeof api[method] === 'function') {
                     return api[method].apply(api, method_arguments);
                 }
             } else {
                 return this.each(function() {
-                    var api = $.data(this, 'datepicker');
+                    var api = $.data(this, 'asDatepicker');
                     if (api && typeof api[method] === 'function') {
                         api[method].apply(api, method_arguments);
                     }
@@ -1849,8 +1849,8 @@
             }
         } else {
             return this.each(function() {
-                if (!$.data(this, 'datepicker')) {
-                    $.data(this, 'datepicker', new Datepicker(this, options));
+                if (!$.data(this, 'asDatepicker')) {
+                    $.data(this, 'asDatepicker', new AsDatepicker(this, options));
                 }
             });
         }

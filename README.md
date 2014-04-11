@@ -1,21 +1,21 @@
-# Datepicker
+# asDatepicker
 
 A jquery plugin that show date picker.
 
 ## Getting Started
 Download the [production version][min] or the [development version][max].
 
-[min]: https://raw.github.com/amazingsurge/jquery-datepicker/master/dist/jquery-datepicker.min.js
-[max]: https://raw.github.com/amazingsurge/jquery-datepicker/master/dist/jquery-datepicker.js
+[min]: https://raw.github.com/amazingsurge/jquery-asDatepicker/master/dist/jquery-asDatepicker.min.js
+[max]: https://raw.github.com/amazingsurge/jquery-asDatepicker/master/dist/jquery-asDatepicker.js
 
 In your web page:
 
 ```html
 <script src="jquery.js"></script>
-<script src="dist/jquery-datepicker.min.js"></script>
+<script src="dist/jquery-asDatepicker.min.js"></script>
 <script>
 jQuery(function($) {
-  $.datepicker(); //
+  $.asDatepicker(); //
 });
 </script>
 ```
