@@ -5,23 +5,92 @@
  * Copyright (c) 2013 amazingSurge
  * Licensed under the MIT license.
  */
-(function($) {
+ (function($, document, window, undefined) {
+     // Optional, but considered best practice by some
+    "use strict";
 
-    var AsDatepicker = $.asDatepicker = function(element, options) {
-        this.$el = $(element);
-        var meta_data = [],
-            self = this;
-        $.each(this.$el.data(), function(k, v) {
-            meta_data[k] = self._parseHtmlString(k, v);
-        });
-        this.options = $.extend(true, {}, AsDatepicker.defaults, options, meta_data);
+    var pluginName = 'asDatepicker',
+        defaults = {
+            firstDayOfWeek: 0, //0---6 === sunday---saturday
 
-        var inputWrap = this.$el.wrap(this.options.tplWrapper().replace(/namespace/g, this.options.namespace)).parent(),
-            inputIcon = $('<i class="' + this.options.namespace +'-icon"></i>');
-        inputIcon.appendTo(inputWrap);
+            mode: 'single', //single|range|multiple
 
-        this._init();
-    };
+            rangeMode: 'default', // default|section|array
+
+            displayMode: 'dropdown', //dropdown|inline
+
+            calendars: 3,
+
+            date: 'today', //today|Date (yyyy-mm-dd)
+
+            keyboard: true, //true | false
+
+            rangeSeparator: '-',
+
+            multipleSeparator: ',',
+
+            multipleSelectNum: 5,
+
+            max: null,
+            // max: '2013-10-1',//null|days|Date with (yyyy-mm-dd)
+            min: null,
+            // min: '2012-12-1',//null|days|Date with (yyyy-mm-dd)
+
+            position: 'bottom', //top|right|bottom|left|rightTop|leftTop
+
+            alwaysShow: false, // true or false
+
+            onceClick: false, // true or false
+
+            selectableYear: [],
+            //[{from: 1980, to: 1985}, 1988, {from: 2000, to: 2010}, 2013],
+            selectableMonth: [], //months from 0 - 11 (jan to dec)
+            //[1, {from: 3, to: 10}, 12 ],
+            selectableDay: [], //days of week 0-6 (su to sa)
+
+            // selectableDate: [],
+            selectableDate: [],
+            //['2013-8-1', {from: '2013-8-5', to: '2013-8-10'}, {from: -30, to: 30}], {from: 10, to: 30}, {from: -30, to: 0}, {from:-30, to: 30}],
+
+            disableYear: [],
+
+            disableMonth: [],
+
+            disableDay: [],
+
+            // disableDate: [],
+            disableDate: [], //range can not repeat
+
+            lang: 'en', //'chinese'
+
+            views: ['days'], // ['days'], ['days', 'months', 'years']
+
+            format: 'yyyy/mm/dd',
+            namespace: 'calendar',
+            tplWrapper: function() {
+                return '<div class="namespace-wrap"></div>';
+            },
+            tplContent: function() {
+                return '<div class="namespace-content">' +
+                    '<div class="namespace-header">' +
+                    '<span class="namespace-prev"></span>' +
+                    '<span class="namespace-caption"></span>' +
+                    '<span class="namespace-next"></span>' +
+                    '</div>' +
+                    '<div class="namespace-days"></div>' +
+                    '<div class="namespace-months"></div>' +
+                    '<div class="namespace-years"></div>' +
+                    '</div>';
+            },
+            onInit: function() {},
+            onReady: function() {},
+            onRender: function() {},
+            onChange: function() {},
+            onBeforeShow: function() {},
+            onShow: function() {},
+            onBeforeHide: function() {},
+            onHide: function() {}
+        };
 
     var $doc = $(document);
 
@@ -29,90 +98,42 @@
 
     var SHOWED = 0;
 
-    AsDatepicker.defaults = {
-        firstDayOfWeek: 0, //0---6 === sunday---saturday
+    var Plugin = $[pluginName] = function(element, options) {
+        this.$el = $(element);
+        var meta_data = [],
+            self = this;
+        $.each(this.$el.data(), function(k, v) {
+            meta_data[k] = self._parseHtmlString(k, v);
+        });
+        this.options = $.extend(true, {}, defaults, options, meta_data);
 
-        mode: 'single', //single|range|multiple
+        //init the status
+        this.format = this._parseFormat('yyyy-mm-dd');
+        this.outputFormat = this._parseFormat(this.options.format || 'yyyy/mm/dd');
+        this.mode = this.options.mode;
+        this.namespace = this.options.namespace;
+        this.focused = 0;
+        this.map = {};
+        this.pickerHide = false;
+        this.flag = SHOWED++;
+        this.selected = false;
+        this.showed = false;
+        this.bound = false;
 
-        rangeMode: 'default', // default|section|array
+        var inputWrap = this.$el.wrap(this.options.tplWrapper().replace(/namespace/g, this.namespace)).parent(),
+            inputIcon = $('<i class="' + this.namespace +'-icon"></i>');
+        inputIcon.appendTo(inputWrap);
 
-        displayMode: 'dropdown', //dropdown|inline
+        this._trigger('init');
+        this._init();
+    }
 
-        calendars: 3,
+    Plugin.LABEL = LABEL;
 
-        date: 'today', //today|Date (yyyy-mm-dd)
-
-        keyboard: true, //true | false
-
-        rangeSeparator: '-',
-
-        multipleSeparator: ',',
-
-        multipleSelectNum: 5,
-
-        max: null,
-        // max: '2013-10-1',//null|days|Date with (yyyy-mm-dd)
-        min: null,
-        // min: '2012-12-1',//null|days|Date with (yyyy-mm-dd)
-
-        position: 'bottom', //top|right|bottom|left|rightTop|leftTop
-
-        alwaysShow: false, // true or false
-
-        onceClick: false, // true or false
-
-        selectableYear: [],
-        //[{from: 1980, to: 1985}, 1988, {from: 2000, to: 2010}, 2013],
-        selectableMonth: [], //months from 0 - 11 (jan to dec)
-        //[1, {from: 3, to: 10}, 12 ],
-        selectableDay: [], //days of week 0-6 (su to sa)
-
-        // selectableDate: [],
-        selectableDate: [],
-        //['2013-8-1', {from: '2013-8-5', to: '2013-8-10'}, {from: -30, to: 30}], {from: 10, to: 30}, {from: -30, to: 0}, {from:-30, to: 30}],
-
-        disableYear: [],
-
-        disableMonth: [],
-
-        disableDay: [],
-
-        // disableDate: [],
-        disableDate: [], //range can not repeat
-
-        lang: 'en', //'chinese'
-
-        views: ['days'], // ['days'], ['days', 'months', 'years']
-
-        format: 'yyyy/mm/dd',
-        namespace: 'calendar',
-        tplWrapper: function() {
-            return '<div class="namespace-wrap"></div>';
-        },
-        tplContent: function() {
-            return '<div class="namespace-content">' +
-                '<div class="namespace-header">' +
-                '<span class="namespace-prev"></span>' +
-                '<span class="namespace-caption"></span>' +
-                '<span class="namespace-next"></span>' +
-                '</div>' +
-                '<div class="namespace-days"></div>' +
-                '<div class="namespace-months"></div>' +
-                '<div class="namespace-years"></div>' +
-                '</div>';
-        },
-        onRender: function() {},
-        onChange: function() {},
-        onBeforeShow: function() {},
-        onShow: function() {},
-        onBeforeHide: function() {},
-        onHide: function() {}
-    };
-
-    AsDatepicker.localize = function(lang, label) {
+    Plugin.localize = function(lang, label) {
         LABEL[lang] = label;
-    },
-    AsDatepicker.localize("en", {
+    }
+    Plugin.localize('en', {
         days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         daysShort: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -120,16 +141,8 @@
         // caption_format: 'mm yyyy'
     });
 
-    // AsDatepicker.localize("zh", {
-    //     days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
-    //     daysShort: ["日", "一", "二", "三", "四", "五", "六"],
-    //     months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-    //     monthsShort: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"]
-    //     // caption_format: 'yyyy年m月dd日'
-    // });
-
-    AsDatepicker.prototype = {
-        constructor: AsDatepicker,
+    Plugin.prototype = {
+        constructor: Plugin,
 
         _keyboard: {
             init: function(self) {
@@ -560,19 +573,6 @@
         },
 
         _init: function() {
-            //init the status
-            this.format = this._parseFormat('yyyy-mm-dd');
-            this.outputFormat = this._parseFormat(this.options.format || 'yyyy/mm/dd');
-            this.mode = this.options.mode;
-            this.namespace = this.options.namespace;
-            this.focused = 0;
-            this.map = {};
-            this.pickerHide = false;
-            this.flag = SHOWED++;
-            this.selected = false;
-            this.showed = false;
-            this.bound = false;
-
             var wrapper = this.options.tplWrapper().replace(/namespace/g, this.namespace),
                 content = this.options.tplContent().replace(/namespace/g, this.namespace),
                 $wrapper = $(wrapper),
@@ -647,6 +647,9 @@
             }
 
             this._setValue();
+
+            // after init end trigger 'ready'
+            this._trigger('ready');
         },
         _initDate: function() {
             var date = (this.options.data === 'today' ? new Date() : this._parseDate(this.options.date, this.format));
@@ -796,7 +799,7 @@
         },
         _parseHtmlString: function(option, value) {
             var array = [],
-                options = AsDatepicker.defaults;
+                options = Plugin.defaults;
             if (typeof options[option] === 'object') {
                 var parts = this._stringSeparate(value, ','),
                     sub_parts;
@@ -1145,8 +1148,8 @@
             var rangeUntouch = status,
                 mode = this.options.rangeMode,
                 dateArray, _current,
-                self = this;
-            isUntouch = false;
+                self = this,
+                isUntouch = false;
             if (mode === 'section') {
                 switch (view) {
                     case 'days':
@@ -1599,9 +1602,7 @@
                     this.$el.val(val);
                     break;
             }
-            if (this.options.onChange) {
-                this.options.onChange.apply(this);
-            }
+            this._trigger('change');
             this.oldValue = this.$el.val();
         },
         _focus: function() {
@@ -1627,22 +1628,33 @@
             return false;
         },
 
+        _trigger: function(eventType) {
+            // event
+            this.$el.trigger(pluginName + '::' + eventType, this);
+
+            // callback
+            eventType = eventType.replace(/\b\w+\b/g, function(word) {
+                return word.substring(0, 1).toUpperCase() + word.substring(1);
+            });
+            var onFunction = 'on' + eventType;
+            var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
+            if (typeof this.options[onFunction] === 'function') {
+                this.options[onFunction].apply(this, method_arguments);
+            }
+        },
+
         show: function() {
             var self = this,
                 obj;
 
             if (this.options.displayMode === 'inline') {
-                if (this.options.onBeforeShow) {
-                    this.options.onBeforeShow.apply(this);
-                }
+                this._trigger('beforeShow');
                 this.picker.on('click.picker', function(e) {
                     self._click.call(self, e);
                 });
             } else {
                 if (this.showed === false) {
-                    if (this.options.onBeforeShow) {
-                        this.options.onBeforeShow.apply(this);
-                    }
+                    this._trigger('beforeShow');
                     this.picker.removeClass(this.namespace + '_hide');
                     this.picker.addClass(this.namespace + '_show');
                     this._position();
@@ -1652,25 +1664,19 @@
                     });
                 }
             }
-            if (this.options.onShow) {
-                this.options.onShow.apply(this);
-            }
+            this._trigger('show');
             return this;
         },
         hide: function() {
             if (this.showed === true) {
-                if (this.options.onBeforeHide) {
-                    this.options.onBeforeHide.apply(this);
-                }
+                this._trigger('beforeHide');
                 this.selected = false;
                 this.picker.removeClass(this.namespace + '_show');
                 this.picker.addClass(this.namespace + '_hide');
                 this.showed = false;
 
                 $doc.off('click.' + this.flag);
-                if (this.options.onHide) {
-                    this.options.onHide.apply(this);
-                }
+                this._trigger('hide');
             }
             return this;
         },
@@ -1830,22 +1836,24 @@
             this.destroy();
             this._init();
         }
-    };
+    }
 
-    $.fn.asDatepicker = function(options) {
+    Plugin.defaults = defaults;
+
+    $.fn[pluginName] = function(options) {
         if (typeof options === 'string') {
             var method = options;
             var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
             if (/^\_/.test(method)) {
                 return false;
             } else if (/^(getWrap|getInput|getDate)$/.test(method)) {
-                var api = this.first().data('asDatepicker');
+                var api = this.first().data(pluginName);
                 if (api && typeof api[method] === 'function') {
                     return api[method].apply(api, method_arguments);
                 }
             } else {
                 return this.each(function() {
-                    var api = $.data(this, 'asDatepicker');
+                    var api = $.data(this, pluginName);
                     if (api && typeof api[method] === 'function') {
                         api[method].apply(api, method_arguments);
                     }
@@ -1853,11 +1861,10 @@
             }
         } else {
             return this.each(function() {
-                if (!$.data(this, 'asDatepicker')) {
-                    $.data(this, 'asDatepicker', new AsDatepicker(this, options));
+                if (!$.data(this, pluginName)) {
+                    $.data(this, pluginName, new Plugin(this, options));
                 }
             });
         }
-    };
-
-})(jQuery);
+     }
+ })(jQuery, document, window);
