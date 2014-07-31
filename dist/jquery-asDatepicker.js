@@ -898,7 +898,7 @@
                                         break;
                                     case 'mm':
                                     case 'm':
-                                        date.setMonth((val -1) - 1);
+                                        date.setMonth((val -1), 1);
                                         break;
                                     case 'yy':
                                         date.setFullYear(2000 + val);
