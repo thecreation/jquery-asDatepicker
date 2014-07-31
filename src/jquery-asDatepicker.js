@@ -107,18 +107,7 @@
         });
         this.options = $.extend(true, {}, defaults, options, meta_data);
 
-        //init the status
-        this.format = this._parseFormat('yyyy-mm-dd');
-        this.outputFormat = this._parseFormat(this.options.format || 'yyyy/mm/dd');
-        this.mode = this.options.mode;
         this.namespace = this.options.namespace;
-        this.focused = 0;
-        this.map = {};
-        this.pickerHide = false;
-        this.flag = SHOWED++;
-        this.selected = false;
-        this.showed = false;
-        this.bound = false;
 
         var inputWrap = this.$el.wrap(this.options.tplWrapper().replace(/namespace/g, this.namespace)).parent(),
             inputIcon = $('<i class="' + this.namespace +'-icon"></i>');
@@ -573,6 +562,18 @@
         },
 
         _init: function() {
+            //init the status
+            this.format = this._parseFormat('yyyy-mm-dd');
+            this.outputFormat = this._parseFormat(this.options.format || 'yyyy/mm/dd');
+            this.mode = this.options.mode;
+            this.focused = 0;
+            this.map = {};
+            this.pickerHide = false;
+            this.flag = SHOWED++;
+            this.selected = false;
+            this.showed = false;
+            this.bound = false;
+
             var wrapper = this.options.tplWrapper().replace(/namespace/g, this.namespace),
                 content = this.options.tplContent().replace(/namespace/g, this.namespace),
                 $wrapper = $(wrapper),
@@ -901,7 +902,7 @@
                                         break;
                                     case 'mm':
                                     case 'm':
-                                        date.setMonth(val - 1);
+                                        date.setMonth((val -1) - 1);
                                         break;
                                     case 'yy':
                                         date.setFullYear(2000 + val);
