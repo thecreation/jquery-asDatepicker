@@ -15,7 +15,7 @@ In your web page:
 <script src="dist/jquery-asDatepicker.min.js"></script>
 <script>
 jQuery(function($) {
-  $.asDatepicker(); //
+  $.asDatepicker(); 
 });
 </script>
 ```

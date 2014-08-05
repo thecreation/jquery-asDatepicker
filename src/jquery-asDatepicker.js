@@ -2,7 +2,7 @@
  * asDatepicker
  * https://github.com/amazingsurge/jquery-asDatepicker
  *
- * Copyright (c) 2013 amazingSurge
+ * Copyright (c) 2014 amazingSurge
  * Licensed under the MIT license.
  */
  (function($, document, window, undefined) {
@@ -11,60 +11,34 @@
 
     var pluginName = 'asDatepicker',
         defaults = {
-            firstDayOfWeek: 0, //0---6 === sunday---saturday
-
-            mode: 'single', //single|range|multiple
-
+            firstDayOfWeek: 0, // 0---6 === sunday---saturday
+            mode: 'single', // single|range|multiple
             rangeMode: 'default', // default|section|array
-
-            displayMode: 'dropdown', //dropdown|inline
-
+            displayMode: 'dropdown', // dropdown|inline
             calendars: 3,
-
-            date: 'today', //today|Date (yyyy-mm-dd)
-
-            keyboard: true, //true | false
-
+            date: 'today', // today|Date (yyyy-mm-dd)
+            keyboard: true, // true | false
             rangeSeparator: '-',
-
             multipleSeparator: ',',
-
             multipleSelectNum: 5,
-
-            max: null,
-            // max: '2013-10-1',//null|days|Date with (yyyy-mm-dd)
-            min: null,
-            // min: '2012-12-1',//null|days|Date with (yyyy-mm-dd)
-
-            position: 'bottom', //top|right|bottom|left|rightTop|leftTop
-
+            max: null, // max: '2013-10-1',//null|days|Date with (yyyy-mm-dd)
+            min: null, // min: '2012-12-1',//null|days|Date with (yyyy-mm-dd)
+            position: 'bottom', // top|right|bottom|left|rightTop|leftTop
             alwaysShow: false, // true or false
-
             onceClick: false, // true or false
-
-            selectableYear: [],
-            //[{from: 1980, to: 1985}, 1988, {from: 2000, to: 2010}, 2013],
-            selectableMonth: [], //months from 0 - 11 (jan to dec)
+            selectableYear: [], // [{from: 1980, to: 1985}, 1988, {from: 2000, to: 2010}, 2013],
+            selectableMonth: [], // months from 0 - 11 (jan to dec)
             //[1, {from: 3, to: 10}, 12 ],
-            selectableDay: [], //days of week 0-6 (su to sa)
-
+            selectableDay: [], // days of week 0-6 (su to sa)
             // selectableDate: [],
-            selectableDate: [],
-            //['2013-8-1', {from: '2013-8-5', to: '2013-8-10'}, {from: -30, to: 30}], {from: 10, to: 30}, {from: -30, to: 0}, {from:-30, to: 30}],
-
+            selectableDate: [], // ['2013-8-1', {from: '2013-8-5', to: '2013-8-10'}, {from: -30, to: 30}], {from: 10, to: 30}, {from: -30, to: 0}, {from:-30, to: 30}],
             disableYear: [],
-
             disableMonth: [],
-
             disableDay: [],
-
             // disableDate: [],
             disableDate: [], //range can not repeat
-
             lang: 'en', //'chinese'
-
             views: ['days'], // ['days'], ['days', 'months', 'years']
-
             format: 'yyyy/mm/dd',
             namespace: 'calendar',
             tplWrapper: function() {
@@ -115,13 +89,13 @@
 
         this._trigger('init');
         this._init();
-    }
+    };
 
     Plugin.LABEL = LABEL;
 
     Plugin.localize = function(lang, label) {
         LABEL[lang] = label;
-    }
+    };
     Plugin.localize('en', {
         days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         daysShort: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
@@ -154,7 +128,7 @@
                     'ENTER': 13,
                     'ESC': 27,
                     'CTRL': 17,
-                    'ALT': 18,
+                    'ALT': 18
                 };
             },
             prevDate: function() {
@@ -445,8 +419,7 @@
                             var _parts = [];
                             judge = true;
                             for (var j = 0; j < parts.length; j++) {
-                                var _date = Date.parse(parts[j]);
-                                _parts.push(_date);
+                                _parts.push( Date.parse(parts[j]) );
                                 if (!Date.parse(parts[j])) {
                                     judge = false;
                                 }
@@ -518,7 +491,7 @@
 
                 if (key in map && typeof map[key] === 'function') {
                     e.preventDefault();
-                    return map[key].call(this)
+                    return map[key].call(this);
                 }
             },
             attach: function(self, map) {
@@ -577,7 +550,6 @@
             var wrapper = this.options.tplWrapper().replace(/namespace/g, this.namespace),
                 content = this.options.tplContent().replace(/namespace/g, this.namespace),
                 $wrapper = $(wrapper),
-                self = this,
                 calendars;
 
             //set calendars numeber
@@ -590,7 +562,7 @@
                     break;
                 case 'multiple':
                     calendars = this.options.calendars;
-                    this.options.views = ['days']
+                    this.options.views = ['days'];
                     break;
             }
             this.options.calendars = calendars;
@@ -606,7 +578,7 @@
 
             //displayMode 
             if (this.options.displayMode === 'inline') {
-                this.$el.after($wrapper).addClass(this.namespace + '_hide')
+                this.$el.after($wrapper).addClass(this.namespace + '_hide');
                 this.picker = $wrapper;
                 this.options.alwaysShow = true;
                 this.picker.addClass(this.namespace + '_show');
@@ -735,11 +707,11 @@
             }
         },
         _changeDateLevel: function(level, array) {
-            var self = this,
-                _array = [];
+            var _array = [],
+                date;
             $.each(array, function(i, n) {
                 if (n.length === undefined) {
-                    var date = '';
+                    date = '';
                     switch (level) {
                         case 'month':
                             date = new Date(n.getFullYear(), n.getMonth(), 1, 0, 0, 0, 0);
@@ -749,7 +721,7 @@
                             break;
                     }
                 } else if (n.length === 2) {
-                    var date = [];
+                    date = [];
                     switch (level) {
                         case 'month':
                             date[0] = new Date(n[0].getFullYear(), n[0].getMonth(), 1, 0, 0, 0, 0);
@@ -794,8 +766,8 @@
         },
         _stringSeparate: function(str, separator) {
             var re = new RegExp("[.\\" + separator + "\\s].*?"),
-                separator = str.match(re),
-                parts = str.split(separator);
+                _separator = str.match(re),
+                parts = str.split(_separator);
             return parts;
         },
         _parseHtmlString: function(option, value) {
@@ -805,7 +777,7 @@
                 var parts = this._stringSeparate(value, ','),
                     sub_parts;
                 for (var i = 0; i < parts.length; i++) {
-                    sub_parts = this._stringSeparate(parts[i], '>')
+                    sub_parts = this._stringSeparate(parts[i], '>');
                     if (sub_parts.length > 1) {
                         sub_parts = {
                             'from': sub_parts[0],
@@ -814,7 +786,7 @@
                     } else {
                         sub_parts = sub_parts[0];
                     }
-                    array.push(sub_parts)
+                    array.push(sub_parts);
                 }
                 return array;
             } else {
@@ -877,16 +849,15 @@
             return date.join(format.separator);
         },
         _parseDate: function(data, format) {
+            var date = new Date(),
+                day = date.getDate();
             switch (typeof(data)) {
                 case 'string':
                     if (data.length < 5) {
-                        var date = new Date(),
-                            day = date.getDate();
                         date.setHours(0, 0, 0, 0);
                         date.setDate(day + Number(data));
                     } else {
                         var parts = data.split(format.separator) || parts,
-                            date = new Date(),
                             val;
                         date.setHours(0, 0, 0, 0);
                         if (parts.length === format.parts.length) {
@@ -916,8 +887,6 @@
                     }
                     break;
                 case 'number':
-                    var date = new Date(),
-                        day = date.getDate();
                     date.setHours(0, 0, 0, 0);
                     date.setDate(day + data);
                     break;
@@ -932,7 +901,7 @@
                     array[count++] = this._parseDate(arr[i], format);
                 } else if (typeof(arr[i]) === 'object') {
                     var obj = arr[i],
-                        from, to, startDate, endDate;
+                        from, to;
                     for (var key in obj) {
                         switch (key) {
                             case 'from':
@@ -977,10 +946,10 @@
             return array;
         },
         _position: function() {
-            var win_height = window.innerHeight,
-                win_width = window.innerWidth,
-                calendar_height = this.picker.outerHeight(),
+            var calendar_height = this.picker.outerHeight(),
                 calendar_width = this.picker.outerWidth(),
+                // win_height = window.innerHeight,
+                // win_width = window.innerWidth,
                 input_top = this.$el.offset().top,
                 input_left = this.$el.offset().left,
                 input_height = this.$el.outerHeight(),
@@ -988,9 +957,9 @@
                 scroll_top = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0,
                 scroll_left = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0,
                 to_top = input_top - scroll_top,
-                to_bottom = win_height - to_top - input_height,
-                to_left = input_left - scroll_left,
-                to_right = win_width - to_left - input_width;
+                // to_bottom = win_height - to_top - input_height,
+                // to_right = win_width - to_left - input_width,
+                to_left = input_left - scroll_left;
             switch (this.options.position) {
                 case 'top':
                     this.picker.css({
@@ -1064,7 +1033,7 @@
         },
         _setRange: function(mode, view, status, currentDate, dateArray) {
             var _status = status,
-                i, _current, self = this;
+                self = this;
             if (mode === 'section') {
                 _status = this._inArray(currentDate, dateArray);
             } else if (mode === 'array') {
@@ -1149,8 +1118,7 @@
             var rangeUntouch = status,
                 mode = this.options.rangeMode,
                 dateArray, _current,
-                self = this,
-                isUntouch = false;
+                self = this;
             if (mode === 'section') {
                 switch (view) {
                     case 'days':
@@ -1327,11 +1295,11 @@
                     content = day;
                     if (this.mode === 'multiple') {
                         if (Date.parse(dateArray[m]) === Date.parse(this.focusDate)) {
-                            className += ' ' + this.namespace + '_focus'
+                            className += ' ' + this.namespace + '_focus';
                         }
                     } else {
                         if (Date.parse(dateArray[m]) === Date.parse(this.focusDate[i])) {
-                            className += ' ' + this.namespace + '_focus'
+                            className += ' ' + this.namespace + '_focus';
                         }
                     }
 
@@ -1381,11 +1349,11 @@
                     status[3] = !status[3];
                 }
                 if (Date.parse(dateArray[m]) === Date.parse(new Date(focus.getFullYear(), focus.getMonth(), 1, 0, 0, 0, 0))) {
-                    className += ' ' + this.namespace + '_focus'
+                    className += ' ' + this.namespace + '_focus';
                 }
                 className += this._renderStatus(status);
 
-                html += '<span class="month-' + m + ' ' + className + '">' + content[m] + '</span>'
+                html += '<span class="month-' + m + ' ' + className + '">' + content[m] + '</span>';
             }
             html += '</div>';
             return html;
@@ -1422,7 +1390,7 @@
                     status[3] = !status[3];
                 }
                 if (Date.parse(dateArray[m]) === Date.parse(new Date(focus.getFullYear(), 0, 1, 0, 0, 0, 0))) {
-                    className += ' ' + this.namespace + '_focus'
+                    className += ' ' + this.namespace + '_focus';
                 }
                 className += this._renderStatus(status);
 
@@ -1591,13 +1559,13 @@
                     break;
                 case 'multiple':
                     var val = '',
-                        formated;
+                        _formated;
                     for (var j = 0; j < this.selectedDate.length; j++) {
-                        formated = this._formatDate(new Date(this.selectedDate[j]), this.outputFormat);
+                        _formated = this._formatDate(new Date(this.selectedDate[j]), this.outputFormat);
                         if (val.length === 0) {
-                            val += formated;
+                            val += _formated;
                         } else {
-                            val += (this.options.multipleSeparator + formated);
+                            val += (this.options.multipleSeparator + _formated);
                         }
                     }
                     this.$el.val(val);
@@ -1645,8 +1613,7 @@
         },
 
         show: function() {
-            var self = this,
-                obj;
+            var self = this;
 
             if (this.options.displayMode === 'inline') {
                 this._trigger('beforeShow');
@@ -1685,6 +1652,7 @@
             var date = this.currentDate[i];
             switch (this.views[i]) {
                 case 'days':
+                    var prevMonthDays;
                     if (this.mode === 'multiple') {
                         if (press) {
                             if (this.focused === 0) {
@@ -1699,7 +1667,7 @@
                                 this._manageViews(i - 1);
                             }
                         } else {
-                            var prevMonthDays = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+                            prevMonthDays = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
                             if (this.focusDate.getDate() > prevMonthDays) {
                                 this.focusDate.setDate(prevMonthDays);
                             }
@@ -1714,7 +1682,7 @@
                     } else {
                         date.setMonth(this.currentMonth[i] - 1);
                         if (press) {
-                            var prevMonthDays = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+                            prevMonthDays = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
                             if (this.focusDate[i].getDate() > prevMonthDays) {
                                 this.focusDate[i].setDate(prevMonthDays);
                             }
@@ -1739,6 +1707,7 @@
             var date = this.currentDate[i];
             switch (this.views[i]) {
                 case 'days':
+                    var nextMonthDays;
                     if (this.mode === 'multiple') {
                         if (press) {
                             if (this.focused === this.options.calendars - 1) {
@@ -1753,9 +1722,9 @@
                                 this._manageViews(i + 1);
                             }
                         } else {
-                            var nextMonthDays = new Date(date.getFullYear(), date.getMonth() + 2, 0).getDate();
+                            nextMonthDays = new Date(date.getFullYear(), date.getMonth() + 2, 0).getDate();
                             if (this.focusDate.getDate() > nextMonthDays) {
-                                this.focusDate.setDate(nextMonthDays)
+                                this.focusDate.setDate(nextMonthDays);
                             }
                             this.focusDate.setMonth(this.focusDate.getMonth() + 1);
                             for (var k = 0; k < this.options.calendars; k++) {
@@ -1768,9 +1737,9 @@
                     } else {
                         date.setMonth(this.currentMonth[i] + 1);
                         if (press) {
-                            var nextMonthDays = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+                            nextMonthDays = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
                             if (this.focusDate[i].getDate() > nextMonthDays) {
-                                this.focusDate[i].setDate(nextMonthDays)
+                                this.focusDate[i].setDate(nextMonthDays);
                             }
                             this.focusDate[i] = new Date(date.getFullYear(), date.getMonth(), this.focusDate[i].getDate(), 0, 0, 0, 0);
 
@@ -1837,7 +1806,7 @@
             this.destroy();
             this._init();
         }
-    }
+    };
 
     Plugin.defaults = defaults;
 
@@ -1867,5 +1836,5 @@
                 }
             });
         }
-     }
+     };
  })(jQuery, document, window);
