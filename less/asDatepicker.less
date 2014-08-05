@@ -11,264 +11,267 @@
 @calendarMonthHeight: (@calendarWeekHeight + @calendarDayHeight * 6) / 4;
 @calendarMonthWidth: (@calendarDayWidth * 7 )/ 3;
 
-*:focus {outline: none;}
+.@{namespace} {
+	&-wrap {
+	  	line-height: 1;
 
-.@{namespace}-wrap {
-  	line-height: 1;
-	span {
-	  	-webkit-box-sizing: border-box;
-	  	   -moz-box-sizing: border-box;
-	  			box-sizing: border-box;
-	}
-}
-
-.@{namespace}-content {
-	display: inline-block;
-	position: relative;
-	vertical-align: middle;
-
-	&.@{namespace}_days {
-		> .@{namespace}-days {
-			display: block;
+		span {
+		  	-webkit-box-sizing: border-box;
+		  	   -moz-box-sizing: border-box;
+		  			box-sizing: border-box;
 		}
+		&, & *:focus {outline: none;}
 	}
-	&.@{namespace}_months {
-		.@{namespace}-months {
-			display: block;
-		}
-	}
-	&.@{namespace}_years {
-		.@{namespace}-years {
-			display: block;
-		}
-	}
-
-}
-
-.@{namespace}_hide {
-	display: none;
-}
-
-.@{namespace}_show {
-	display: block;
-}
-
-.@{namespace}_absolute {
-	position: absolute;
-}
-
-.@{namespace}-header {
-	height: @calendarHeadHeight;
-	line-height: @calendarHeadHeight;
-	text-align: center;
-}
-.@{namespace}-prev, .@{namespace}-next {
-	display: inline-block;
-	width: @prevNextWidth;
-	height: @calendarHeadHeight;
-	cursor: pointer;
-}
-
-.@{namespace}-prev {
-	background-repeat: no-repeat;
-	background-position: center;
-	float: left;
-}
-
-.@{namespace}-next {
-	background-repeat: no-repeat;
-	background-position: center;
-	float: right;
-}
-.@{namespace}-caption {
-	cursor: pointer;
-	text-align: center;
-}
-
-.@{namespace}-days {
-	display: none;
-	span {
-		width: @calendarDayWidth;
-		text-align: center;
-		display: inline-block;;
-	}
-}
-
-.@{namespace}-head {
-	line-height:  @calendarWeekHeight;
-	height: @calendarWeekHeight;
-	span {
-		cursor: default;
-	}
-}
-
-.@{namespace}-body {
-	span {
-		cursor: pointer;
-		height: @calendarDayHeight;
-		&.@{namespace}_otherMonth, &.@{namespace}_untouchable {
-			cursor: default;
-		}
-	}
-}
-.@{namespace}-months, .@{namespace}-years {
-	display: none;
-	span {
-		width: @calendarMonthWidth;
-		height: @calendarMonthHeight;
-		text-align: center;
+	&-content {
 		display: inline-block;
+		position: relative;
+		vertical-align: middle;
+
+		&.@{namespace}_days {
+			> .@{namespace}-days {
+				display: block;
+			}
+		}
+		&.@{namespace}_months {
+			.@{namespace}-months {
+				display: block;
+			}
+		}
+		&.@{namespace}_years {
+			.@{namespace}-years {
+				display: block;
+			}
+		}
+
+	}
+
+	&_hide {
+		display: none;
+	}
+
+	&_show {
+		display: block;
+	}
+
+	&_absolute {
+		position: absolute;
+	}
+
+	&-header {
+		height: @calendarHeadHeight;
+		line-height: @calendarHeadHeight;
+		text-align: center;
+	}
+	&-prev, &-next {
+		display: inline-block;
+		width: @prevNextWidth;
+		height: @calendarHeadHeight;
 		cursor: pointer;
-		&.@{namespace}_untouchable {
+	}
+
+	&-prev {
+		background-repeat: no-repeat;
+		background-position: center;
+		float: left;
+	}
+
+	&-next {
+		background-repeat: no-repeat;
+		background-position: center;
+		float: right;
+	}
+	&-caption {
+		cursor: pointer;
+		text-align: center;
+	}
+
+	&-days {
+		display: none;
+		span {
+			width: @calendarDayWidth;
+			text-align: center;
+			display: inline-block;;
+		}
+	}
+
+	&-head {
+		line-height:  @calendarWeekHeight;
+		height: @calendarWeekHeight;
+		span {
 			cursor: default;
 		}
 	}
-}
 
-
-//==========================  render  ==========================
-
-.@{namespace}-content {
-	background-color: white;
-	border: 1px solid rgb(235, 235, 235);
-	color: rgb(119, 119, 119);
-	-webkit-border-radius: 3px;
-  	   -moz-border-radius: 3px;
-  			border-radius: 3px;
-	font-size: 14px;
-	font-family: 'Proxima Nova';
-}
-
-.@{namespace}-header {
-	border-bottom: 1px solid rgb(235, 235, 235);
-}
-.@{namespace}-prev, .@{namespace}-next {
-	color: transparent;
-}
-
-.@{namespace}-prev {
-	background-image: url('../images/calendar-prev.png');
-	&.@{namespace}_blocked, &.@{namespace}_blocked:hover{
-		background-image: none;
-		cursor: auto;
+	&-body {
+		span {
+			cursor: pointer;
+			height: @calendarDayHeight;
+			&.@{namespace}_otherMonth, &.@{namespace}_untouchable {
+				cursor: default;
+			}
+		}
 	}
-	&:hover {
-		background-image: url('../images/calendar-prev-hover.png');
+	&-months, &-years {
+		display: none;
+		span {
+			width: @calendarMonthWidth;
+			height: @calendarMonthHeight;
+			text-align: center;
+			display: inline-block;
+			cursor: pointer;
+			&.@{namespace}_untouchable {
+				cursor: default;
+			}
+		}
 	}
 }
 
-.@{namespace}-next {
-	background-image: url('../images/calendar-next.png');
-	&.@{namespace}_blocked, &.@{namespace}_blocked:hover{
-		background-image: none;
-		cursor: auto;
-	}
-	&:hover {
-		background-image: url('../images/calendar-next-hover.png');
-	}
-}
-.@{namespace}-caption {
-	font-size: 14px;
-	color: rgb(105, 105, 105);
-	&:hover {
-		color: rgb(0, 0, 0);
-	}
-	&.@{namespace}_blocked, &.@{namespace}_blocked:hover {
-		color: rgb(105, 105, 105);	
-		cursor: auto;
-	}
-}
 
-.@{namespace}-days {
-	span {
-		width: @calendarDayWidth;
-		font-size: 12px;
-	}
-}
 
-.@{namespace}-head {
-	background-color: rgb(246, 246, 246);
-	padding-left: 6px;
-	padding-right: 6px;
-	span {
-		-webkit-box-shadow: inset 0 1px 0 rgb(251, 251, 251);
-		   -moz-box-shadow: inset 0 1px 0 rgb(251, 251, 251);
-				box-shadow: inset 0 1px 0 rgb(251, 251, 251);
+//==========================  skin  ==========================
+.@{namespace} {
+	&-content {
+		background-color: white;
+		border: 1px solid rgb(235, 235, 235);
+		color: rgb(119, 119, 119);
+		-webkit-border-radius: 3px;
+	  	   -moz-border-radius: 3px;
+	  			border-radius: 3px;
+		font-size: 14px;
+		font-family: 'Proxima Nova';
 	}
-}
 
-.@{namespace}-body {
-	padding: 6px;
-	span {
-		line-height: @calendarDayHeight;
-		border: 1px dashed transparent;
+	&-header {
+		border-bottom: 1px solid rgb(235, 235, 235);
+	}
+	&-prev, &-next {
+		color: transparent;
+	}
+
+	&-prev {
+		background-image: url('../images/calendar-prev.png');
+		&.@{namespace}_blocked, &.@{namespace}_blocked:hover{
+			background-image: none;
+			cursor: auto;
+		}
 		&:hover {
-			background-color: rgb(224, 244, 251);
+			background-image: url('../images/calendar-prev-hover.png');
 		}
-		&.@{namespace}_active {
-			background-color: rgb(50, 184, 226) !important;
-			color: white !important;
-			border: 1px solid rgba(0, 0, 0, 0.15) !important;
-    		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) inset;
-    		text-shadow: 0 2px 1px rgba(0, 0, 0, 0.15);
+	}
+
+	&-next {
+		background-image: url('../images/calendar-next.png');
+		&.@{namespace}_blocked, &.@{namespace}_blocked:hover{
+			background-image: none;
+			cursor: auto;
 		}
-		&.@{namespace}_otherMonth, &.@{namespace}_untouchable {
-			color: rgb(200, 200, 200);
-			background-color: inherit;
-			&:hover, &:active, &.@{namespace}_active {
-				background-color: inherit;
-				color: rgb(200, 200, 200);
-			}
+		&:hover {
+			background-image: url('../images/calendar-next-hover.png');
 		}
-		&.@{namespace}_inRange {
-			background-color: rgb(224, 244, 251);
-			&:hover {
-				background-color: inherit;
-			}
+	}
+	&-caption {
+		font-size: 14px;
+		color: rgb(105, 105, 105);
+		&:hover {
+			color: rgb(0, 0, 0);
 		}
-		&.@{namespace}_otherMonth.@{namespace}_inRange {
+		&.@{namespace}_blocked, &.@{namespace}_blocked:hover {
+			color: rgb(105, 105, 105);	
+			cursor: auto;
+		}
+	}
+
+	&-days {
+		span {
+			width: @calendarDayWidth;
+			font-size: 12px;
+		}
+	}
+
+	&-head {
+		background-color: rgb(246, 246, 246);
+		padding-left: 6px;
+		padding-right: 6px;
+		span {
+			-webkit-box-shadow: inset 0 1px 0 rgb(251, 251, 251);
+			   -moz-box-shadow: inset 0 1px 0 rgb(251, 251, 251);
+					box-shadow: inset 0 1px 0 rgb(251, 251, 251);
+		}
+	}
+
+	&-body {
+		padding: 6px;
+		span {
+			line-height: @calendarDayHeight;
+			border: 1px dashed transparent;
 			&:hover {
 				background-color: rgb(224, 244, 251);
 			}
-		}
-		&.@{namespace}_focus {
-			border: 1px solid rgba(0, 0, 0, 0.1);
-			color: rgb(50, 184, 226);
+			&.@{namespace}_active {
+				background-color: rgb(50, 184, 226) !important;
+				color: white !important;
+				border: 1px solid rgba(0, 0, 0, 0.15) !important;
+	    		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) inset;
+	    		text-shadow: 0 2px 1px rgba(0, 0, 0, 0.15);
+			}
+			&.@{namespace}_otherMonth, &.@{namespace}_untouchable {
+				color: rgb(200, 200, 200);
+				background-color: inherit;
+				&:hover, &:active, &.@{namespace}_active {
+					background-color: inherit;
+					color: rgb(200, 200, 200);
+				}
+			}
+			&.@{namespace}_inRange {
+				background-color: rgb(224, 244, 251);
+				&:hover {
+					background-color: inherit;
+				}
+			}
+			&.@{namespace}_otherMonth.@{namespace}_inRange {
+				&:hover {
+					background-color: rgb(224, 244, 251);
+				}
+			}
+			&.@{namespace}_focus {
+				border: 1px solid rgba(0, 0, 0, 0.1);
+				color: rgb(50, 184, 226);
+			}
 		}
 	}
-}
 
-.@{namespace}-months, .@{namespace}-years {
-	padding: 6px;
-	span {
-		line-height: @calendarMonthHeight;
-		border: 1px dashed transparent;
-		font-size: 13px;
-		&:hover {
-			background-color: rgb(224, 244, 251);
-		}
-		&.@{namespace}_active {
-			background-color: rgb(50, 184, 226) !important;
-			color: white !important;
-		}
-		&.@{namespace}_untouchable {
-			color: rgb(200, 200, 200);
-			background-color: inherit;
-			&:hover, &:active, &.@{namespace}_active {
-				background-color: inherit;
-				color: rgb(200, 200, 200);
-			}
-			
-		}
-		&.@{namespace}_inRange {
-			background-color: rgb(224, 244, 251);
+	&-months, &-years {
+		padding: 6px;
+		span {
+			line-height: @calendarMonthHeight;
+			border: 1px dashed transparent;
+			font-size: 13px;
 			&:hover {
-				background-color: inherit;
+				background-color: rgb(224, 244, 251);
 			}
-		}
-		&.@{namespace}_focus {
-			border: 1px solid rgba(0, 0, 0, 0.1);
-			color: rgb(50, 184, 226);
+			&.@{namespace}_active {
+				background-color: rgb(50, 184, 226) !important;
+				color: white !important;
+			}
+			&.@{namespace}_untouchable {
+				color: rgb(200, 200, 200);
+				background-color: inherit;
+				&:hover, &:active, &.@{namespace}_active {
+					background-color: inherit;
+					color: rgb(200, 200, 200);
+				}
+				
+			}
+			&.@{namespace}_inRange {
+				background-color: rgb(224, 244, 251);
+				&:hover {
+					background-color: inherit;
+				}
+			}
+			&.@{namespace}_focus {
+				border: 1px solid rgba(0, 0, 0, 0.1);
+				color: rgb(50, 184, 226);
+			}
 		}
 	}
 }

@@ -1,17 +1,20 @@
 {
   "name": "jquery-asDatepicker",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "engines": {
     "node": ">= 0.8.0"
   },
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.1.1",
-    "grunt-contrib-concat": "~0.1.2",
-    "grunt-contrib-uglify": "~0.1.1",
-    "grunt-contrib-watch": "~0.2.0",
-    "grunt-jsbeautifier": "~0.1.4",
-    "grunt-recess": "~0.3.0",
-    "grunt": "~0.4.1",
-    "grunt-contrib-clean": "~0.4.1"
+    "grunt": "*",
+    "grunt-autoprefixer": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-jsbeautifier": "*",
+    "grunt-text-replace": "*",
+    "load-grunt-tasks": "^0.6.0"
   }
 }
