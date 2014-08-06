@@ -5,8 +5,8 @@
  * Copyright (c) 2014 amazingSurge
  * Licensed under the MIT license.
  */
- (function($, document, window, undefined) {
-     // Optional, but considered best practice by some
+(function($, document, window, undefined) {
+    // Optional, but considered best practice by some
     "use strict";
 
     var pluginName = 'asDatepicker',
@@ -20,7 +20,7 @@
             keyboard: true, // true | false
             rangeSeparator: '-',
             multipleSeparator: ',',
-            multipleSelectNum: 5,
+            multipleSize: 5,
             max: null, // max: '2013-10-1',//null|days|Date with (yyyy-mm-dd)
             min: null, // min: '2012-12-1',//null|days|Date with (yyyy-mm-dd)
             position: 'bottom', // top|right|bottom|left|rightTop|leftTop
@@ -84,7 +84,7 @@
         this.namespace = this.options.namespace;
 
         var inputWrap = this.$el.wrap(this.options.tplWrapper().replace(/namespace/g, this.namespace)).parent(),
-            inputIcon = $('<i class="' + this.namespace +'-icon"></i>');
+            inputIcon = $('<i class="' + this.namespace + '-icon"></i>');
         inputIcon.appendTo(inputWrap);
 
         this._trigger('init');
@@ -419,7 +419,7 @@
                             var _parts = [];
                             judge = true;
                             for (var j = 0; j < parts.length; j++) {
-                                _parts.push( Date.parse(parts[j]) );
+                                _parts.push(Date.parse(parts[j]));
                                 if (!Date.parse(parts[j])) {
                                     judge = false;
                                 }
@@ -873,7 +873,7 @@
                                         break;
                                     case 'mm':
                                     case 'm':
-                                        date.setMonth((val -1), 1);
+                                        date.setMonth((val - 1), 1);
                                         break;
                                     case 'yy':
                                         date.setFullYear(2000 + val);
@@ -1537,7 +1537,7 @@
                                     }
                                 });
                             } else {
-                                if (this.selectedDate.length < this.options.multipleSelectNum) {
+                                if (this.selectedDate.length < this.options.multipleSize) {
                                     this.selectedDate.push(date);
                                 }
                             }
@@ -1836,5 +1836,5 @@
                 }
             });
         }
-     };
- })(jQuery, document, window);
+    };
+})(jQuery, document, window);
