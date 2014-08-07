@@ -1,8 +1,8 @@
-/*! asDatepicker - v0.4.1 - 2014-08-05
+/*! asDatepicker - v0.4.1 - 2014-08-07
 * https://github.com/amazingsurge/jquery-asDatepicker
 * Copyright (c) 2014 amazingSurge; Licensed MIT */
 (function($, document, window, undefined) {
-     // Optional, but considered best practice by some
+    // Optional, but considered best practice by some
     "use strict";
 
     var pluginName = 'asDatepicker',
@@ -16,9 +16,10 @@
             keyboard: true, // true | false
             rangeSeparator: '-',
             multipleSeparator: ',',
-            multipleSelectNum: 5,
+            multipleSize: 5,
             max: null, // max: '2013-10-1',//null|days|Date with (yyyy-mm-dd)
             min: null, // min: '2012-12-1',//null|days|Date with (yyyy-mm-dd)
+            container: 'body',
             position: 'bottom', // top|right|bottom|left|rightTop|leftTop
             alwaysShow: false, // true or false
             onceClick: false, // true or false
@@ -80,7 +81,7 @@
         this.namespace = this.options.namespace;
 
         var inputWrap = this.$el.wrap(this.options.tplWrapper().replace(/namespace/g, this.namespace)).parent(),
-            inputIcon = $('<i class="' + this.namespace +'-icon"></i>');
+            inputIcon = $('<i class="' + this.namespace + '-icon"></i>');
         inputIcon.appendTo(inputWrap);
 
         this._trigger('init');
@@ -415,7 +416,7 @@
                             var _parts = [];
                             judge = true;
                             for (var j = 0; j < parts.length; j++) {
-                                _parts.push( Date.parse(parts[j]) );
+                                _parts.push(Date.parse(parts[j]));
                                 if (!Date.parse(parts[j])) {
                                     judge = false;
                                 }
@@ -587,7 +588,7 @@
                     focus: $.proxy(this._focus, this),
                     blur: $.proxy(this._blur, this)
                 });
-                this.picker = $wrapper.appendTo('body');
+                this.picker = $wrapper.appendTo(this.options.container);
                 this.picker.addClass(this.namespace + '_absolute');
             }
 
@@ -869,7 +870,7 @@
                                         break;
                                     case 'mm':
                                     case 'm':
-                                        date.setMonth((val -1), 1);
+                                        date.setMonth((val - 1), 1);
                                         break;
                                     case 'yy':
                                         date.setFullYear(2000 + val);
@@ -944,8 +945,7 @@
         _position: function() {
             var calendar_height = this.picker.outerHeight(),
                 calendar_width = this.picker.outerWidth(),
-                // win_height = window.innerHeight,
-                // win_width = window.innerWidth,
+                win_height = window.innerHeight,
                 input_top = this.$el.offset().top,
                 input_left = this.$el.offset().left,
                 input_height = this.$el.outerHeight(),
@@ -955,45 +955,71 @@
                 to_top = input_top - scroll_top,
                 // to_bottom = win_height - to_top - input_height,
                 // to_right = win_width - to_left - input_width,
-                to_left = input_left - scroll_left;
-            switch (this.options.position) {
-                case 'top':
-                    this.picker.css({
-                        "left": to_left + scroll_left,
-                        "top": to_top - calendar_height + scroll_top
-                    });
-                    break;
-                case 'right':
-                    this.picker.css({
-                        "left": to_left + input_width + scroll_left,
-                        "top": to_top + scroll_top
-                    });
-                    break;
+                to_left = input_left - scroll_left,
+                left,
+                top,
+                position = this.options.position;
+
+            switch (position) {
                 case 'bottom':
-                    this.picker.css({
-                        "left": to_left + scroll_left,
-                        "top": to_top + input_height + scroll_top
-                    });
-                    break;
+                case 'right':
                 case 'left':
-                    this.picker.css({
-                        "left": to_left - calendar_width + scroll_left,
-                        "top": to_top + scroll_top
-                    });
+                    if((to_top + input_height + scroll_top+calendar_height) > (scroll_top + win_height)) {
+                        if(position === 'bottom'){
+                            position = 'top';
+                        } else if(position = 'left'){
+                            position = 'leftTop';
+                        } else if(position = 'right'){
+                            position = 'rightTop';
+                        }
+                    }
                     break;
+                case 'top':
                 case 'rightTop':
-                    this.picker.css({
-                        "left": to_left + input_width + scroll_left,
-                        "top": to_top - calendar_height + input_height + scroll_top
-                    });
-                    break;
                 case 'leftTop':
-                    this.picker.css({
-                        "left": to_left - calendar_width + scroll_left,
-                        "top": to_top - calendar_height + input_height + scroll_top
-                    });
+                    if(scroll_top > to_top - calendar_height + scroll_top) {
+                        if(position === 'top'){
+                            position ='bottom';
+                        } else if(position = 'leftTop'){
+                            position = 'left';
+                        } else if(position = 'rightTop'){
+                            position = 'right';
+                        }
+                    }
                     break;
             }
+
+            switch (position) {
+                case 'top':
+                    left = to_left + scroll_left;
+                    top = to_top - calendar_height + scroll_top;
+                    break;
+                case 'right':
+                    left = to_left + input_width + scroll_left;
+                    top = to_top + scroll_top;
+                    break;
+                case 'bottom':
+                    left = to_left + scroll_left;
+                    top = to_top + input_height + scroll_top;
+                    break;
+                case 'left':
+                    left = to_left - calendar_width + scroll_left;
+                    top = to_top + scroll_top;
+                    break;
+                case 'rightTop':
+                    left = to_left + input_width + scroll_left;
+                    top = to_top - calendar_height + input_height + scroll_top;
+                    break;
+                case 'leftTop':
+                    left = to_left - calendar_width + scroll_left;
+                    top = to_top - calendar_height + input_height + scroll_top;
+                    break;
+            }
+
+            this.picker.css({
+                "left": left,
+                "top": top
+            });
         },
         _setPoint: function(type, status, currentDate, selectedDate) {
             var _status = status;
@@ -1533,7 +1559,7 @@
                                     }
                                 });
                             } else {
-                                if (this.selectedDate.length < this.options.multipleSelectNum) {
+                                if (this.selectedDate.length < this.options.multipleSize) {
                                     this.selectedDate.push(date);
                                 }
                             }
@@ -1832,5 +1858,5 @@
                 }
             });
         }
-     };
- })(jQuery, document, window);
+    };
+})(jQuery, document, window);
