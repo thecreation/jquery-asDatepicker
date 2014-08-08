@@ -487,6 +487,7 @@
                     array[count++] = [this._parseDate(from, format), this._parseDate(to, format)];
                 }
             }
+
             return array;
         },
         _parseAble: function(arr) {
@@ -520,7 +521,7 @@
         _position: function() {
             var calendar_height = this.picker.outerHeight(),
                 calendar_width = this.picker.outerWidth(),
-                container_height = this.$container.height() || window.innerHeight,
+                container_height = this.options.container === 'body' ? window.innerHeight : this.$container.height(),
                 input_top = this.$el.offset().top - this.$container.offset().top,
                 input_left = this.$el.offset().left - this.$container.offset().left,
                 input_height = this.$el.outerHeight(),
@@ -559,7 +560,6 @@
                     }
                     break;
             }
-
             switch (position) {
                 case 'top':
                     left = input_left + scroll_left;
@@ -1223,6 +1223,10 @@
                     $doc.on('click.' + this.flag, function(e) {
                         self._click.call(self, e);
                     });
+
+                    $(window).on('resize.' + this.flag, function() {
+                        self._position();
+                    });
                 }
             }
             this._trigger('show');
@@ -1237,6 +1241,7 @@
                 this.showed = false;
 
                 $doc.off('click.' + this.flag);
+                $(window).off('resize.' + this.flag);
                 this._trigger('hide');
             }
             return this;
