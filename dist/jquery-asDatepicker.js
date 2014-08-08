@@ -1,4 +1,4 @@
-/*! asDatepicker - v0.4.1 - 2014-08-07
+/*! asDatepicker - v0.4.1 - 2014-08-08
 * https://github.com/amazingsurge/jquery-asDatepicker
 * Copyright (c) 2014 amazingSurge; Licensed MIT */
 (function($, document, window, undefined) {
@@ -71,18 +71,16 @@
 
     var Plugin = $[pluginName] = function(element, options) {
         this.$el = $(element);
-        var meta_data = [],
-            self = this;
-        $.each(this.$el.data(), function(k, v) {
-            meta_data[k] = self._parseHtmlString(k, v);
-        });
-        this.options = $.extend(true, {}, defaults, options, meta_data);
+        
+        this.options = $.extend(true, {}, defaults, options, this.$el.data());
 
         this.namespace = this.options.namespace;
 
         var inputWrap = this.$el.wrap(this.options.tplWrapper().replace(/namespace/g, this.namespace)).parent(),
             inputIcon = $('<i class="' + this.namespace + '-icon"></i>');
         inputIcon.appendTo(inputWrap);
+
+        this.$container = $(this.options.container);
 
         this._trigger('init');
         this._init();
@@ -103,433 +101,6 @@
 
     Plugin.prototype = {
         constructor: Plugin,
-
-        _keyboard: {
-            init: function(self) {
-                this.attach(self, this.gather(self));
-            },
-            destroy: function(self) {
-                if (self.options.displayMode === 'dropdown') {
-                    self.$el.off('keydown.dropdown');
-                } else {
-                    self.picker.off('keydown.inline');
-                }
-                self.bound = false;
-            },
-            keys: function() {
-                return {
-                    'LEFT': 37,
-                    'UP': 38,
-                    'RIGHT': 39,
-                    'DOWN': 40,
-                    'ENTER': 13,
-                    'ESC': 27,
-                    'CTRL': 17,
-                    'ALT': 18
-                };
-            },
-            prevDate: function() {
-                var i = this.focused,
-                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i];
-                switch (this.views[i]) {
-                    case 'days':
-                        date.setDate(date.getDate() - 1);
-                        if (new Date(date).setDate(1) === new Date(this.currentMonthDate[i]).setMonth(this.currentDate[i].getMonth() - 1)) {
-                            this.prev(i, true);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                    case 'months':
-                        date.setMonth(date.getMonth() - 1);
-                        if (Date.parse(new Date(date.getFullYear(), 0, 1, 0, 0, 0, 0)) ===
-                            new Date(this.currentYearDate[i]).setFullYear(this.currentDate[i].getFullYear() - 1)) {
-                            this.prev(i);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                    case 'years':
-                        date.setFullYear(date.getFullYear() - 1);
-                        if (date.getFullYear() === this.currentYear[i] - 8) {
-                            this.prev(i);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                }
-            },
-            nextDate: function() {
-                var i = this.focused,
-                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i];
-                switch (this.views[i]) {
-                    case 'days':
-                        date.setDate(date.getDate() + 1);
-                        if (new Date(date).setDate(1) === new Date(this.currentMonthDate[i]).setMonth(this.currentDate[i].getMonth() + 1)) {
-                            this.next(i, true);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                    case 'months':
-                        date.setMonth(date.getMonth() + 1);
-                        if (Date.parse(new Date(date.getFullYear(), 0, 1, 0, 0, 0, 0)) ===
-                            new Date(this.currentYearDate[i]).setFullYear(this.currentDate[i].getFullYear() + 1)) {
-
-                            this.next(i);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                    case 'years':
-                        date.setFullYear(date.getFullYear() + 1);
-                        if (date.getFullYear() === this.currentYear[i] + 5) {
-                            this.next(i);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                }
-            },
-            upLine: function() {
-                var i = this.focused,
-                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i];
-                switch (this.views[i]) {
-                    case 'days':
-                        date.setDate(date.getDate() - 7);
-                        if (new Date(date).setDate(1) === new Date(this.currentMonthDate[i]).setMonth(this.currentDate[i].getMonth() - 1)) {
-                            this.prev(i, true);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                    case 'months':
-                        date.setMonth(date.getMonth() - 3);
-                        if (Date.parse(new Date(date.getFullYear(), 0, 1, 0, 0, 0, 0)) ===
-                            new Date(this.currentYearDate[i]).setFullYear(this.currentDate[i].getFullYear() - 1)) {
-                            this.prev(i);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                    case 'years':
-                        date.setFullYear(date.getFullYear() - 3);
-                        if (date.getFullYear() <= this.currentYear[i] - 8) {
-                            this.prev(i);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                }
-            },
-            downLine: function() {
-                var i = this.focused,
-                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i];
-                switch (this.views[i]) {
-                    case 'days':
-                        date.setDate(date.getDate() + 7);
-                        if (new Date(date).setDate(1) === new Date(this.currentMonthDate[i]).setMonth(this.currentDate[i].getMonth() + 1)) {
-                            this.next(i, true);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                    case 'months':
-                        date.setMonth(date.getMonth() + 3);
-                        if (Date.parse(new Date(date.getFullYear(), 0, 1, 0, 0, 0, 0)) ===
-                            new Date(this.currentYearDate[i]).setFullYear(this.currentDate[i].getFullYear() + 1)) {
-                            this.next(i);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                    case 'years':
-                        date.setFullYear(date.getFullYear() + 3);
-                        if (date.getFullYear() >= this.currentYear[i] + 5) {
-                            this.next(i);
-                        } else {
-                            this._manageViews(i);
-                        }
-                        break;
-                }
-            },
-            prevPage: function() {
-                if (this.mode === 'multiple') {
-                    this.prev(this.focused);
-                } else {
-                    if (this.calendarPrevs.eq(this.focused).hasClass(this.namespace + '-blocked')) {
-                        return false;
-                    } else {
-                        this.prev(this.focused, true);
-                    }
-                }
-            },
-            nextPage: function() {
-                if (this.mode === 'multiple') {
-                    this.next(this.focused);
-                } else {
-                    if (this.calendarNexts.eq(this.focused).hasClass(this.namespace + '-blocked')) {
-                        return false;
-                    } else {
-                        this.next(this.focused, true);
-                    }
-                }
-            },
-            higherView: function() {
-                if (this.mode === 'multiple') {
-                    return false;
-                } else {
-                    var i = this.focused;
-                    this._changeView('higher', i);
-                    this._manageViews(i);
-                }
-            },
-            lowerView: function() {
-                if (this.mode === 'multiple') {
-                    return false;
-                } else {
-                    var i = this.focused;
-                    this._changeView('lower', i);
-                    this._manageViews(i);
-                }
-            },
-            prevCalendar: function() {
-                if (this.mode === 'multiple') {
-                    return false;
-                } else {
-                    var len = this.calendars.length;
-                    if (--this.focused < 0) {
-                        this.focused = len;
-                    }
-                }
-            },
-            nextCalendar: function() {
-                if (this.mode === 'multiple') {
-                    return false;
-                } else {
-                    var len = this.calendars.length;
-                    if (++this.focused >= len) {
-                        this.focused = 0;
-                    }
-                }
-            },
-            updateValue: function(self) {
-                var i = self.focused,
-                    date = self.mode === 'multiple' ? self.focusDate : self.focusDate[i];
-                if (self.calendars.eq(i).find('.' + this.namespace + '_focus').hasClass(this.namespace + '_untouchable')) {
-                    return false;
-                } else {
-                    switch (self.views[i]) {
-                        case 'days':
-                            switch (self.options.mode) {
-                                case 'single':
-                                case 'range':
-                                    self.selectedDate[i] = new Date(date);
-                                    break;
-                                case 'multiple':
-                                    var _date = Date.parse(new Date(date));
-                                    if ($.inArray(_date, self.selectedDate) > -1) {
-                                        $.each(self.selectedDate, function(nr, data) {
-                                            if (data === _date) {
-                                                self.selectedDate.splice(nr, 1);
-                                                return false;
-                                            }
-                                        });
-                                    } else {
-                                        self.selectedDate.push(_date);
-                                    }
-                                    break;
-                            }
-                            break;
-                        case 'months':
-                            self.currentDate[i].setMonth(date.getMonth());
-                            self.views[i] = 'days';
-                            break;
-                        case 'years':
-                            self.currentDate[i].setFullYear(date.getFullYear());
-                            self.views[i] = 'months';
-                            break;
-                    }
-                    self._updateDate(i);
-                    if (self.mode === 'range') {
-                        self._manageViews(0);
-                        self._manageViews(1);
-                    } else if (self.mode === 'multiple') {
-                        self._manageViews(i - 1);
-                        self._manageViews(i);
-                        self._manageViews(i + 1);
-                    } else {
-                        self._manageViews(i);
-                    }
-                    self._setValue();
-                }
-            },
-            enter: function() {
-                var inputValue = this.$el.val(),
-                    self = this,
-                    judge;
-                if (inputValue === this.oldValue || this.oldValue === '') {
-                    this._keyboard.updateValue(this);
-                } else {
-                    var parts;
-                    switch (this.mode) {
-                        case 'single':
-                            var _date = Date.parse(inputValue);
-                            if (_date) {
-                                this.selectedDate[0] = new Date(_date);
-                                this.currentDate[0] = new Date(this.selectedDate[0]);
-                                this._updateDate(0);
-                                this._manageViews(0);
-                            }
-                            break;
-                        case 'range':
-                            parts = this._stringSeparate(inputValue, this.options.rangeSeparator);
-                            var from = Date.parse(parts[0]),
-                                to = Date.parse(parts[1]);
-                            if (parts.length === 2) {
-                                judge = true;
-                                if (from && to) {
-                                    if (from > to) {
-                                        judge = false;
-                                    }
-                                } else {
-                                    judge = false;
-                                }
-                            } else {
-                                judge = false;
-                            }
-
-                            if (judge === true) {
-                                this.selectedDate[0] = new Date(from);
-                                this.selectedDate[1] = new Date(to);
-                                for (var i = 0; i < 2; i++) {
-                                    this.currentDate[i] = new Date(this.selectedDate[i]);
-                                    this._updateDate(i);
-                                    this._manageViews(i);
-                                }
-                            } else {
-                                this._keyboard.updateValue(this);
-                            }
-                            break;
-                        case 'multiple':
-                            parts = this._stringSeparate(inputValue, this.options.multipleSeparator);
-                            var _parts = [];
-                            judge = true;
-                            for (var j = 0; j < parts.length; j++) {
-                                _parts.push(Date.parse(parts[j]));
-                                if (!Date.parse(parts[j])) {
-                                    judge = false;
-                                }
-                            }
-                            if (judge === true) {
-                                this.selectedDate = [];
-                                for (var k = 0; k < _parts.length; k++) {
-                                    if ($.inArray(_parts[k], this.selectedDate) > -1) {
-                                        $.each(this.selectedDate, function(nr, data) {
-                                            if (data === _parts[k]) {
-                                                self.selectedDate.splice(nr, 1);
-                                                return false;
-                                            }
-                                        });
-                                    } else {
-                                        this.selectedDate.push(_parts[k]);
-                                    }
-                                }
-                                for (var m = 0; m < this.options.calendars; m++) {
-                                    this._updateDate(m);
-                                    this._manageViews(m);
-                                }
-                            } else {
-                                this._keyboard.updateValue(this);
-                            }
-                            break;
-                    }
-                }
-                this._setValue();
-            },
-            esc: function() {
-                this.$el.blur();
-                this.hide();
-            },
-            tab: function() {
-                this.pickerHide = true;
-            },
-            gather: function(self) {
-                return {
-                    left: $.proxy(this.prevDate, self),
-                    up: $.proxy(this.upLine, self),
-                    right: $.proxy(this.nextDate, self),
-                    down: $.proxy(this.downLine, self),
-                    ctrl_left: $.proxy(this.prevPage, self),
-                    ctrl_up: $.proxy(this.higherView, self),
-                    ctrl_right: $.proxy(this.nextPage, self),
-                    ctrl_down: $.proxy(this.lowerView, self),
-                    alt_left: $.proxy(this.prevCalendar, self),
-                    alt_right: $.proxy(this.nextCalendar, self),
-                    enter: $.proxy(this.enter, self),
-                    esc: $.proxy(this.esc, self)
-                };
-            },
-            press: function(e) {
-                var key = e.keyCode || e.which,
-                    map;
-                if (e.ctrlKey) {
-                    e.preventDefault();
-                    map = this.map[17];
-                } else if (e.altKey) {
-                    e.preventDefault();
-                    map = this.map[18];
-                } else {
-                    map = this.map;
-                }
-                if (key === 9) {
-                    this._keyboard.tab.call(this);
-                }
-
-                if (key in map && typeof map[key] === 'function') {
-                    e.preventDefault();
-                    return map[key].call(this);
-                }
-            },
-            attach: function(self, map) {
-                var key, _self = this;
-                for (key in map) {
-                    if (map.hasOwnProperty(key)) {
-                        var uppercase = [],
-                            parts = self._stringSeparate(key, '_'),
-                            len = parts.length;
-
-                        if (len === 1) {
-                            uppercase[0] = parts[0].toUpperCase();
-                            self.map[this.keys()[uppercase[0]]] = map[key];
-                        } else {
-                            for (var i = 0; i < parts.length; i++) {
-                                uppercase[i] = parts[i].toUpperCase();
-                                if (i === 0) {
-                                    if (self.map[this.keys()[uppercase[0]]] === undefined) {
-                                        self.map[this.keys()[uppercase[0]]] = {};
-                                    }
-                                } else {
-                                    self.map[this.keys()[uppercase[0]]][this.keys()[uppercase[i]]] = map[key];
-                                }
-                            }
-                        }
-                    }
-                }
-                if (!self.bound) {
-                    self.bound = true;
-                    if (self.options.displayMode === 'dropdown') {
-                        self.$el.on('keydown.dropdown', function(e) {
-                            _self.press.call(self, e);
-                        });
-                    } else {
-                        self.picker.on('keydown.inline', function(e) {
-                            _self.press.call(self, e);
-                        });
-                    }
-                }
-            }
-        },
 
         _init: function() {
             //init the status
@@ -945,17 +516,13 @@
         _position: function() {
             var calendar_height = this.picker.outerHeight(),
                 calendar_width = this.picker.outerWidth(),
-                win_height = window.innerHeight,
-                input_top = this.$el.offset().top,
-                input_left = this.$el.offset().left,
+                container_height = this.$container.height() || window.innerHeight,
+                input_top = this.$el.offset().top - this.$container.offset().top,
+                input_left = this.$el.offset().left - this.$container.offset().left,
                 input_height = this.$el.outerHeight(),
                 input_width = this.$el.outerWidth(),
-                scroll_top = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0,
-                scroll_left = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0,
-                to_top = input_top - scroll_top,
-                // to_bottom = win_height - to_top - input_height,
-                // to_right = win_width - to_left - input_width,
-                to_left = input_left - scroll_left,
+                scroll_top = this.$container.scrollTop() || 0,
+                scroll_left = this.$container.scrollLeft() || 0,
                 left,
                 top,
                 position = this.options.position;
@@ -964,7 +531,7 @@
                 case 'bottom':
                 case 'right':
                 case 'left':
-                    if((to_top + input_height + scroll_top+calendar_height) > (scroll_top + win_height)) {
+                    if((input_top + input_height + calendar_height) > (container_height)) {
                         if(position === 'bottom'){
                             position = 'top';
                         } else if(position = 'left'){
@@ -977,7 +544,7 @@
                 case 'top':
                 case 'rightTop':
                 case 'leftTop':
-                    if(scroll_top > to_top - calendar_height + scroll_top) {
+                    if(input_top - calendar_height < 0) {
                         if(position === 'top'){
                             position ='bottom';
                         } else if(position = 'leftTop'){
@@ -991,28 +558,28 @@
 
             switch (position) {
                 case 'top':
-                    left = to_left + scroll_left;
-                    top = to_top - calendar_height + scroll_top;
+                    left = input_left + scroll_left;
+                    top = input_top - calendar_height + scroll_top;
                     break;
                 case 'right':
-                    left = to_left + input_width + scroll_left;
-                    top = to_top + scroll_top;
+                    left = input_left + input_width + scroll_left;
+                    top = input_top + scroll_top;
                     break;
                 case 'bottom':
-                    left = to_left + scroll_left;
-                    top = to_top + input_height + scroll_top;
+                    left = input_left + scroll_left;
+                    top = input_top + input_height + scroll_top;
                     break;
                 case 'left':
-                    left = to_left - calendar_width + scroll_left;
-                    top = to_top + scroll_top;
+                    left = input_left - calendar_width + scroll_left;
+                    top = input_top + scroll_top;
                     break;
                 case 'rightTop':
-                    left = to_left + input_width + scroll_left;
-                    top = to_top - calendar_height + input_height + scroll_top;
+                    left = input_left + input_width + scroll_left;
+                    top = input_top - calendar_height + input_height + scroll_top;
                     break;
                 case 'leftTop':
-                    left = to_left - calendar_width + scroll_left;
-                    top = to_top - calendar_height + input_height + scroll_top;
+                    left = input_left - calendar_width + scroll_left;
+                    top = input_top - calendar_height + input_height + scroll_top;
                     break;
             }
 
@@ -1827,6 +1394,432 @@
             }
             this.destroy();
             this._init();
+        },
+        _keyboard: {
+            init: function(self) {
+                this.attach(self, this.gather(self));
+            },
+            destroy: function(self) {
+                if (self.options.displayMode === 'dropdown') {
+                    self.$el.off('keydown.dropdown');
+                } else {
+                    self.picker.off('keydown.inline');
+                }
+                self.bound = false;
+            },
+            keys: function() {
+                return {
+                    'LEFT': 37,
+                    'UP': 38,
+                    'RIGHT': 39,
+                    'DOWN': 40,
+                    'ENTER': 13,
+                    'ESC': 27,
+                    'CTRL': 17,
+                    'ALT': 18
+                };
+            },
+            prevDate: function() {
+                var i = this.focused,
+                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i];
+                switch (this.views[i]) {
+                    case 'days':
+                        date.setDate(date.getDate() - 1);
+                        if (new Date(date).setDate(1) === new Date(this.currentMonthDate[i]).setMonth(this.currentDate[i].getMonth() - 1)) {
+                            this.prev(i, true);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                    case 'months':
+                        date.setMonth(date.getMonth() - 1);
+                        if (Date.parse(new Date(date.getFullYear(), 0, 1, 0, 0, 0, 0)) ===
+                            new Date(this.currentYearDate[i]).setFullYear(this.currentDate[i].getFullYear() - 1)) {
+                            this.prev(i);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                    case 'years':
+                        date.setFullYear(date.getFullYear() - 1);
+                        if (date.getFullYear() === this.currentYear[i] - 8) {
+                            this.prev(i);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                }
+            },
+            nextDate: function() {
+                var i = this.focused,
+                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i];
+                switch (this.views[i]) {
+                    case 'days':
+                        date.setDate(date.getDate() + 1);
+                        if (new Date(date).setDate(1) === new Date(this.currentMonthDate[i]).setMonth(this.currentDate[i].getMonth() + 1)) {
+                            this.next(i, true);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                    case 'months':
+                        date.setMonth(date.getMonth() + 1);
+                        if (Date.parse(new Date(date.getFullYear(), 0, 1, 0, 0, 0, 0)) ===
+                            new Date(this.currentYearDate[i]).setFullYear(this.currentDate[i].getFullYear() + 1)) {
+
+                            this.next(i);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                    case 'years':
+                        date.setFullYear(date.getFullYear() + 1);
+                        if (date.getFullYear() === this.currentYear[i] + 5) {
+                            this.next(i);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                }
+            },
+            upLine: function() {
+                var i = this.focused,
+                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i];
+                switch (this.views[i]) {
+                    case 'days':
+                        date.setDate(date.getDate() - 7);
+                        if (new Date(date).setDate(1) === new Date(this.currentMonthDate[i]).setMonth(this.currentDate[i].getMonth() - 1)) {
+                            this.prev(i, true);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                    case 'months':
+                        date.setMonth(date.getMonth() - 3);
+                        if (Date.parse(new Date(date.getFullYear(), 0, 1, 0, 0, 0, 0)) ===
+                            new Date(this.currentYearDate[i]).setFullYear(this.currentDate[i].getFullYear() - 1)) {
+                            this.prev(i);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                    case 'years':
+                        date.setFullYear(date.getFullYear() - 3);
+                        if (date.getFullYear() <= this.currentYear[i] - 8) {
+                            this.prev(i);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                }
+            },
+            downLine: function() {
+                var i = this.focused,
+                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i];
+                switch (this.views[i]) {
+                    case 'days':
+                        date.setDate(date.getDate() + 7);
+                        if (new Date(date).setDate(1) === new Date(this.currentMonthDate[i]).setMonth(this.currentDate[i].getMonth() + 1)) {
+                            this.next(i, true);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                    case 'months':
+                        date.setMonth(date.getMonth() + 3);
+                        if (Date.parse(new Date(date.getFullYear(), 0, 1, 0, 0, 0, 0)) ===
+                            new Date(this.currentYearDate[i]).setFullYear(this.currentDate[i].getFullYear() + 1)) {
+                            this.next(i);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                    case 'years':
+                        date.setFullYear(date.getFullYear() + 3);
+                        if (date.getFullYear() >= this.currentYear[i] + 5) {
+                            this.next(i);
+                        } else {
+                            this._manageViews(i);
+                        }
+                        break;
+                }
+            },
+            prevPage: function() {
+                if (this.mode === 'multiple') {
+                    this.prev(this.focused);
+                } else {
+                    if (this.calendarPrevs.eq(this.focused).hasClass(this.namespace + '-blocked')) {
+                        return false;
+                    } else {
+                        this.prev(this.focused, true);
+                    }
+                }
+            },
+            nextPage: function() {
+                if (this.mode === 'multiple') {
+                    this.next(this.focused);
+                } else {
+                    if (this.calendarNexts.eq(this.focused).hasClass(this.namespace + '-blocked')) {
+                        return false;
+                    } else {
+                        this.next(this.focused, true);
+                    }
+                }
+            },
+            higherView: function() {
+                if (this.mode === 'multiple') {
+                    return false;
+                } else {
+                    var i = this.focused;
+                    this._changeView('higher', i);
+                    this._manageViews(i);
+                }
+            },
+            lowerView: function() {
+                if (this.mode === 'multiple') {
+                    return false;
+                } else {
+                    var i = this.focused;
+                    this._changeView('lower', i);
+                    this._manageViews(i);
+                }
+            },
+            prevCalendar: function() {
+                if (this.mode === 'multiple') {
+                    return false;
+                } else {
+                    var len = this.calendars.length;
+                    if (--this.focused < 0) {
+                        this.focused = len;
+                    }
+                }
+            },
+            nextCalendar: function() {
+                if (this.mode === 'multiple') {
+                    return false;
+                } else {
+                    var len = this.calendars.length;
+                    if (++this.focused >= len) {
+                        this.focused = 0;
+                    }
+                }
+            },
+            updateValue: function(self) {
+                var i = self.focused,
+                    date = self.mode === 'multiple' ? self.focusDate : self.focusDate[i];
+                if (self.calendars.eq(i).find('.' + this.namespace + '_focus').hasClass(this.namespace + '_untouchable')) {
+                    return false;
+                } else {
+                    switch (self.views[i]) {
+                        case 'days':
+                            switch (self.options.mode) {
+                                case 'single':
+                                case 'range':
+                                    self.selectedDate[i] = new Date(date);
+                                    break;
+                                case 'multiple':
+                                    var _date = Date.parse(new Date(date));
+                                    if ($.inArray(_date, self.selectedDate) > -1) {
+                                        $.each(self.selectedDate, function(nr, data) {
+                                            if (data === _date) {
+                                                self.selectedDate.splice(nr, 1);
+                                                return false;
+                                            }
+                                        });
+                                    } else {
+                                        self.selectedDate.push(_date);
+                                    }
+                                    break;
+                            }
+                            break;
+                        case 'months':
+                            self.currentDate[i].setMonth(date.getMonth());
+                            self.views[i] = 'days';
+                            break;
+                        case 'years':
+                            self.currentDate[i].setFullYear(date.getFullYear());
+                            self.views[i] = 'months';
+                            break;
+                    }
+                    self._updateDate(i);
+                    if (self.mode === 'range') {
+                        self._manageViews(0);
+                        self._manageViews(1);
+                    } else if (self.mode === 'multiple') {
+                        self._manageViews(i - 1);
+                        self._manageViews(i);
+                        self._manageViews(i + 1);
+                    } else {
+                        self._manageViews(i);
+                    }
+                    self._setValue();
+                }
+            },
+            enter: function() {
+                var inputValue = this.$el.val(),
+                    self = this,
+                    judge;
+                if (inputValue === this.oldValue || this.oldValue === '') {
+                    this._keyboard.updateValue(this);
+                } else {
+                    var parts;
+                    switch (this.mode) {
+                        case 'single':
+                            var _date = Date.parse(inputValue);
+                            if (_date) {
+                                this.selectedDate[0] = new Date(_date);
+                                this.currentDate[0] = new Date(this.selectedDate[0]);
+                                this._updateDate(0);
+                                this._manageViews(0);
+                            }
+                            break;
+                        case 'range':
+                            parts = this._stringSeparate(inputValue, this.options.rangeSeparator);
+                            var from = Date.parse(parts[0]),
+                                to = Date.parse(parts[1]);
+                            if (parts.length === 2) {
+                                judge = true;
+                                if (from && to) {
+                                    if (from > to) {
+                                        judge = false;
+                                    }
+                                } else {
+                                    judge = false;
+                                }
+                            } else {
+                                judge = false;
+                            }
+
+                            if (judge === true) {
+                                this.selectedDate[0] = new Date(from);
+                                this.selectedDate[1] = new Date(to);
+                                for (var i = 0; i < 2; i++) {
+                                    this.currentDate[i] = new Date(this.selectedDate[i]);
+                                    this._updateDate(i);
+                                    this._manageViews(i);
+                                }
+                            } else {
+                                this._keyboard.updateValue(this);
+                            }
+                            break;
+                        case 'multiple':
+                            parts = this._stringSeparate(inputValue, this.options.multipleSeparator);
+                            var _parts = [];
+                            judge = true;
+                            for (var j = 0; j < parts.length; j++) {
+                                _parts.push(Date.parse(parts[j]));
+                                if (!Date.parse(parts[j])) {
+                                    judge = false;
+                                }
+                            }
+                            if (judge === true) {
+                                this.selectedDate = [];
+                                for (var k = 0; k < _parts.length; k++) {
+                                    if ($.inArray(_parts[k], this.selectedDate) > -1) {
+                                        $.each(this.selectedDate, function(nr, data) {
+                                            if (data === _parts[k]) {
+                                                self.selectedDate.splice(nr, 1);
+                                                return false;
+                                            }
+                                        });
+                                    } else {
+                                        this.selectedDate.push(_parts[k]);
+                                    }
+                                }
+                                for (var m = 0; m < this.options.calendars; m++) {
+                                    this._updateDate(m);
+                                    this._manageViews(m);
+                                }
+                            } else {
+                                this._keyboard.updateValue(this);
+                            }
+                            break;
+                    }
+                }
+                this._setValue();
+            },
+            esc: function() {
+                this.$el.blur();
+                this.hide();
+            },
+            tab: function() {
+                this.pickerHide = true;
+            },
+            gather: function(self) {
+                return {
+                    left: $.proxy(this.prevDate, self),
+                    up: $.proxy(this.upLine, self),
+                    right: $.proxy(this.nextDate, self),
+                    down: $.proxy(this.downLine, self),
+                    ctrl_left: $.proxy(this.prevPage, self),
+                    ctrl_up: $.proxy(this.higherView, self),
+                    ctrl_right: $.proxy(this.nextPage, self),
+                    ctrl_down: $.proxy(this.lowerView, self),
+                    alt_left: $.proxy(this.prevCalendar, self),
+                    alt_right: $.proxy(this.nextCalendar, self),
+                    enter: $.proxy(this.enter, self),
+                    esc: $.proxy(this.esc, self)
+                };
+            },
+            press: function(e) {
+                var key = e.keyCode || e.which,
+                    map;
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                    map = this.map[17];
+                } else if (e.altKey) {
+                    e.preventDefault();
+                    map = this.map[18];
+                } else {
+                    map = this.map;
+                }
+                if (key === 9) {
+                    this._keyboard.tab.call(this);
+                }
+
+                if (key in map && typeof map[key] === 'function') {
+                    e.preventDefault();
+                    return map[key].call(this);
+                }
+            },
+            attach: function(self, map) {
+                var key, _self = this;
+                for (key in map) {
+                    if (map.hasOwnProperty(key)) {
+                        var uppercase = [],
+                            parts = self._stringSeparate(key, '_'),
+                            len = parts.length;
+
+                        if (len === 1) {
+                            uppercase[0] = parts[0].toUpperCase();
+                            self.map[this.keys()[uppercase[0]]] = map[key];
+                        } else {
+                            for (var i = 0; i < parts.length; i++) {
+                                uppercase[i] = parts[i].toUpperCase();
+                                if (i === 0) {
+                                    if (self.map[this.keys()[uppercase[0]]] === undefined) {
+                                        self.map[this.keys()[uppercase[0]]] = {};
+                                    }
+                                } else {
+                                    self.map[this.keys()[uppercase[0]]][this.keys()[uppercase[i]]] = map[key];
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!self.bound) {
+                    self.bound = true;
+                    if (self.options.displayMode === 'dropdown') {
+                        self.$el.on('keydown.dropdown', function(e) {
+                            _self.press.call(self, e);
+                        });
+                    } else {
+                        self.picker.on('keydown.inline', function(e) {
+                            _self.press.call(self, e);
+                        });
+                    }
+                }
+            }
         }
     };
 
