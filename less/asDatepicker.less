@@ -64,6 +64,8 @@
 	}
 	&-prev, &-next {
 		display: inline-block;
+		*display:inline;
+		zoom: 1;
 		width: @prevNextWidth;
 		height: @calendarHeadHeight;
 		cursor: pointer;
@@ -81,6 +83,9 @@
 		float: right;
 	}
 	&-caption {
+		display: inline-block;
+		*display:inline;
+		zoom: 1;
 		cursor: pointer;
 		text-align: center;
 	}

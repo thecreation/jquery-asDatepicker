@@ -40,6 +40,8 @@
 .calendar-prev,
 .calendar-next {
   display: inline-block;
+  *display: inline;
+  zoom: 1;
   width: 20%;
   height: 34px;
   cursor: pointer;
@@ -55,6 +57,9 @@
   float: right;
 }
 .calendar-caption {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
   cursor: pointer;
   text-align: center;
 }

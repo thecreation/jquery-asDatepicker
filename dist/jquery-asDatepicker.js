@@ -44,9 +44,9 @@
             tplContent: function() {
                 return '<div class="namespace-content">' +
                     '<div class="namespace-header">' +
-                    '<span class="namespace-prev"></span>' +
-                    '<span class="namespace-caption"></span>' +
-                    '<span class="namespace-next"></span>' +
+                    '<div class="namespace-prev"></div>' +
+                    '<div class="namespace-caption"></div>' +
+                    '<div class="namespace-next"></div>' +
                     '</div>' +
                     '<div class="namespace-days"></div>' +
                     '<div class="namespace-months"></div>' +
@@ -71,7 +71,7 @@
 
     var Plugin = $[pluginName] = function(element, options) {
         this.$el = $(element);
-        
+
         this.options = $.extend(true, {}, defaults, options, this.$el.data());
 
         this.namespace = this.options.namespace;
@@ -531,12 +531,12 @@
                 case 'bottom':
                 case 'right':
                 case 'left':
-                    if((input_top + input_height + calendar_height) > (container_height)) {
-                        if(position === 'bottom'){
+                    if ((input_top + input_height + calendar_height) > (container_height)) {
+                        if (position === 'bottom') {
                             position = 'top';
-                        } else if(position = 'left'){
+                        } else if (position = 'left') {
                             position = 'leftTop';
-                        } else if(position = 'right'){
+                        } else if (position = 'right') {
                             position = 'rightTop';
                         }
                     }
@@ -544,12 +544,12 @@
                 case 'top':
                 case 'rightTop':
                 case 'leftTop':
-                    if(input_top - calendar_height < 0) {
-                        if(position === 'top'){
-                            position ='bottom';
-                        } else if(position = 'leftTop'){
+                    if (input_top - calendar_height < 0) {
+                        if (position === 'top') {
+                            position = 'bottom';
+                        } else if (position = 'leftTop') {
                             position = 'left';
-                        } else if(position = 'rightTop'){
+                        } else if (position = 'rightTop') {
                             position = 'right';
                         }
                     }
@@ -992,7 +992,7 @@
             if ($(e.target).closest(this.picker).length === 0 && $(e.target).closest(this.$el).length === 0 && this.options.alwaysShow === false) {
                 this.hide();
             } else if ($(e.target).closest(this.$el).length !== 1 && $(e.target).closest(this.picker).length === 1) {
-                var _target = $(e.target).closest('span');
+                var _target = $(e.target).closest('span, div');
 
                 if (_target.length === 1) {
                     var i = _target.parents('.' + this.namespace + '-content').index();
