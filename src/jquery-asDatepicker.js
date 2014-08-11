@@ -13,7 +13,7 @@
         defaults = {
             firstDayOfWeek: 0, // 0---6 === sunday---saturday
             mode: 'single', // single|range|multiple
-            rangeMode: 'default', // default|section|array
+            limitMode: 'default', // default|section|array
             displayMode: 'dropdown', // dropdown|inline
             calendars: 3,
             date: 'today', // today|Date (yyyy-mm-dd)
@@ -246,7 +246,7 @@
                 this._updateDate(i);
             }
 
-            //rangeMode
+            //limitMode
             this.selectableDate = this.options.selectableDate.length > 0 ? true : false;
             this.disableDate = this.options.disableDate.length > 0 ? true : false;
 
@@ -258,7 +258,7 @@
             this.monthDisable = this.options.disableMonth.length > 0 ? true : false;
             this.dayDisable = this.options.disableDay.length > 0 ? true : false;
 
-            switch (this.options.rangeMode) {
+            switch (this.options.limitMode) {
                 case 'section':
                     if (this.options.selectableYear.length > 0) {
                         this.selectableYear = true;
@@ -487,7 +487,6 @@
                     array[count++] = [this._parseDate(from, format), this._parseDate(to, format)];
                 }
             }
-
             return array;
         },
         _parseAble: function(arr) {
@@ -521,7 +520,7 @@
         _position: function() {
             var calendar_height = this.picker.outerHeight(),
                 calendar_width = this.picker.outerWidth(),
-                container_height = this.options.container === 'body' ? window.innerHeight : this.$container.height(),
+                container_height = this.$container.height() || window.innerHeight,
                 input_top = this.$el.offset().top - this.$container.offset().top,
                 input_left = this.$el.offset().left - this.$container.offset().left,
                 input_height = this.$el.outerHeight(),
@@ -560,6 +559,7 @@
                     }
                     break;
             }
+
             switch (position) {
                 case 'top':
                     left = input_left + scroll_left;
@@ -709,7 +709,7 @@
         },
         _judgeRange: function(view, status, currentDate) {
             var rangeUntouch = status,
-                mode = this.options.rangeMode,
+                mode = this.options.limitMode,
                 dateArray, _current,
                 self = this;
             if (mode === 'section') {
@@ -899,8 +899,8 @@
                 }
                 status = this._judgeStatus(i, 'days', this.mode, status, dateArray[m], this.selectedDate);
                 status[3] = this._judgeRange('days', status[3], dateArray[m]);
-                if ((this.options.rangeMode === 'section' && this.daySelectable === true) ||
-                    (this.options.rangeMode === 'array' && this.selectableDate === true)) {
+                if ((this.options.limitMode === 'section' && this.daySelectable === true) ||
+                    (this.options.limitMode === 'array' && this.selectableDate === true)) {
                     status[3] = !status[3];
                 }
 
@@ -937,8 +937,8 @@
 
                 status = this._judgeStatus(i, 'months', this.mode, status, dateArray[m], this.selectedMonthDate);
                 status[3] = this._judgeRange('months', status[3], dateArray[m]);
-                if ((this.options.rangeMode === 'section' && this.monthSelectable === true) ||
-                    (this.options.rangeMode === 'array' && this.selectableDate === true)) {
+                if ((this.options.limitMode === 'section' && this.monthSelectable === true) ||
+                    (this.options.limitMode === 'array' && this.selectableDate === true)) {
                     status[3] = !status[3];
                 }
                 if (Date.parse(dateArray[m]) === Date.parse(new Date(focus.getFullYear(), focus.getMonth(), 1, 0, 0, 0, 0))) {
@@ -978,8 +978,8 @@
 
                 status = this._judgeStatus(i, 'years', this.mode, status, dateArray[m], this.selectedYearDate);
                 status[3] = this._judgeRange('years', status[3], dateArray[m]);
-                if ((this.options.rangeMode === 'section' && this.yearSelectable === true) ||
-                    (this.options.rangeMode === 'array' && this.selectableDate === true)) {
+                if ((this.options.limitMode === 'section' && this.yearSelectable === true) ||
+                    (this.options.limitMode === 'array' && this.selectableDate === true)) {
                     status[3] = !status[3];
                 }
                 if (Date.parse(dateArray[m]) === Date.parse(new Date(focus.getFullYear(), 0, 1, 0, 0, 0, 0))) {
@@ -1223,10 +1223,6 @@
                     $doc.on('click.' + this.flag, function(e) {
                         self._click.call(self, e);
                     });
-
-                    $(window).on('resize.' + this.flag, function() {
-                        self._position();
-                    });
                 }
             }
             this._trigger('show');
@@ -1241,10 +1237,40 @@
                 this.showed = false;
 
                 $doc.off('click.' + this.flag);
-                $(window).off('resize.' + this.flag);
                 this._trigger('hide');
             }
             return this;
+        },
+        set: function(first, second) {
+            var firstDate = this._parseDate(first, this.format);
+            var secondDate = second ? this._parseDate(second, this.format) : undefined;
+
+            switch (this.options.mode) {
+                case 'single':
+                    this.currentDate[0] = new Date(firstDate);
+                    this.selectedDate[0] = new Date(firstDate);
+                    break;
+                case 'range':
+                    this.currentDate[0] = new Date(firstDate);
+                    this.selectedDate[0] = new Date(firstDate);
+
+                    if(secondDate) {
+                        this.currentDate[1] = new Date(secondDate);
+                        this.selectedDate[1] = new Date(secondDate);
+                    }
+                    break;
+                case 'multiple':
+                    // to be continue
+                    break;
+            }
+
+            for(var i = 0; i < this.options.calendars; i++) {
+                this._changeView('content', i);
+                this._updateDate(i);
+                this._manageViews(i);
+            }
+
+            this._setValue();
         },
         prev: function(i, press) {
             var date = this.currentDate[i];
