@@ -1164,7 +1164,7 @@
                     this.$el.val(val);
                     break;
             }
-            this._trigger('change');
+            this._trigger('change', this.getDate('yyyy-mm-dd'), this.options.name, pluginName);
             this.oldValue = this.$el.val();
         },
         _focus: function() {
@@ -1191,8 +1191,10 @@
         },
 
         _trigger: function(eventType) {
+            var data = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
+            data ? data.push(this) : data=this;
             // event
-            this.$el.trigger(pluginName + '::' + eventType, this);
+            this.$el.trigger(pluginName + '::' + eventType, data);
 
             // callback
             eventType = eventType.replace(/\b\w+\b/g, function(word) {
