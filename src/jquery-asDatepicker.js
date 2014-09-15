@@ -23,33 +23,18 @@
             multipleSize: 5,
 
             container: 'body',
-            position: 'right', // top|right|bottom|left|rightTop|leftTop
+            position: 'bottom', // top|right|bottom|left|rightTop|leftTop
             alwaysShow: false, // true or false
             onceClick: false, // true or false
 
-            min: null,
-            max: null,
+            min: null, // min: '2012-12-1',//null|'today'|days|Date with (yyyy-mm-dd)
+            max: null, // max: '2013-10-1',//null|'today'|days|Date with (yyyy-mm-dd)     
 
-            selectableDate: [],
-            disableDate: [],
+            selectableDate: [], // ['2013-8-1', {from: '2013-8-5', to: '2013-8-10'}, {from: -30, to: 30}]],
 
-            // min: -100, // min: '2012-12-1',//null|'today'|days|Date with (yyyy-mm-dd)
-            // max: 80, // max: '2013-10-1',//null|'today'|days|Date with (yyyy-mm-dd)     
-
-            // selectableDate: ['2014-2-1', {from: '2014-5-3', to: '2014-7-25'}, {from: 'today', to: 3}, '2014-11-30'], // ['2013-8-1', {from: '2013-8-5', to: '2013-8-10'}, {from: -30, to: 30}]],
-            // disableDate: ['2014-9-1', {from: '2014-9-10', to: '2014-9-20'}, {from: 'today', to: 0}, '2014-9-30'], //range can not repeat
-
-            // selectableYear: [{from: 1980, to: 1985}, 1988, {from: 2000, to: 2010}, 2014], // [{from: 1980, to: 1985}, 1988, {from: 2000, to: 2010}, 2013],
-            // selectableMonth: [1, {from: 3, to: 9}, 12], // months from 0 - 11 (jan to dec) example: [0, {from: 3, to: 9}, 11],
-            // selectableDay: [1, {from: 2, to: 10}, {from: 15, to: 25}, 31], // days from 0 - 31,
-
-            selectableYear: [],
-            selectableMonth: [],
-            selectableDay: [],
-
-            // disableYear: [],
-            // disableMonth: [],
-            // disableDay: [],
+            selectableYear: [], // [{from: 1980, to: 1985}, 1988, {from: 2000, to: 2010}, 2013],
+            selectableMonth: [], // months from 0 - 11 (jan to dec) example: [0, {from: 3, to: 9}, 11],
+            selectableDay: [], // days from 0 - 31,
 
             selectableDayOfWeek: [], // days of week 0-6 (su to sa) [0, {from: 2, to: 4}] , [] is default all
 
@@ -1047,27 +1032,27 @@
             switch (position) {
                 case 'top':
                     left = input_left + scroll_left;
-                    top = input_top - calendar_height + scroll_top;
+                    top = input_top - calendar_height;
                     break;
                 case 'right':
                     left = input_left + input_width + scroll_left;
-                    top = input_top + scroll_top;
+                    top = input_top;
                     break;
                 case 'bottom':
                     left = input_left + scroll_left;
-                    top = input_top + input_height + scroll_top;
+                    top = input_top + input_height;
                     break;
                 case 'left':
                     left = input_left - calendar_width + scroll_left;
-                    top = input_top + scroll_top;
+                    top = input_top;
                     break;
                 case 'rightTop':
                     left = input_left + input_width + scroll_left;
-                    top = input_top - calendar_height + input_height + scroll_top;
+                    top = input_top - calendar_height + input_height;
                     break;
                 case 'leftTop':
                     left = input_left - calendar_width + scroll_left;
-                    top = input_top - calendar_height + input_height + scroll_top;
+                    top = input_top - calendar_height + input_height;
                     break;
             }
 
@@ -1488,7 +1473,7 @@
                 if (self.options.displayMode === 'dropdown') {
                     self.$el.off('keydown.dropdown');
                 } else {
-                    self.picker.off('keydown.inline');
+                    self.$picker.off('keydown.inline');
                 }
                 self.bound = false;
             },
@@ -1916,7 +1901,7 @@
                             _self.press.call(self, e);
                         });
                     } else {
-                        self.picker.on('keydown.inline', function(e) {
+                        self.$picker.on('keydown.inline', function(e) {
                             _self.press.call(self, e);
                         });
                     }
@@ -1930,7 +1915,7 @@
     $.fn[pluginName] = function(options) {
         if (typeof options === 'string') {
             var method = options;
-            var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
+            var method_arguments = Array.prototype.slice.call(arguments, 1);
             if (/^\_/.test(method)) {
                 return false;
             } else if (/^(getWrap|getInput|getDate)$/.test(method)) {
