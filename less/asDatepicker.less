@@ -14,11 +14,15 @@
 .@{namespace} {
 	&-wrap {
 	  	line-height: 1;
+	  	white-space: nowrap;
 
 		span {
 		  	-webkit-box-sizing: border-box;
 		  	   -moz-box-sizing: border-box;
 		  			box-sizing: border-box;
+		}
+		.@{namespace}-icon {
+			cursor: pointer;
 		}
 		&, & *:focus {outline: none;}
 	}
@@ -26,7 +30,7 @@
 		display: inline-block;
 		position: relative;
 		vertical-align: middle;
-
+		white-space: normal;
 		&.@{namespace}_days {
 			> .@{namespace}-days {
 				display: block;
@@ -108,6 +112,7 @@
 	}
 
 	&-body {
+		width: @calendarDayWidth * 7;
 		span {
 			cursor: pointer;
 			height: @calendarDayHeight;
@@ -135,6 +140,23 @@
 
 //==========================  skin  ==========================
 .@{namespace} {
+	&-input {
+		border: 1px solid green;
+	}
+	&-icon {
+		background-color: gray;
+		border: 1px solid green;
+	}
+	&_active {
+		.@{namespace} {
+			&-input {
+				border: 1px solid red;
+			}
+			&-icon {
+				border: 1px solid red;
+			}
+		}
+	}
 	&-content {
 		background-color: white;
 		border: 1px solid rgb(235, 235, 235);

@@ -23,7 +23,7 @@
             multipleSize: 5,
 
             container: 'body',
-            position: 'bottom', // top|right|bottom|left|rightTop|leftTop
+            position: 'right', // top|right|bottom|left|rightTop|leftTop
             alwaysShow: false, // true or false
             onceClick: false, // true or false
 
@@ -92,10 +92,10 @@
 
         this.namespace = this.options.namespace;
 
-        var inputWrap = this.$el.wrap(this.options.tplWrapper().replace(/namespace/g, this.namespace)).parent(),
-            inputIcon = $('<i class="' + this.namespace + '-icon"></i>');
+        this.$inputWrap = this.$el.addClass(this.namespace + '-input').wrap(this.options.tplWrapper().replace(/namespace/g, this.namespace)).parent();
+        this.$inputIcon = $('<i class="' + this.namespace + '-icon">icon</i>');
 
-        inputIcon.appendTo(inputWrap);
+        this.$inputIcon.appendTo(this.$inputWrap);
 
         this.$container = $(this.options.container);
 
@@ -172,7 +172,7 @@
             }
 
             //init alwaysShow
-            this._toggle(this.options.alwaysShow);
+            this._initShowHide(this.options.alwaysShow);
 
             this._setValue();
 
@@ -193,6 +193,8 @@
                     focus: $.proxy(this._focus, this),
                     blur: $.proxy(this._blur, this)
                 });
+                this.$inputIcon.on('click.inputIcon', $.proxy(this._toggle, this));
+
                 this.$picker.appendTo(this.options.container);
                 this.$picker.addClass(this.namespace + '_absolute');
             }
@@ -693,7 +695,7 @@
             if (max && max < _minDate) {
                 isSelectable = false;
             }
-            // console.log(y, m, d, this.options, _curr, _isDay)
+
             if (isSelectable && selectableDate.length > 0) {
                 isSelectable = this._judgeSections('date', _curr, selectableDate, _isDay);
             }
@@ -990,11 +992,11 @@
             var calendar_height = this.$picker.outerHeight(),
                 calendar_width = this.$picker.outerWidth(),
                 container_height = this.$container.height() || window.innerHeight,
-                input_top = this.$el.offset().top - this.$container.offset().top,
-                input_left = this.$el.offset().left - this.$container.offset().left,
+                input_top = this.$el.offset().top,
+                input_left = this.$el.offset().left,
                 input_height = this.$el.outerHeight(),
                 input_width = this.$el.outerWidth(),
-                scroll_top = this.$container.scrollTop() || 0,
+                // scroll_top = this.$container.scrollTop() || 0,
                 scroll_left = this.$container.scrollLeft() || 0,
                 left,
                 top,
@@ -1061,12 +1063,11 @@
                 "top": top
             });
         },
-        _toggle: function(isShow) {
-            if (isShow === true) {
-                this.show();
+        _toggle: function() {
+            if (this.showed) {
+                this._blur();
             } else {
-                this.showed = true;
-                this.hide();
+                this._focus();
             }
         },
         _focus: function() {
@@ -1106,7 +1107,7 @@
         _click: function(e) {
             var $target = $(e.target);
 
-            if ($target.closest(this.$picker).length === 0 && $target.closest(this.$el).length === 0 && this.options.alwaysShow === false) {
+            if ($target.closest(this.$inputIcon).length === 0 && $target.closest(this.$picker).length === 0 && $target.closest(this.$el).length === 0 && this.options.alwaysShow === false) {
                 this.hide();
             } else if ($target.closest(this.$el).length !== 1 && $target.closest(this.$picker).length === 1) {
                 var _target = $(e.target).closest('div');
@@ -1381,10 +1382,12 @@
             } else {
                 if (this.showed === false) {
                     this._trigger('beforeShow');
+                    this.$inputWrap.addClass(this.namespace + '_active');
                     this.$picker.removeClass(this.namespace + '_hide');
                     this.$picker.addClass(this.namespace + '_show');
                     this._position();
                     this.showed = true;
+                    this.$el.focus();
                     this.$picker.on('mousedown.' + this.flag, function(e) {
                         self._prevent(e);
                     });
@@ -1400,6 +1403,7 @@
             if (this.showed === true) {
                 this._trigger('beforeHide');
                 this.selected = false;
+                this.$inputWrap.removeClass(this.namespace + '_active');
                 this.$picker.removeClass(this.namespace + '_show');
                 this.$picker.addClass(this.namespace + '_hide');
                 this.showed = false;

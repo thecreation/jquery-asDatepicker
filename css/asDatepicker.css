@@ -1,9 +1,13 @@
 .calendar-wrap {
   line-height: 1;
+  white-space: nowrap;
 }
 .calendar-wrap span {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+}
+.calendar-wrap .calendar-icon {
+  cursor: pointer;
 }
 .calendar-wrap,
 .calendar-wrap *:focus {
@@ -13,6 +17,7 @@
   display: inline-block;
   position: relative;
   vertical-align: middle;
+  white-space: normal;
 }
 .calendar-content.calendar_days > .calendar-days {
   display: block;
@@ -78,6 +83,9 @@
 .calendar-head span {
   cursor: default;
 }
+.calendar-body {
+  width: 210px;
+}
 .calendar-body span {
   cursor: pointer;
   height: 26px;
@@ -101,6 +109,19 @@
 .calendar-months span.calendar_untouchable,
 .calendar-years span.calendar_untouchable {
   cursor: default;
+}
+.calendar-input {
+  border: 1px solid green;
+}
+.calendar-icon {
+  background-color: gray;
+  border: 1px solid green;
+}
+.calendar_active .calendar-input {
+  border: 1px solid red;
+}
+.calendar_active .calendar-icon {
+  border: 1px solid red;
 }
 .calendar-content {
   background-color: white;
