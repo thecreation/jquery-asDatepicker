@@ -1,4 +1,4 @@
-/*! asDatepicker - v0.4.1 - 2014-11-04
+/*! asDatepicker - v0.4.1 - 2014-11-06
 * https://github.com/amazingsurge/jquery-asDatepicker
 * Copyright (c) 2014 amazingSurge; Licensed MIT */
 (function($, document, window, undefined) {
@@ -44,15 +44,15 @@
             },
             tplContent: function() {
                 return '<div class="namespace-content">' +
-                    '<div class="namespace-header">' +
-                    '<div class="namespace-prev"></div>' +
-                    '<div class="namespace-caption"></div>' +
-                    '<div class="namespace-next"></div>' +
-                    '</div>' +
-                    '<div class="namespace-days"></div>' +
-                    '<div class="namespace-months"></div>' +
-                    '<div class="namespace-years"></div>' +
-                    '</div>';
+                            '<div class="namespace-header">' +
+                                '<div class="namespace-prev"></div>' +
+                                '<div class="namespace-caption"></div>' +
+                                '<div class="namespace-next"></div>' +
+                            '</div>' +
+                            '<div class="namespace-days"></div>' +
+                            '<div class="namespace-months"></div>' +
+                            '<div class="namespace-years"></div>' +
+                        '</div>';
             },
             onInit: null,
             onReady: null,
@@ -957,9 +957,7 @@
                                 break;
                         }
                     }
-                    // for (var j = from; j <= to; j++) {
                     array[count++] = [from, to];
-                    // }
                 }
             }
             return array;
@@ -1061,6 +1059,7 @@
         },
         _toggle: function() {
             if (this.showed) {
+                this.pickerHide = true;
                 this._blur();
             } else {
                 this._focus();
@@ -1102,7 +1101,6 @@
         },
         _click: function(e) {
             var $target = $(e.target);
-
             if ($target.closest(this.$inputIcon).length === 0 && $target.closest(this.$picker).length === 0 && $target.closest(this.$el).length === 0 && this.options.alwaysShow === false) {
                 this.hide();
             } else if ($target.closest(this.$el).length !== 1 && $target.closest(this.$picker).length === 1) {
@@ -1366,7 +1364,6 @@
         },
         show: function() {
             var self = this;
-
             if (this.options.displayMode === 'inline') {
                 this._trigger('beforeShow');
                 this.$picker.on('mouseDown.picker', function(e) {
