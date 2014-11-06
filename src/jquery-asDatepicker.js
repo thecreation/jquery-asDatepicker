@@ -93,7 +93,7 @@
         this.namespace = this.options.namespace;
 
         this.$inputWrap = this.$el.addClass(this.namespace + '-input').wrap(this.options.tplWrapper().replace(/namespace/g, this.namespace)).parent();
-        this.$inputIcon = $('<i class="' + this.namespace + '-icon">icon</i>');
+        this.$inputIcon = $('<i class="' + this.namespace + '-icon"></i>');
 
         this.$inputIcon.appendTo(this.$inputWrap);
 
