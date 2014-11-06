@@ -23,7 +23,7 @@
             multipleSize: 5,
 
             container: 'body',
-            position: 'right', // top|right|bottom|left|rightTop|leftTop
+            position: 'bottom', // top|right|bottom|left|rightTop|leftTop
             alwaysShow: false, // true or false
             onceClick: false, // true or false
 
