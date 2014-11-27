@@ -260,6 +260,7 @@ $(&#39;#calendar-api-update&#39;).asDatepicker(&#39;update&#39;, {mode:&nbsp;&#3
         </section>
     </div> 
 <script src="js/jquery.js"></script>
+<script src="js/jquery.mobile.custom.js"></script>
 <script src="js/jquery.toc.min.js"></script>
 <script src="js/prism.js"></script>
 <script src="../src/jquery-asDatepicker.js"></script>
@@ -272,12 +273,17 @@ $(document).ready(function(){
     $("#calendar").asDatepicker({
             namespace: 'calendar',
             lang: 'zh',
-            position: 'bottom'
+            position: 'bottom',
+            mobileMode: true
         });
     
-	$("#calendar2").asDatepicker({mode: 'range'});
+	$("#calendar2").asDatepicker({mode: 'range', mobileMode: true});
 
-    $("#calendar3").asDatepicker({mode: 'multiple', calendars: 4});
+    $("#calendar3").asDatepicker({
+        mode: 'multiple', 
+        calendars: 4, 
+        mobileMode: true
+    });
 
 	$("#calendar4").asDatepicker();
 

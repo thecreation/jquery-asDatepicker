@@ -1,4 +1,4 @@
-/*! asDatepicker - v0.4.1 - 2014-11-06
+/*! asDatepicker - v0.4.1 - 2014-11-27
 * https://github.com/amazingsurge/jquery-asDatepicker
 * Copyright (c) 2014 amazingSurge; Licensed MIT */
 (function($, document, window, undefined) {
@@ -38,12 +38,17 @@
             views: ['days'], // ['days'], ['days', 'months', 'years']
             outputFormat: 'yyyy/mm/dd',
 
+            mobileMode: false,
+
             namespace: 'calendar',
+            tplInputWrapper: function() {
+                return '<div class="namespace-inputWrap"></div>';
+            },
             tplWrapper: function() {
                 return '<div class="namespace-wrap"></div>';
             },
             tplContent: function() {
-                return '<div class="namespace-content">' +
+                return '<div class="namespace-content">' + 
                             '<div class="namespace-header">' +
                                 '<div class="namespace-prev"></div>' +
                                 '<div class="namespace-caption"></div>' +
@@ -52,7 +57,14 @@
                             '<div class="namespace-days"></div>' +
                             '<div class="namespace-months"></div>' +
                             '<div class="namespace-years"></div>' +
+                            '<div class="namespace-buttons">' + 
+                                '<div class="namespace-button-cancel">取消</div>' + 
+                                '<div class="namespace-button-enter">确定</div>' + 
+                            '</div>' +
                         '</div>';
+            },
+            tplTitle: function() {
+                return '<div class="namespace-title">test</div>';
             },
             onInit: null,
             onReady: null,
@@ -88,7 +100,7 @@
 
         this.namespace = this.options.namespace;
 
-        this.$inputWrap = this.$el.addClass(this.namespace + '-input').wrap(this.options.tplWrapper().replace(/namespace/g, this.namespace)).parent();
+        this.$inputWrap = this.$el.addClass(this.namespace + '-input').wrap(this.options.tplInputWrapper().replace(/namespace/g, this.namespace)).parent();
         this.$inputIcon = $('<i class="' + this.namespace + '-icon"></i>');
 
         this.$inputIcon.appendTo(this.$inputWrap);
@@ -127,9 +139,12 @@
             this.hasKeyboard = this.options.keyboard;
             this.map = {};
             this.views = [];
+            this.isMobile = this.options.mobileMode; //with other judgements
 
             var wrapper = this.options.tplWrapper().replace(/namespace/g, this.namespace),
-                content = this.options.tplContent().replace(/namespace/g, this.namespace);
+                content = this.options.tplContent().replace(/namespace/g, this.namespace),
+                title = this.options.tplTitle().replace(/namespace/g, this.namespace);
+                // buttons = this.options.tplButtons().replace(/namespace/g, this.namespace);
 
             this.$picker = $(wrapper);
 
@@ -142,7 +157,7 @@
                     this.calendarsNum = 2;
                     break;
                 case 'multiple':
-                    this.calendarsNum = this.options.calendars;
+                    this.calendarsNum = this.isMobile ? 1 : this.options.calendars;
                     this.options.views = ['days'];
                     break;
             }
@@ -151,6 +166,23 @@
             for (var i = 0; i < this.calendarsNum; i++) {
                 this.$picker.append(content);
                 this.views[i] = this.options.views[i] || 'days';
+            }
+
+            //check mobileMode 
+            if(this.isMobile) {
+                var innerWidth = window.innerWidth;      
+                var innerHeight = window.innerHeight;
+                var min = Math.min(innerWidth, innerHeight);
+
+                this.$el.attr('readonly', 'readonly');
+                this.$cover = $('<div class="' + this.namespace + '-cover"></div>');
+
+                this.$picker.append(title)
+                            // .append(buttons)
+                            .addClass(this.namespace + '_isMobile');
+
+                this.$picker.css({'font-size': Math.round(min * 0.04) + 'px'});
+      
             }
 
             //make $wrapper can be focused
@@ -177,7 +209,7 @@
         _initStatus: function(displayMode) {
             if (displayMode === 'inline') {
                 this.options.alwaysShow = true;
-                this.$el.after(this.$picker).addClass(this.namespace + '_hide');
+                // this.$el.after(this.$picker).addClass(this.namespace + '_hide');
                 this.$picker.addClass(this.namespace + '_show');
 
                 this.$picker.on({
@@ -192,7 +224,7 @@
                 this.$inputIcon.on('click.inputIcon', $.proxy(this._toggle, this));
 
                 this.$picker.appendTo(this.options.container);
-                this.$picker.addClass(this.namespace + '_absolute');
+                // this.$picker.addClass(this.namespace + '_absolute');
             }
         },
         _initSections: function() {
@@ -207,49 +239,52 @@
         _initShowHide: function(alwaysShow) {
             if (alwaysShow === true) {
                 this.show();
-            } else {
-                this.showed = true;
-                this.hide();
             }
         },
         _initDate: function() {
             var date = this.options.date === 'today' ? new Date() : this._parseDate(this.options.date, this.format);
 
-            this.currentDate = [new Date(date)];
+            this._date = {};
+
+            this._date.currentDate = [new Date(date)];
 
             if (this.mode === 'multiple') {
-                this.selectedDate = [];
-                this.focusDate = new Date(date);
-                this.focusDate.setHours(0, 0, 0, 0);
+                this._date.selectedDate = [];
+                this._date.focusDate = new Date(date);
+                this._date.focusDate.setHours(0, 0, 0, 0);
             } else {
-                this.selectedDate = [new Date(date)];
-                this.focusDate = [new Date(date)];
+                this._date.selectedDate = [new Date(date)];
+                this._date.focusDate = [new Date(date)];
             }
 
-            this.currentDay = [];
-            this.currentMonth = [];
-            this.currentYear = [];
+            this._date.currentDay = [];
+            this._date.currentMonth = [];
+            this._date.currentYear = [];
 
-            this.currentMonthDate = [];
-            this.currentYearDate = [];
+            this._date.currentMonthDate = [];
+            this._date.currentYearDate = [];
 
-            this.selectedDay = [];
-            this.selectedMonth = [];
-            this.selectedYear = [];
+            this._date.selectedDay = [];
+            this._date.selectedMonth = [];
+            this._date.selectedYear = [];
 
-            this.selectedMonthDate = [];
-            this.selectedYearDate = [];
+            this._date.selectedMonthDate = [];
+            this._date.selectedYearDate = [];
+
+            this._date.cache = {};
+            this._date.cache.currentDate = [];
+            this._date.cache.selectedDate = [];
 
             for (var i = 0; i < this.calendarsNum; i++) {
-                this.currentDate[i] = this.currentDate[i] || new Date(date);
+                this._date.currentDate[i] = this._date.currentDate[i] || new Date(date);
                 if (this.mode === 'multiple') {
-                    this._setDate(this.currentDate[i], 'month', this.currentDate[i].getMonth() + i);
+                    this._setDate(this._date.currentDate[i], 'month', this._date.currentDate[i].getMonth() + i);
                 } else {
-                    this.selectedDate[i] = this.selectedDate[i] || new Date(date);
-                    this.selectedDate[i].setHours(0, 0, 0, 0);
+                    this._date.selectedDate[i] = this._date.selectedDate[i] || new Date(date);
+                    this._date.selectedDate[i].setHours(0, 0, 0, 0);
 
-                    this.focusDate[i] = this.focusDate[i] || new Date(date);
-                    this.focusDate[i].setHours(0, 0, 0, 0);
+                    this._date.focusDate[i] = this._date.focusDate[i] || new Date(date);
+                    this._date.focusDate[i].setHours(0, 0, 0, 0);
                 }
                 this._updateDate(i);
             }
@@ -277,15 +312,15 @@
             }
         },
         _generateDaypicker: function(index) {
-            this._generateHeader(index, LABEL[this.options.lang].months[this.currentMonth[index]] + ' ' + this.currentYear[index]);
+            this._generateHeader(index, LABEL[this.options.lang].months[this._date.currentMonth[index]] + ' ' + this._date.currentYear[index]);
             this.daypickers.eq(index).html(this._generateDays(index));
         },
         _generateMonthpicker: function(index) {
-            this._generateHeader(index, this.currentYear[index]);
+            this._generateHeader(index, this._date.currentYear[index]);
             this.monthpickers.eq(index).html(this._generateMonths(index));
         },
         _generateYearpicker: function(index) {
-            this._generateHeader(index, this.currentYear[index] - 7 + ' ' + this.options.rangeSeparator + ' ' + (this.currentYear[index] + 4));
+            this._generateHeader(index, this._date.currentYear[index] - 7 + ' ' + this.options.rangeSeparator + ' ' + (this._date.currentYear[index] + 4));
             this.yearpickers.eq(index).html(this._generateYears(index));
         },
         _generateHeader: function(index, caption) {
@@ -293,8 +328,8 @@
             this._judgeLock(index);
         },
         _generateDays: function(index) {
-            var year = this.currentYear[index],
-                month = this.currentMonth[index],
+            var year = this._date.currentYear[index],
+                month = this._date.currentMonth[index],
                 day,
                 daysInMonth = new Date(year, month + 1, 0).getDate(),
                 firstDay = new Date(year, month, 1).getDay(),
@@ -344,11 +379,11 @@
                     content = day;
                     if (this.hasKeyboard) {
                         if (this.mode === 'multiple') {
-                            if (Date.parse(dateArray[j]) === Date.parse(this.focusDate)) {
+                            if (Date.parse(dateArray[j]) === Date.parse(this._date.focusDate)) {
                                 className += ' ' + this.namespace + '_focus';
                             }
                         } else {
-                            if (Date.parse(dateArray[j]) === Date.parse(this.focusDate[index])) {
+                            if (Date.parse(dateArray[j]) === Date.parse(this._date.focusDate[index])) {
                                 className += ' ' + this.namespace + '_focus';
                             }
                         }
@@ -356,7 +391,7 @@
 
 
                 }
-                status = this._judgeStatus(index, 'days', this.mode, status, dateArray[j], this.selectedDate);
+                status = this._judgeStatus(index, 'days', this.mode, status, dateArray[j], this._date.selectedDate);
                 className += this._renderStatus(status);
                 html += '<span class="' + className + '">' + content + '</span>';
             }
@@ -364,12 +399,12 @@
             return html;
         },
         _generateMonths: function(index) {
-            var year = this.currentYear[index],
+            var year = this._date.currentYear[index],
                 html = '',
                 className,
                 content = LABEL[this.options.lang].monthsShort,
                 dateArray = [],
-                focus = this.focusDate[index],
+                focus = this._date.focusDate[index],
                 isActive, isInRange, isUntouch, rangeUntouch,
                 status = [];
 
@@ -393,7 +428,7 @@
                     }
                 }
 
-                status = this._judgeStatus(index, 'months', this.mode, status, dateArray[i], this.selectedMonthDate);
+                status = this._judgeStatus(index, 'months', this.mode, status, dateArray[i], this._date.selectedMonthDate);
                 className += this._renderStatus(status);
 
                 html += '<span class="month-' + i + ' ' + className + '">' + content[i] + '</span>';
@@ -402,12 +437,12 @@
             return html;
         },
         _generateYears: function(index) {
-            var year = this.currentYear[index],
+            var year = this._date.currentYear[index],
                 html = '',
                 className,
                 content = 0,
                 dateArray = [],
-                focus = this.focusDate[index],
+                focus = this._date.focusDate[index],
                 isActive, isInRange, isUntouch, rangeUntouch,
                 status = [];
 
@@ -432,7 +467,7 @@
                     }
                 }
 
-                status = this._judgeStatus(index, 'years', this.mode, status, dateArray[m], this.selectedYearDate);
+                status = this._judgeStatus(index, 'years', this.mode, status, dateArray[m], this._date.selectedYearDate);
                 className += this._renderStatus(status);
 
                 html += '<span class="' + className + '">' + content + '</span>';
@@ -449,45 +484,47 @@
                     if (index === 0) {
                         switch (this.views[index]) {
                             case 'days':
-                                current = Date.parse(this.currentDate[index]);
-                                selected = Date.parse(this.selectedMonthDate[1]);
+                                current = Date.parse(this._date.currentDate[index]);
+                                selected = Date.parse(this._date.selectedMonthDate[1]);
                                 break;
                             case 'months':
-                                current = Date.parse(this.currentYearDate[index]);
-                                selected = Date.parse(this.selectedYearDate[1]);
+                                current = Date.parse(this._date.currentYearDate[index]);
+                                selected = Date.parse(this._date.selectedYearDate[1]);
                                 break;
                             case 'years':
-                                current = new Date(this.currentYearDate[index]).setFullYear(this.currentYear[index] + 4);
-                                selected = Date.parse(this.selectedYearDate[1]);
+                                current = new Date(this._date.currentYearDate[index]).setFullYear(this._date.currentYear[index] + 4);
+                                selected = Date.parse(this._date.selectedYearDate[1]);
                                 break;
                         }
                         nextLock = !this._setPoint('<', nextLock, current, selected);
                     } else {
                         switch (this.views[index]) {
                             case 'days':
-                                current = Date.parse(this.currentDate[index]);
-                                selected = Date.parse(this.selectedMonthDate[0]);
+                                current = Date.parse(this._date.currentDate[index]);
+                                selected = Date.parse(this._date.selectedMonthDate[0]);
                                 break;
                             case 'months':
-                                current = Date.parse(this.currentYearDate[index]);
-                                selected = Date.parse(this.selectedYearDate[0]);
+                                current = Date.parse(this._date.currentYearDate[index]);
+                                selected = Date.parse(this._date.selectedYearDate[0]);
                                 break;
                             case 'years':
-                                current = new Date(this.currentYearDate[index]).setFullYear(this.currentYear[index] - 7);
-                                selected = Date.parse(this.selectedYearDate[0]);
+                                current = new Date(this._date.currentYearDate[index]).setFullYear(this._date.currentYear[index] - 7);
+                                selected = Date.parse(this._date.selectedYearDate[0]);
                                 break;
                         }
                         prevLock = !this._setPoint('>', prevLock, current, selected);
                     }
                     break;
                 case 'multiple':
-                    if (index === 0) {
-                        nextLock = true;
-                    } else if (index === this.calendarsNum - 1) {
-                        prevLock = true;
-                    } else {
-                        prevLock = nextLock = true;
-                    }
+                    if(this.calendarsNum > 1) {
+                        if (index === 0) {
+                            nextLock = true;
+                        } else if (index === this.calendarsNum - 1) {
+                            prevLock = true;
+                        } else {
+                            prevLock = nextLock = true;
+                        }
+                    } 
                     break;
             }
             if (prevLock === true) {
@@ -610,7 +647,7 @@
                     }
                     break;
                 case 'multiple':
-                    for (var i = 0; i < this.selectedDate.length; i++) {
+                    for (var i = 0; i < this._date.selectedDate.length; i++) {
                         if (Date.parse(currentDate) === selectedDate[i]) {
                             active = true;
                         }
@@ -963,23 +1000,23 @@
             return array;
         },
         _updateDate: function(i) {
-            this.currentDate[i].setDate(1);
-            this.currentDate[i].setHours(0, 0, 0, 0);
+            this._date.currentDate[i].setDate(1);
+            this._date.currentDate[i].setHours(0, 0, 0, 0);
 
-            this.currentDay[i] = this.currentDate[i].getDate();
-            this.currentMonth[i] = this.currentDate[i].getMonth();
-            this.currentYear[i] = this.currentDate[i].getFullYear();
+            this._date.currentDay[i] = this._date.currentDate[i].getDate();
+            this._date.currentMonth[i] = this._date.currentDate[i].getMonth();
+            this._date.currentYear[i] = this._date.currentDate[i].getFullYear();
 
-            this.currentMonthDate[i] = new Date(this.currentYear[i], this.currentMonth[i], 1, 0, 0, 0, 0);
-            this.currentYearDate[i] = new Date(this.currentYear[i], 0, 1, 0, 0, 0, 0);
+            this._date.currentMonthDate[i] = new Date(this._date.currentYear[i], this._date.currentMonth[i], 1, 0, 0, 0, 0);
+            this._date.currentYearDate[i] = new Date(this._date.currentYear[i], 0, 1, 0, 0, 0, 0);
 
             if (this.mode !== 'multiple') {
-                this.selectedDay[i] = this.selectedDate[i].getDate();
-                this.selectedMonth[i] = this.selectedDate[i].getMonth();
-                this.selectedYear[i] = this.selectedDate[i].getFullYear();
+                this._date.selectedDay[i] = this._date.selectedDate[i].getDate();
+                this._date.selectedMonth[i] = this._date.selectedDate[i].getMonth();
+                this._date.selectedYear[i] = this._date.selectedDate[i].getFullYear();
 
-                this.selectedMonthDate[i] = new Date(this.selectedYear[i], this.selectedMonth[i], 1, 0, 0, 0, 0);
-                this.selectedYearDate[i] = new Date(this.selectedYear[i], 0, 1, 0, 0, 0, 0);
+                this._date.selectedMonthDate[i] = new Date(this._date.selectedYear[i], this._date.selectedMonth[i], 1, 0, 0, 0, 0);
+                this._date.selectedYearDate[i] = new Date(this._date.selectedYear[i], 0, 1, 0, 0, 0, 0);
             }
         },
         _position: function() {
@@ -990,66 +1027,72 @@
                 input_left = this.$el.offset().left,
                 input_height = this.$el.outerHeight(),
                 input_width = this.$el.outerWidth(),
-                // scroll_top = this.$container.scrollTop() || 0,
+                winWidth = window.innerWidth,
+                winHeight = window.innerHeight,
                 scroll_left = this.$container.scrollLeft() || 0,
                 left,
                 top,
                 position = this.options.position;
 
-            switch (position) {
-                case 'bottom':
-                case 'right':
-                case 'left':
-                    if ((input_top + input_height + calendar_height) > (container_height)) {
-                        if (position === 'bottom') {
-                            position = 'top';
-                        } else if (position = 'left') {
-                            position = 'leftTop';
-                        } else if (position = 'right') {
-                            position = 'rightTop';
+            if(this.isMobile) {
+                left = (winWidth - calendar_width) / 2;
+                top = (winHeight - calendar_height) / 2;
+            }else{
+                switch (position) {
+                    case 'bottom':
+                    case 'right':
+                    case 'left':
+                        if ((input_top + input_height + calendar_height) > (container_height)) {
+                            if (position === 'bottom') {
+                                position = 'top';
+                            } else if (position = 'left') {
+                                position = 'leftTop';
+                            } else if (position = 'right') {
+                                position = 'rightTop';
+                            }
                         }
-                    }
-                    break;
-                case 'top':
-                case 'rightTop':
-                case 'leftTop':
-                    if (input_top - calendar_height < 0) {
-                        if (position === 'top') {
-                            position = 'bottom';
-                        } else if (position = 'leftTop') {
-                            position = 'left';
-                        } else if (position = 'rightTop') {
-                            position = 'right';
+                        break;
+                    case 'top':
+                    case 'rightTop':
+                    case 'leftTop':
+                        if (input_top - calendar_height < 0) {
+                            if (position === 'top') {
+                                position = 'bottom';
+                            } else if (position = 'leftTop') {
+                                position = 'left';
+                            } else if (position = 'rightTop') {
+                                position = 'right';
+                            }
                         }
-                    }
-                    break;
-            }
+                        break;
+                }
 
-            switch (position) {
-                case 'top':
-                    left = input_left + scroll_left;
-                    top = input_top - calendar_height;
-                    break;
-                case 'right':
-                    left = input_left + input_width + scroll_left;
-                    top = input_top;
-                    break;
-                case 'bottom':
-                    left = input_left + scroll_left;
-                    top = input_top + input_height;
-                    break;
-                case 'left':
-                    left = input_left - calendar_width + scroll_left;
-                    top = input_top;
-                    break;
-                case 'rightTop':
-                    left = input_left + input_width + scroll_left;
-                    top = input_top - calendar_height + input_height;
-                    break;
-                case 'leftTop':
-                    left = input_left - calendar_width + scroll_left;
-                    top = input_top - calendar_height + input_height;
-                    break;
+                switch (position) {
+                    case 'top':
+                        left = input_left + scroll_left;
+                        top = input_top - calendar_height;
+                        break;
+                    case 'right':
+                        left = input_left + input_width + scroll_left;
+                        top = input_top;
+                        break;
+                    case 'bottom':
+                        left = input_left + scroll_left;
+                        top = input_top + input_height;
+                        break;
+                    case 'left':
+                        left = input_left - calendar_width + scroll_left;
+                        top = input_top;
+                        break;
+                    case 'rightTop':
+                        left = input_left + input_width + scroll_left;
+                        top = input_top - calendar_height + input_height;
+                        break;
+                    case 'leftTop':
+                        left = input_left - calendar_width + scroll_left;
+                        top = input_top - calendar_height + input_height;
+                        break;
+                }
             }
 
             this.$picker.css({
@@ -1101,6 +1144,7 @@
         },
         _click: function(e) {
             var $target = $(e.target);
+
             if ($target.closest(this.$inputIcon).length === 0 && $target.closest(this.$picker).length === 0 && $target.closest(this.$el).length === 0 && this.options.alwaysShow === false) {
                 this.hide();
             } else if ($target.closest(this.$el).length !== 1 && $target.closest(this.$picker).length === 1) {
@@ -1115,10 +1159,10 @@
                             this._manageViews(i);
                             break;
                         case this.namespace + '-prev':
-                            this.prev(i, true);
+                            this.prev(i);
                             break;
                         case this.namespace + '-next':
-                            this.next(i, true);
+                            this.next(i);
                             break;
                     }
                 }
@@ -1149,11 +1193,21 @@
                                 this._manageViews(j + 1);
                                 break;
                         }
-                        this._setValue();
+                        if(!this.isMobile) { this._setValue(); }
                     }
                 }
 
-                if (this.selected === true && this.options.alwaysShow === false && this.options.onceClick === true) {
+                if (_target.parent('.' + this.namespace + '-buttons').length === 1) {
+                    var k = _target.parents('.' + this.namespace + '-content').index(),
+                        flag = _target[0].className === this.namespace + '-button-enter' ? true : false;
+                    if(flag) {
+                        this.mobileEnter(k);
+                    }else{
+                        this.mobileCancel(k);
+                    }
+                }
+
+                if (this.selected === true && this.options.alwaysShow === false && this.options.onceClick === true && !this.isMobile) {
                     this.hide();
                 } else {
                     if (this.options.displayMode === 'dropdown') {
@@ -1161,6 +1215,7 @@
                     }
                 }
             }
+            e.preventDefault();
         },
         _changeValue: function(target, i) {
             var newVal = '',
@@ -1169,31 +1224,31 @@
             switch (this.views[i]) {
                 case 'years':
                     newVal = parseInt(target.text(), 10);
-                    this.currentDate[i].setYear(newVal);
+                    this._date.currentDate[i].setYear(newVal);
                     break;
                 case 'months':
                     newVal = Number(target.attr('class').match(/month\-([0-9]+)/)[1]);
-                    this.currentDate[i].setMonth(newVal);
+                    this._date.currentDate[i].setMonth(newVal);
                     break;
                 case 'days':
                     newVal = parseInt(target.text(), 10);
-                    newDate = new Date(this.currentYear[i], this.currentMonth[i], newVal, 0, 0, 0, 0);
+                    newDate = new Date(this._date.currentYear[i], this._date.currentMonth[i], newVal, 0, 0, 0, 0);
                     switch (this.options.mode) {
                         case 'single':
                         case 'range':
-                            this.selectedDate[i] = newDate;
+                            this._date.selectedDate[i] = newDate;
                             break;
                         case 'multiple':
                             var date = Date.parse(newDate);
-                            if ($.inArray(date, this.selectedDate) > -1) {
-                                $.each(this.selectedDate, function(nr, data) {
+                            if ($.inArray(date, this._date.selectedDate) > -1) {
+                                $.each(this._date.selectedDate, function(nr, data) {
                                     if (data === date) {
-                                        self.selectedDate.splice(nr, 1);
+                                        self._date.selectedDate.splice(nr, 1);
                                     }
                                 });
                             } else {
-                                if (this.selectedDate.length < this.options.multipleSize) {
-                                    this.selectedDate.push(date);
+                                if (this._date.selectedDate.length < this.options.multipleSize) {
+                                    this._date.selectedDate.push(date);
                                 }
                             }
                             break;
@@ -1204,19 +1259,19 @@
         _setValue: function() {
             switch (this.mode) {
                 case 'single':
-                    var formated = this._formatDate(this.selectedDate[0], this.outputFormat);
+                    var formated = this._formatDate(this._date.selectedDate[0], this.outputFormat);
                     this.$el.val(formated);
                     break;
                 case 'range':
-                    var formatedStart = this._formatDate(this.selectedDate[0], this.outputFormat),
-                        formatedEnd = this._formatDate(this.selectedDate[1], this.outputFormat);
+                    var formatedStart = this._formatDate(this._date.selectedDate[0], this.outputFormat),
+                        formatedEnd = this._formatDate(this._date.selectedDate[1], this.outputFormat);
                     this.$el.val(formatedStart + ' ' + this.options.rangeSeparator + ' ' + formatedEnd);
                     break;
                 case 'multiple':
                     var val = '',
                         _formated;
-                    for (var j = 0; j < this.selectedDate.length; j++) {
-                        _formated = this._formatDate(this.selectedDate[j], this.outputFormat);
+                    for (var j = 0; j < this._date.selectedDate.length; j++) {
+                        _formated = this._formatDate(this._date.selectedDate[j], this.outputFormat);
                         if (val.length === 0) {
                             val += _formated;
                         } else {
@@ -1246,9 +1301,9 @@
             this.$el.off('focus');
             this.$el.off('blur');
         },
-
         prev: function(i, isTurning) {
-            var date = this.currentDate[i];
+            this.touchflag = false;
+            var date = this._date.currentDate[i];
             switch (this.views[i]) {
                 case 'days':
                     var prevMonthDays;
@@ -1256,7 +1311,7 @@
                         if (isTurning) {
                             if (this.focused === 0) {
                                 for (var j = 0; j < this.calendarsNum; j++) {
-                                    this.currentDate[j].setMonth(this.currentMonth[j] - 1);
+                                    this._date.currentDate[j].setMonth(this._date.currentMonth[j] - 1);
                                     this._updateDate(j);
                                     this._manageViews(j);
                                 }
@@ -1267,37 +1322,37 @@
                             }
                         } else {
                             prevMonthDays = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
-                            if (this.focusDate.getDate() > prevMonthDays) {
-                                this.focusDate.setDate(prevMonthDays);
+                            if (this._date.focusDate.getDate() > prevMonthDays) {
+                                this._date.focusDate.setDate(prevMonthDays);
                             }
-                            this.focusDate.setMonth(this.focusDate.getMonth() - 1);
+                            this._date.focusDate.setMonth(this._date.focusDate.getMonth() - 1);
                             for (var k = 0; k < this.calendarsNum; k++) {
-                                this.currentDate[k].setMonth(this.currentMonth[k] - 1);
+                                this._date.currentDate[k].setMonth(this._date.currentMonth[k] - 1);
                                 this._updateDate(k);
                                 this._manageViews(k);
                             }
                         }
                     } else {
-                        date.setMonth(this.currentMonth[i] - 1);
+                        date.setMonth(this._date.currentMonth[i] - 1);
                         if (this.hasKeyboard) {
                             prevMonthDays = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
-                            if (this.focusDate[i].getDate() > prevMonthDays) {
-                                this.focusDate[i].setDate(prevMonthDays);
+                            if (this._date.focusDate[i].getDate() > prevMonthDays) {
+                                this._date.focusDate[i].setDate(prevMonthDays);
                             }
-                            this.focusDate[i] = new Date(date.getFullYear(), date.getMonth(), this.focusDate[i].getDate(), 0, 0, 0, 0);
+                            this._date.focusDate[i] = new Date(date.getFullYear(), date.getMonth(), this._date.focusDate[i].getDate(), 0, 0, 0, 0);
                         }
                     }
                     break;
                 case 'months':
-                    date.setYear(this.currentYear[i] - 1);
+                    date.setYear(this._date.currentYear[i] - 1);
                     if (this.hasKeyboard) {
-                        this.focusDate[i] = new Date(date.getFullYear(), this.focusDate[i].getMonth(), this.focusDate[i].getDate(), 0, 0, 0, 0);
+                        this._date.focusDate[i] = new Date(date.getFullYear(), this._date.focusDate[i].getMonth(), this._date.focusDate[i].getDate(), 0, 0, 0, 0);
                     }
                     break;
                 case 'years':
-                    date.setYear(this.currentYear[i] - 12);
+                    date.setYear(this._date.currentYear[i] - 12);
                     if (this.hasKeyboard && isTurning) {
-                        this.focusDate[i] = new Date(this.focusDate[i].getFullYear() - 12, this.focusDate[i].getMonth(), this.focusDate[i].getDate(), 0, 0, 0, 0);
+                        this._date.focusDate[i] = new Date(this._date.focusDate[i].getFullYear() - 12, this._date.focusDate[i].getMonth(), this._date.focusDate[i].getDate(), 0, 0, 0, 0);
                     }
                     break;
             }
@@ -1305,7 +1360,8 @@
             this._manageViews(i);
         },
         next: function(i, isTurning) {
-            var date = this.currentDate[i];
+            this.touchflag = false;
+            var date = this._date.currentDate[i];
             switch (this.views[i]) {
                 case 'days':
                     var nextMonthDays;
@@ -1313,7 +1369,7 @@
                         if (isTurning) {
                             if (this.focused === this.calendarsNum - 1) {
                                 for (var j = 0; j < this.calendarsNum; j++) {
-                                    this.currentDate[j].setMonth(this.currentMonth[j] + 1);
+                                    this._date.currentDate[j].setMonth(this._date.currentMonth[j] + 1);
                                     this._updateDate(j);
                                     this._manageViews(j);
                                 }
@@ -1324,84 +1380,182 @@
                             }
                         } else {
                             nextMonthDays = new Date(date.getFullYear(), date.getMonth() + 2, 0).getDate();
-                            if (this.focusDate.getDate() > nextMonthDays) {
-                                this.focusDate.setDate(nextMonthDays);
+                            if (this._date.focusDate.getDate() > nextMonthDays) {
+                                this._date.focusDate.setDate(nextMonthDays);
                             }
-                            this.focusDate.setMonth(this.focusDate.getMonth() + 1);
+                            this._date.focusDate.setMonth(this._date.focusDate.getMonth() + 1);
                             for (var k = 0; k < this.calendarsNum; k++) {
-                                this.currentDate[k].setMonth(this.currentMonth[k] + 1);
+                                this._date.currentDate[k].setMonth(this._date.currentMonth[k] + 1);
                                 this._updateDate(k);
                                 this._manageViews(k);
                             }
                         }
                     } else {
-                        date.setMonth(this.currentMonth[i] + 1);
+                        date.setMonth(this._date.currentMonth[i] + 1);
 
                         if (this.hasKeyboard) {
                             nextMonthDays = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-                            if (this.focusDate[i].getDate() > nextMonthDays) {
-                                this.focusDate[i].setDate(nextMonthDays);
+                            if (this._date.focusDate[i].getDate() > nextMonthDays) {
+                                this._date.focusDate[i].setDate(nextMonthDays);
                             }
-                            this.focusDate[i] = new Date(date.getFullYear(), date.getMonth(), this.focusDate[i].getDate(), 0, 0, 0, 0);
+                            this._date.focusDate[i] = new Date(date.getFullYear(), date.getMonth(), this._date.focusDate[i].getDate(), 0, 0, 0, 0);
                         }
                     }
                     break;
                 case 'months':
-                    date.setYear(this.currentYear[i] + 1);
+                    date.setYear(this._date.currentYear[i] + 1);
                     if (this.hasKeyboard) {
-                        this.focusDate[i] = new Date(date.getFullYear(), this.focusDate[i].getMonth(), this.focusDate[i].getDate(), 0, 0, 0, 0);
+                        this._date.focusDate[i] = new Date(date.getFullYear(), this._date.focusDate[i].getMonth(), this._date.focusDate[i].getDate(), 0, 0, 0, 0);
                     }
                     break;
                 case 'years':
-                    date.setYear(this.currentYear[i] + 12);
+                    date.setYear(this._date.currentYear[i] + 12);
                     if (this.hasKeyboard && isTurning) {
-                        this.focusDate[i] = new Date(this.focusDate[i].getFullYear() + 12, this.focusDate[i].getMonth(), this.focusDate[i].getDate(), 0, 0, 0, 0);
+                        this._date.focusDate[i] = new Date(this._date.focusDate[i].getFullYear() + 12, this._date.focusDate[i].getMonth(), this._date.focusDate[i].getDate(), 0, 0, 0, 0);
                     }
                     break;
             }
             this._updateDate(i);
             this._manageViews(i);
         },
+        mobilePrev: function(index) {
+            this.calendars.eq(index).removeClass(this.namespace + '_show');
+            this.calendars.eq(index-1).addClass(this.namespace + '_show');
+        },
+        mobileNext: function(index) {
+            this.calendars.eq(index).removeClass(this.namespace + '_show');
+            this.calendars.eq(index+1).addClass(this.namespace + '_show');
+        },
+        mobileInteDate: function(index) {
+            var self = this;
+            if(this.mode === 'multiple') {
+                if(this._date.selectedDate.length > 0) {
+                    self._date.currentDate[0] = new Date(this._date.selectedDate[0]);
+                }
+                // $.each(this._date.selectedDate, function(i, v) {
+                //     self._date.currentDate[i] = new Date(v);
+                // });
+            }else{
+                this._date.currentDate[index] = new Date(this._date.selectedDate[index]);
+            }
+            
+            this.views[index] = 'days';
+            this._updateDate(index);
+        },
+        mobileEnter: function(index) {
+            if(this.mode === 'range' && index === 0) {
+                this.mobileNext(index);
+                this.views[index] = 'days';
+            }else{
+                this.mobileInteDate(index);
+                this._setValue();
+                this.hide();
+            }
+            this._manageViews(index); 
+        },
+        mobileCancel: function(index) {
+            if(index === 1) {
+                this.mobilePrev(index);
+                this.views[index] = 'days';
+            }else{
+                this.dateTransform(this._date.cache, this._date);
+                this.mobileInteDate(index);
+                this.hide();
+            }
+            this._manageViews(index);
+        },
+
+        dateTransform: function(fromDate, toDate) {
+            var self = this;
+            toDate.currentDate = [];
+            toDate.selectedDate = [];
+            $.each(fromDate.currentDate, function(n, v) {
+                toDate.currentDate[n] = new Date(v);
+            });
+
+            $.each(fromDate.selectedDate, function(n, v) {
+                var date = new Date(v);
+                toDate.selectedDate[n] = self.mode === 'multiple' ? Date.parse(date) : date;
+            });            
+        },
         show: function() {
             var self = this;
+            if(this.isMobile) {
+                this.dateTransform(this._date, this._date.cache);
+            }
+
             if (this.options.displayMode === 'inline') {
                 this._trigger('beforeShow');
-                this.$picker.on('mouseDown.picker', function(e) {
+                this.$picker.on('mouseDown.' + this.flag, function(e) {
                     self._prevent(e);
                 });
-                this.$picker.on('click.picker', function(e) {
+                this.$picker.on('click.' + this.flag, function(e) {
                     self._click.call(self, e);
                 });
             } else {
                 if (this.showed === false) {
                     this._trigger('beforeShow');
                     this.$inputWrap.addClass(this.namespace + '_active');
-                    this.$picker.removeClass(this.namespace + '_hide');
+                    // this.$picker.removeClass(this.namespace + '_hide');
                     this.$picker.addClass(this.namespace + '_show');
+
+                    if(this.isMobile) {
+                        this.calendars.eq(0).addClass(this.namespace + '_show');
+                        if(this.mode === 'range') {
+                            this.calendars.eq(1).removeClass(this.namespace + '_show');              
+                        }
+
+                        $('body').append(this.$cover).css('overflow', 'hidden');
+                        //Prevent horizontal scroll for ios
+                        $doc.on('scrollstart.' + this.flag, function(e) { e.preventDefault(); });
+                        $doc.on('tap.' + this.flag, function(e) { self._click.call(self, e); });
+                        var handle = function(e){
+                            var startX = e.swipestart.coords[0],
+                                stopX =  e.swipestop.coords[0];
+
+                            if(stopX > startX) {
+                                self.prev.call(self, 0);
+                            }else if(stopX < startX) {
+                                self.next.call(self, 0);
+                            }
+                           
+                            $doc.one('swipe.' + self.flag, handle);
+                        };
+
+                        $doc.one('swipe.' + this.flag, handle);                      
+                    }else{
+                        $doc.on('click.' + this.flag, function(e) { self._click.call(self, e); });
+                    }
+
+                    
                     this._position();
                     this.showed = true;
-                    this.$el.focus();
+                    // this.$el.focus();
                     this.$picker.on('mousedown.' + this.flag, function(e) {
                         self._prevent(e);
-                    });
-                    $doc.on('click.' + this.flag, function(e) {
-                        self._click.call(self, e);
                     });
                 }
             }
             this._trigger('show');
             return this;
         },
-        hide: function() {
-            if (this.showed === true) {
+        hide: function() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+            if (this.showed === true) {                                                             
                 this._trigger('beforeHide');
                 this.selected = false;
                 this.$inputWrap.removeClass(this.namespace + '_active');
                 this.$picker.removeClass(this.namespace + '_show');
-                this.$picker.addClass(this.namespace + '_hide');
                 this.showed = false;
                 this.$picker.off('mousedown.' + this.flag);
-                $doc.off('click.' + this.flag);
+                $doc.off('click.' + this.flag );
+
+                if(this.isMobile) {
+                    $('body').css('overflow', 'auto');
+                    this.$cover.remove();
+                    $doc.off('click.' + this.flag + ' tap.' + this.flag + ' scrollstart.' + this.flag + ' swipe.' + this.flag);           
+                }
+
+                this.$el.blur();
                 this._trigger('hide');
             }
             return this;
@@ -1414,18 +1568,18 @@
         },
         getDate: function(format) {
             if (format === undefined) {
-                return this.selectedDate;
+                return this._date.selectedDate;
             } else {
                 var _format = this._parseFormat(format),
                     formated = [];
-                for (var i = 0; i < this.selectedDate.length; i++) {
-                    formated[i] = this._formatDate(this.selectedDate[i], _format);
+                for (var i = 0; i < this._date.selectedDate.length; i++) {
+                    formated[i] = this._formatDate(this._date.selectedDate[i], _format);
                 }
                 return formated;
             }
         },
         multipleClear: function() {
-            this.selectedDate = [];
+            this._date.selectedDate = [];
             for (var i = 0; i < this.calendarsNum; i++) {
                 this._manageViews(i);
             }
@@ -1488,15 +1642,15 @@
             },
             prevDate: function() {
                 var i = this.focused,
-                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i],
+                    date = this.mode === 'multiple' ? this._date.focusDate : this._date.focusDate[i],
                     hasLocked = this.mode === 'multiple' ? false : this.calendarPrevs.eq(this.focused).hasClass(this.namespace + '_blocked');
 
                 switch (this.views[i]) {
                     case 'days':
-                        if (Date.parse(date) === Date.parse(this.currentDate[i])) {
+                        if (Date.parse(date) === Date.parse(this._date.currentDate[i])) {
                             if (!hasLocked) {
                                 date.setDate(date.getDate() - 1);
-                                this.prev(i);
+                                this.prev(i, true);
                             }
                         } else {
                             date.setDate(date.getDate() - 1);
@@ -1515,7 +1669,7 @@
                         }
                         break;
                     case 'years':
-                        if (date.getFullYear() === this.currentYear[i] - 7) {
+                        if (date.getFullYear() === this._date.currentYear[i] - 7) {
                             if (!hasLocked) {
                                 date.setFullYear(date.getFullYear() - 1);
                                 this.prev(i);
@@ -1529,14 +1683,14 @@
             },
             nextDate: function() {
                 var i = this.focused,
-                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i],
+                    date = this.mode === 'multiple' ? this._date.focusDate : this._date.focusDate[i],
                     hasLocked = this.mode === 'multiple' ? false : this.calendarNexts.eq(this.focused).hasClass(this.namespace + '_blocked');
                 switch (this.views[i]) {
                     case 'days':
-                        if (Date.parse(date) === Date.parse(new Date(this.currentYear[i], this.currentMonth[i] + 1, 0))) {
+                        if (Date.parse(date) === Date.parse(new Date(this._date.currentYear[i], this._date.currentMonth[i] + 1, 0))) {
                             if (!hasLocked) {
                                 date.setDate(date.getDate() + 1);
-                                this.next(i);
+                                this.next(i, true);
                             }
                         } else {
                             date.setDate(date.getDate() + 1);
@@ -1555,7 +1709,7 @@
                         }
                         break;
                     case 'years':
-                        if (date.getFullYear() === this.currentYear[i] + 4) {
+                        if (date.getFullYear() === this._date.currentYear[i] + 4) {
                             if (!hasLocked) {
                                 date.setFullYear(date.getFullYear() + 1);
                                 this.next(i);
@@ -1569,12 +1723,12 @@
             },
             upLine: function() {
                 var i = this.focused,
-                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i],
+                    date = this.mode === 'multiple' ? this._date.focusDate : this._date.focusDate[i],
                     hasLocked = this.mode === 'multiple' ? false : this.calendarPrevs.eq(this.focused).hasClass(this.namespace + '_blocked');
                 switch (this.views[i]) {
                     case 'days':
                         if (new Date(date.getFullYear(), date.getMonth(), date.getDate() - 7).setDate(1) ===
-                            new Date(this.currentDate[i]).setMonth(this.currentMonth[i] - 1)) {
+                            new Date(this._date.currentDate[i]).setMonth(this._date.currentMonth[i] - 1)) {
                             if (!hasLocked) {
                                 date.setDate(date.getDate() - 7);
                                 this.prev(i, true);
@@ -1596,7 +1750,7 @@
                         }
                         break;
                     case 'years':
-                        if (date.getFullYear() < this.currentYear[i] - 4) {
+                        if (date.getFullYear() < this._date.currentYear[i] - 4) {
                             if (!hasLocked) {
                                 date.setFullYear(date.getFullYear() - 3);
                                 this.prev(i);
@@ -1610,12 +1764,12 @@
             },
             downLine: function() {
                 var i = this.focused,
-                    date = this.mode === 'multiple' ? this.focusDate : this.focusDate[i],
+                    date = this.mode === 'multiple' ? this._date.focusDate : this._date.focusDate[i],
                     hasLocked = this.mode === 'multiple' ? false : this.calendarNexts.eq(this.focused).hasClass(this.namespace + '_blocked');
                 switch (this.views[i]) {
                     case 'days':
                         if (new Date(date.getFullYear(), date.getMonth(), date.getDate() + 7).setDate(1) ===
-                            new Date(this.currentDate[i]).setMonth(this.currentMonth[i] + 1)) {
+                            new Date(this._date.currentDate[i]).setMonth(this._date.currentMonth[i] + 1)) {
                             if (!hasLocked) {
                                 date.setDate(date.getDate() + 7);
                                 this.next(i, true);
@@ -1637,7 +1791,7 @@
                         }
                         break;
                     case 'years':
-                        if (date.getFullYear() > this.currentYear[i] + 1) {
+                        if (date.getFullYear() > this._date.currentYear[i] + 1) {
                             if (!hasLocked) {
                                 date.setFullYear(date.getFullYear() + 3);
                                 this.next(i);
@@ -1692,36 +1846,36 @@
             },
             updateValue: function(self) {
                 var i = self.focused,
-                    date = self.mode === 'multiple' ? self.focusDate : self.focusDate[i];
+                    date = self.mode === 'multiple' ? self._date.focusDate : self._date.focusDate[i];
                 if (!self.calendars.eq(i).find('.' + self.namespace + '_focus').hasClass(self.namespace + '_untouchable')) {
                     switch (self.views[i]) {
                         case 'days':
                             switch (self.options.mode) {
                                 case 'single':
                                 case 'range':
-                                    self.selectedDate[i] = new Date(date);
+                                    self._date.selectedDate[i] = new Date(date);
                                     break;
                                 case 'multiple':
                                     var _date = Date.parse(new Date(date));
-                                    if ($.inArray(_date, self.selectedDate) > -1) {
-                                        $.each(self.selectedDate, function(nr, data) {
+                                    if ($.inArray(_date, self._date.selectedDate) > -1) {
+                                        $.each(self._date.selectedDate, function(nr, data) {
                                             if (data === _date) {
-                                                self.selectedDate.splice(nr, 1);
+                                                self._date.selectedDate.splice(nr, 1);
                                                 return false;
                                             }
                                         });
                                     } else {
-                                        self.selectedDate.push(_date);
+                                        self._date.selectedDate.push(_date);
                                     }
                                     break;
                             }
                             break;
                         case 'months':
-                            self.currentDate[i].setMonth(date.getMonth());
+                            self._date.currentDate[i].setMonth(date.getMonth());
                             self.views[i] = 'days';
                             break;
                         case 'years':
-                            self.currentDate[i].setFullYear(date.getFullYear());
+                            self._date.currentDate[i].setFullYear(date.getFullYear());
                             self.views[i] = 'months';
                             break;
                     }
@@ -1751,8 +1905,8 @@
                         case 'single':
                             var _date = Date.parse(inputValue);
                             if (_date) {
-                                this.selectedDate[0] = new Date(_date);
-                                this.currentDate[0] = new Date(this.selectedDate[0]);
+                                this._date.selectedDate[0] = new Date(_date);
+                                this._date.currentDate[0] = new Date(this._date.selectedDate[0]);
                                 this._updateDate(0);
                                 this._manageViews(0);
                             }
@@ -1775,10 +1929,10 @@
                             }
 
                             if (judge === true) {
-                                this.selectedDate[0] = new Date(from);
-                                this.selectedDate[1] = new Date(to);
+                                this._date.selectedDate[0] = new Date(from);
+                                this._date.selectedDate[1] = new Date(to);
                                 for (var i = 0; i < 2; i++) {
-                                    this.currentDate[i] = new Date(this.selectedDate[i]);
+                                    this._date.currentDate[i] = new Date(this._date.selectedDate[i]);
                                     this._updateDate(i);
                                     this._manageViews(i);
                                 }
@@ -1797,16 +1951,16 @@
                                 }
                             }
                             if (judge === true) {
-                                this.selectedDate = [];
+                                this._date.selectedDate = [];
                                 for (var k = 0; k < _parts.length; k++) {
-                                    if ($.inArray(_parts[k], this.selectedDate) > -1) {
-                                        $.each(this.selectedDate, function(nr, data) {
+                                    if ($.inArray(_parts[k], this._date.selectedDate) > -1) {
+                                        $.each(this._date.selectedDate, function(nr, data) {
                                             if (data === _parts[k]) {
-                                                self.selectedDate.splice(nr, 1);
+                                                self._date.selectedDate.splice(nr, 1);
                                             }
                                         });
                                     } else {
-                                        this.selectedDate.push(_parts[k]);
+                                        this._date.selectedDate.push(_parts[k]);
                                     }
                                 }
                                 for (var m = 0; m < this.calendarsNum; m++) {
