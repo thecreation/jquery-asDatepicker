@@ -1,4 +1,4 @@
-/*! asDatepicker - v0.4.1 - 2014-11-27
+/*! asDatepicker - v0.4.1 - 2014-11-28
 * https://github.com/amazingsurge/jquery-asDatepicker
 * Copyright (c) 2014 amazingSurge; Licensed MIT */
 (function($, document, window, undefined) {
@@ -50,9 +50,9 @@
             tplContent: function() {
                 return '<div class="namespace-content">' + 
                             '<div class="namespace-header">' +
-                                '<div class="namespace-prev"></div>' +
+                                '<div class="namespace-prev"><</div>' +
                                 '<div class="namespace-caption"></div>' +
-                                '<div class="namespace-next"></div>' +
+                                '<div class="namespace-next">></div>' +
                             '</div>' +
                             '<div class="namespace-days"></div>' +
                             '<div class="namespace-months"></div>' +
@@ -144,7 +144,6 @@
             var wrapper = this.options.tplWrapper().replace(/namespace/g, this.namespace),
                 content = this.options.tplContent().replace(/namespace/g, this.namespace),
                 title = this.options.tplTitle().replace(/namespace/g, this.namespace);
-                // buttons = this.options.tplButtons().replace(/namespace/g, this.namespace);
 
             this.$picker = $(wrapper);
 
@@ -1146,7 +1145,11 @@
             var $target = $(e.target);
 
             if ($target.closest(this.$inputIcon).length === 0 && $target.closest(this.$picker).length === 0 && $target.closest(this.$el).length === 0 && this.options.alwaysShow === false) {
-                this.hide();
+                if(this.isMobile) {
+                    this.mobileCancel(0);
+                }else{
+                    this.hide();
+                }
             } else if ($target.closest(this.$el).length !== 1 && $target.closest(this.$picker).length === 1) {
                 var _target = $(e.target).closest('div');
                 var _targetSpan = $(e.target).closest('span');
@@ -1200,18 +1203,20 @@
                 if (_target.parent('.' + this.namespace + '-buttons').length === 1) {
                     var k = _target.parents('.' + this.namespace + '-content').index(),
                         flag = _target[0].className === this.namespace + '-button-enter' ? true : false;
+
                     if(flag) {
                         this.mobileEnter(k);
                     }else{
                         this.mobileCancel(k);
                     }
                 }
-
-                if (this.selected === true && this.options.alwaysShow === false && this.options.onceClick === true && !this.isMobile) {
-                    this.hide();
-                } else {
-                    if (this.options.displayMode === 'dropdown') {
-                        this.$el.focus();
+                if(!this.isMobile) {
+                    if (this.selected === true && this.options.alwaysShow === false && this.options.onceClick === true) {
+                        this.hide();
+                    } else {
+                        if (this.options.displayMode === 'dropdown') {
+                            this.$el.focus();
+                        }
                     }
                 }
             }
@@ -1432,9 +1437,6 @@
                 if(this._date.selectedDate.length > 0) {
                     self._date.currentDate[0] = new Date(this._date.selectedDate[0]);
                 }
-                // $.each(this._date.selectedDate, function(i, v) {
-                //     self._date.currentDate[i] = new Date(v);
-                // });
             }else{
                 this._date.currentDate[index] = new Date(this._date.selectedDate[index]);
             }
@@ -1539,7 +1541,7 @@
             this._trigger('show');
             return this;
         },
-        hide: function() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+        hide: function() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
             if (this.showed === true) {                                                             
                 this._trigger('beforeHide');
                 this.selected = false;
@@ -1548,7 +1550,6 @@
                 this.showed = false;
                 this.$picker.off('mousedown.' + this.flag);
                 $doc.off('click.' + this.flag );
-
                 if(this.isMobile) {
                     $('body').css('overflow', 'auto');
                     this.$cover.remove();

@@ -78,6 +78,57 @@ $(document).ready(function(){
                     <input type="text" id="calendar4" data-mode="range" data-range-mode="section" data-selectable-year="2001>2010,2012,2014>2016">
                 </div>
             </section>
+
+            <section>
+                <h3>Mobile Single</h3>
+                <pre class="has-example"><code class="language-markup">
+&lt;input type=&quot;text&quot; id=&quot;calendar-mobile-single&quot;&gt;
+&lt;script&gt;
+$(document).ready(function(){
+  $(&#39;#calendar-mobile-single&#39;).asDatepicker({
+     mobileMode: true
+  });
+});
+&lt;script&gt;
+</code></pre>
+                <div class="example">
+                    <input type="text" id="calendar-mobile-single">
+                </div>
+            </section>
+            <section>
+                <h3>Mobile Range</h3>
+                <pre class="has-example"><code class="language-markup">
+&lt;input type=&quot;text&quot; id=&quot;calendar-mobile-range&quot;&gt;
+&lt;script&gt;
+$(document).ready(function(){
+  $(&#39;#calendar-mobile-range&#39;).asDatepicker({
+     mode: &#39;range&#39;,
+     mobileMode: true
+  });
+});
+&lt;script&gt;
+</code></pre>
+                <div class="example">
+                    <input type="text" id="calendar-mobile-range">
+                </div>
+            </section>
+            <section>
+                <h3>Mobile Multiple</h3>
+                <pre class="has-example"><code class="language-markup">
+&lt;input type=&quot;text&quot; id=&quot;calendar-mobile-multiple&quot;&gt;
+&lt;script&gt;
+$(document).ready(function(){
+  $(&#39;#calendar-mobile-multiple&#39;).asDatepicker({
+     mode: &#39;multiple&#39;,
+     mobileMode: true
+  });
+});
+&lt;script&gt;
+</code></pre>
+                <div class="example">
+                    <input type="text" id="calendar-mobile-multiple">
+                </div>
+            </section>
         </section>
         <section>
             <h2>Keyboard navigation</h2>
@@ -273,19 +324,31 @@ $(document).ready(function(){
     $("#calendar").asDatepicker({
             namespace: 'calendar',
             lang: 'zh',
-            position: 'bottom',
-            mobileMode: true
+            position: 'bottom'
         });
     
-	$("#calendar2").asDatepicker({mode: 'range', mobileMode: true});
+	$("#calendar2").asDatepicker({mode: 'range'});
 
     $("#calendar3").asDatepicker({
         mode: 'multiple', 
         calendars: 4, 
-        mobileMode: true
     });
 
 	$("#calendar4").asDatepicker();
+    
+    $('#calendar-mobile-single').asDatepicker({
+        mobileMode: true
+    });
+    $('#calendar-mobile-range').asDatepicker({
+        mode: 'range',
+        mobileMode: true
+    });
+    $('#calendar-mobile-multiple').asDatepicker({
+        mode: 'multiple',
+        mobileMode: true
+    });
+
+
 
 	$('.asDatepicker').asDatepicker();
     $('.calendar-multiple').asDatepicker({mode: 'multiple', calendars: 3});

@@ -2,160 +2,23 @@
 
 @namespace: calendar;
 
-@calendarHeadHeight: 34px;
-@calendarWeekHeight: 34px;
-@calendarDayHeight: 26px;
-@calendarDayWidth: 30px;
-@prevNextWidth: 20%;
+@mobileWrapWidth: 80%;
+@mobileWrapHeight: 80%;
 
-@calendarMonthHeight: (@calendarWeekHeight + @calendarDayHeight * 6) / 4;
-@calendarMonthWidth: (@calendarDayWidth * 7 )/ 3;
+@contentWidth: 210px;
+@contentHeight: 230px;
 
 
-.@{namespace} {
-	&-cover {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: black;
-		opacity: 0.5;
-		z-index: 9999;
-	}
-
-	&-row, &-head {
-		display: table;
-		width: 100%;
-		> span {
-			display: table-cell;
-			text-align: center;
-			vertical-align: middle;
-		}
-	}
-	&-wrap {
-		&.@{namespace}_isMobile {
-			z-index: 99999;
-			position: fixed;
-			width: 80%;
-			height: 80%;
-			line-height: 1;
-			* {
-				-webkit-box-sizing: border-box;
-			  	   -moz-box-sizing: border-box;
-			  			box-sizing: border-box;
-			}
-
-			.@{namespace} {
-				&-title {
-					width: 100%;
-					color: white;
-					text-align: center;
-					position: absolute;
-					top: -1.5em;
-					left: 0;
-				}
-				&-buttons {
-					display: table;
-					color: rgb(119, 119, 119);
-					background-color: white;
-					height: 11%;
-					width: 100%;
-					position: absolute;
-					bottom: 0;
-					left: 0;
-					border-top: 1px solid rgb(235, 235, 235);
-
-					> div {
-						display: table-cell;
-						width: 50%;
-						height: 100%;
-						text-align: center;
-						vertical-align: middle;
-						cursor: pointer;
-						&:hover {
-							color: black;
-						}
-					}
-				}
-				&-content {
-					// font-size: 4vmin;
-					display: none;
-					width: 100%;
-					height: 100%;
-					position: absolute;
-					top: 0;
-					left: 0;
-					&.@{namespace}_show {
-						display: block;
-					}
-				}
-				&-header {
-					height: 11%;
-					// font-size: 4vmin;
-					// line-height: 9vh;
-					// line-height: 4vmin;
-				}
-				&-days {
-					height: 78%;
-					.@{namespace} {
-						&-head {
-							height: 13%;
-						}
-						&-body {
-							height: 87%;
-						  	.@{namespace}-row {
-						  		height: 100% / 6;
-						  	}
-						  	span {
-						  		height: 100%;
-						  	}
-						}
-					}
-					
-					span {
-						width: 14.28%;
-						&:hover {
-							background-color: transparent;
-						}
-					}
-				}
-
-				&-months, &-years {
-					height: 78%;
-					.@{namespace}-row {
-				  		height: 25%;
-				  	}
-					span {
-						height: 100%;
-						width: 33.3%;
-						&:hover {
-							background-color: transparent;
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-.@{namespace} {
-	&-wrap {
-		white-space: nowrap;
-		display: none;
-		position: absolute;
-		
-		&, & *:focus {outline: none;}
-	}
-
+.@{namespace} {	
 	&-content {
 		display: inline-block;
 		position: relative;
 		vertical-align: middle;
 		white-space: normal;
-		-webkit-box-sizing: border-box;
-	  	   -moz-box-sizing: border-box;
-	  			box-sizing: border-box;
+		width: @contentWidth;
+		height: @contentHeight;
+		background-color: white;
+
 		&.@{namespace}_days {
 			> .@{namespace}-days {
 				display: block;
@@ -171,106 +34,162 @@
 				display: block;
 			}
 		}
-
 	}
 
-	&_hide {
+	&-days, &-months, &-years, &-buttons {
 		display: none;
 	}
 
-	&_show {
-		display: block;
-	}
-
-	&_absolute {
-		position: absolute;
+	&-row, &-head {
+		display: table;
+		width: 100%;
+		> span {
+			display: table-cell;
+			text-align: center;
+			vertical-align: middle;
+		}
 	}
 
 	&-header {
 		display: table;
 		width: 100%;
-	// 	text-align: center;
-	}
-	&-buttons {
-		display: none;
-	}
-
-	&-prev, &-next, &-caption {
-		display: table-cell;
-		height: 100%;
-		cursor: pointer;
-		text-align: center;
-		vertical-align: middle;
+		height: 15%;
+		> div {
+			display: table-cell;
+			height: 100%;
+			text-align: center;
+			vertical-align: middle;
+			cursor: pointer;
+		}
 	}
 
 	&-prev, &-next {
-		// display: inline-block;
-		// *display:inline;
-		// zoom: 1;
 		width: 20%;
-		// height: 100%;
-		// cursor: pointer;
-	}
-
-	&-prev {
-		background-repeat: no-repeat;
-		background-position: center;
-		// float: left;
-	}
-
-	&-next {
-		background-repeat: no-repeat;
-		background-position: center;
-		// float: right;
 	}
 
 	&-caption {
 		width: 60%;
-		// height: 100%;
-		// display: inline-block;
-		// *display:inline;
-		// zoom: 1;
-		// cursor: pointer;
-		// text-align: center;
 	}
 
-	&-days {
-		display: none;
-		// span {
-			// text-align: center;
-			// display: inline-block;;
-		// }
-	}
-
+	&-days, &-months, &-years {
+		height: 85%;
+	} 
+	
 	&-head {
+		height: 13%;
 		span {
 			cursor: default;
 		}
 	}
-
 	&-body {
-		span {
-			cursor: pointer;
-			&.@{namespace}_otherMonth, &.@{namespace}_untouchable {
+		height: 87%;
+		.@{namespace}-row {
+	  		height: 100% / 6;
+	  	}
+	  	span {
+	  		width: 14.28%;
+	  		height: 100%;
+	  		cursor: pointer;
+	  		&.@{namespace}_otherMonth, &.@{namespace}_untouchable {
 				cursor: default;
 			}
-		}
+	  	}
 	}
 
-
 	&-months, &-years {
-		display: none;
+		.@{namespace}-row {
+	  		height: 25%;
+	  	}
 		span {
-
-			// text-align: center;
-			// display: inline-block;
+			height: 100%;
+			width: 33.3%;
 			cursor: pointer;
 			&.@{namespace}_untouchable {
 				cursor: default;
 			}
 		}
 	}
+
+	&_hide {
+		display: none !important;
+	}
+
+	&_show {
+		display: block !important;
+	}
+
+	&-wrap {
+		white-space: nowrap;
+		display: none;
+		position: absolute;
+
+		&, & *:focus { outline: none; }
+
+		* {
+			-webkit-box-sizing: border-box;
+		  	   -moz-box-sizing: border-box;
+		  			box-sizing: border-box;
+		}
+		&.@{namespace}_isMobile {
+			z-index: 99999;
+			position: fixed;
+			width: 80%;
+			height: 80%;
+			line-height: 1;
+			.@{namespace} {
+				&-title {
+					width: 100%;
+					text-align: center;
+					position: absolute;
+					top: -1.5em;
+					left: 0;
+				}
+				&-content {
+					display: none;
+					width: 100%;
+					height: 100%;
+					position: absolute;
+					top: 0;
+					left: 0;
+					&.@{namespace}_show {
+						display: block;
+					}
+				}
+				&-header {
+					height: 11%;
+				}
+				&-days, &-months, &-years {
+					height: 78%;
+				}
+				&-buttons {
+					display: table;
+					height: 11%;
+					width: 100%;
+					> div {
+						display: table-cell;
+						width: 50%;
+						height: 100%;
+						text-align: center;
+						vertical-align: middle;
+						cursor: pointer;
+					}
+				}
+			}
+		}
+	}
+
+	&-cover {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: black;
+		opacity: 0.5;
+		z-index: 9999;
+	}	
 }
+
 
 //==========================  skin  ==========================
 
@@ -299,70 +218,8 @@
 		-webkit-border-radius: 3px;
 	  	   -moz-border-radius: 3px;
 	  			border-radius: 3px;
-		// font-size: 14px;
 		font-family: 'Proxima Nova';
-	}
-
-	&-header {
-		border-bottom: 1px solid rgb(235, 235, 235);
-	}
-	&-prev, &-next {
-		color: transparent;
-	}
-
-	&-prev {
-		background-image: url('../images/calendar-prev.png');
-		&.@{namespace}_blocked, &.@{namespace}_blocked:hover{
-			background-image: none;
-			cursor: auto;
-		}
-		&:hover {
-			background-image: url('../images/calendar-prev-hover.png');
-		}
-	}
-
-	&-next {
-		background-image: url('../images/calendar-next.png');
-		&.@{namespace}_blocked, &.@{namespace}_blocked:hover{
-			background-image: none;
-			cursor: auto;
-		}
-		&:hover {
-			background-image: url('../images/calendar-next-hover.png');
-		}
-	}
-	&-caption {
-		color: rgb(105, 105, 105);
-		&:hover {
-			color: rgb(0, 0, 0);
-		}
-		&.@{namespace}_blocked, &.@{namespace}_blocked:hover {
-			color: rgb(105, 105, 105);	
-			cursor: auto;
-		}
-	}
-
-	&-days {
 		span {
-			width: @calendarDayWidth;
-		}
-	}
-
-	&-head {
-		background-color: rgb(246, 246, 246);
-		padding-left: 6px;
-		padding-right: 6px;
-		span {
-			-webkit-box-shadow: inset 0 1px 0 rgb(251, 251, 251);
-			   -moz-box-shadow: inset 0 1px 0 rgb(251, 251, 251);
-					box-shadow: inset 0 1px 0 rgb(251, 251, 251);
-		}
-	}
-
-	&-body {
-		padding: 6px;
-		span {
-			// line-height: @calendarDayHeight;
 			border: 1px dashed transparent;
 			&:hover {
 				background-color: rgb(224, 244, 251);
@@ -399,38 +256,56 @@
 			}
 		}
 	}
-
-	&-months, &-years {
-		padding: 6px;
-		span {
-			// line-height: @calendarMonthHeight;
-			border: 1px dashed transparent;
-			&:hover {
-				background-color: rgb(224, 244, 251);
-			}
-			&.@{namespace}_active {
-				background-color: rgb(50, 184, 226) !important;
-				color: white !important;
-			}
-			&.@{namespace}_untouchable {
-				color: rgb(200, 200, 200);
-				background-color: inherit;
-				&:hover, &:active, &.@{namespace}_active {
-					background-color: inherit;
-					color: rgb(200, 200, 200);
-				}
-				
-			}
-			&.@{namespace}_inRange {
-				background-color: rgb(224, 244, 251);
-				&:hover {
-					background-color: inherit;
-				}
-			}
-			&.@{namespace}_focus {
-				border: 1px solid rgba(0, 0, 0, 0.1);
-				color: rgb(50, 184, 226);
-			}
+	&-header {
+		border-bottom: 1px solid rgb(235, 235, 235);
+	}
+	&-prev, &-next {
+		color: transparent;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+	&-prev {
+		background-image: url('../images/calendar-prev.png');
+		&.@{namespace}_blocked, &.@{namespace}_blocked:hover{
+			background-image: none;
+			cursor: auto;
 		}
+		&:hover {
+			background-image: url('../images/calendar-prev-hover.png');
+		}
+	}
+
+	&-next {
+		background-image: url('../images/calendar-next.png');
+		&.@{namespace}_blocked, &.@{namespace}_blocked:hover{
+			background-image: none;
+			cursor: auto;
+		}
+		&:hover {
+			background-image: url('../images/calendar-next-hover.png');
+		}
+	}
+	&-caption {
+		color: rgb(105, 105, 105);
+		&:hover {
+			color: rgb(0, 0, 0);
+		}
+		&.@{namespace}_blocked, &.@{namespace}_blocked:hover {
+			color: rgb(105, 105, 105);	
+			cursor: auto;
+		}
+	}
+	&-head {
+		background-color: rgb(246, 246, 246);
+		padding-left: 6px;
+		padding-right: 6px;
+		span {
+			-webkit-box-shadow: inset 0 1px 0 rgb(251, 251, 251);
+			   -moz-box-shadow: inset 0 1px 0 rgb(251, 251, 251);
+					box-shadow: inset 0 1px 0 rgb(251, 251, 251);
+		}
+	}
+	&-body, &-months, &-years  {
+		padding: 6px;
 	}
 }
