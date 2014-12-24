@@ -221,9 +221,6 @@
 		font-family: 'Proxima Nova';
 		span {
 			border: 1px dashed transparent;
-			&:hover {
-				background-color: rgb(224, 244, 251);
-			}
 			&.@{namespace}_active {
 				background-color: rgb(50, 184, 226) !important;
 				color: white !important;
@@ -306,6 +303,15 @@
 		}
 	}
 	&-body, &-months, &-years  {
+		span {
+			&:hover {
+				background-color: rgb(224, 244, 251);
+			}
+		}
 		padding: 6px;
 	}
+	&-buttons {
+		border-top: 1px solid rgb(235, 235, 235);
+	}
+
 }

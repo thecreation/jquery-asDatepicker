@@ -13,9 +13,8 @@
         defaults = {
             firstDayOfWeek: 0, // 0---6 === sunday---saturday
             mode: 'single', // single|range|multiple
-            limitMode: 'default', // default|section|array
             displayMode: 'dropdown', // dropdown|inline
-            calendars: 3,
+            calendars: 1,
             date: 'today', // today|Date (yyyy-mm-dd)
             keyboard: true, // true | false
             rangeSeparator: 'to',
@@ -52,20 +51,20 @@
                 return '<div class="namespace-wrap"></div>';
             },
             tplContent: function() {
-                return '<div class="namespace-content">' + 
-                            '<div class="namespace-header">' +
-                                '<div class="namespace-prev"><</div>' +
-                                '<div class="namespace-caption"></div>' +
-                                '<div class="namespace-next">></div>' +
-                            '</div>' +
-                            '<div class="namespace-days"></div>' +
-                            '<div class="namespace-months"></div>' +
-                            '<div class="namespace-years"></div>' +
-                            '<div class="namespace-buttons">' + 
-                                '<div class="namespace-button-cancel">取消</div>' + 
-                                '<div class="namespace-button-enter">确定</div>' + 
-                            '</div>' +
-                        '</div>';
+                return '<div class="namespace-content">' +
+                    '<div class="namespace-header">' +
+                    '<div class="namespace-prev"><</div>' +
+                    '<div class="namespace-caption"></div>' +
+                    '<div class="namespace-next">></div>' +
+                    '</div>' +
+                    '<div class="namespace-days"></div>' +
+                    '<div class="namespace-months"></div>' +
+                    '<div class="namespace-years"></div>' +
+                    '<div class="namespace-buttons">' +
+                    '<div class="namespace-button-cancel"></div>' +
+                    '<div class="namespace-button-save"></div>' +
+                    '</div>' +
+                    '</div>';
             },
             tplTitle: function() {
                 return '<div class="namespace-title">test</div>';
@@ -81,6 +80,8 @@
         };
 
     var $doc = $(document);
+
+    var $win = $(window);
 
     var LABEL = {};
 
@@ -120,12 +121,13 @@
     Plugin.localize = function(lang, label) {
         LABEL[lang] = label;
     };
+
     Plugin.localize('en', {
         days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         daysShort: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        // caption_format: 'mm yyyy'
+        monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        buttons: ['Cancel', 'Save']
     });
 
     Plugin.prototype = {
@@ -147,8 +149,8 @@
 
             var wrapper = this.options.tplWrapper().replace(/namespace/g, this.namespace),
                 content = this.options.tplContent().replace(/namespace/g, this.namespace),
-                title = this.options.tplTitle().replace(/namespace/g, this.namespace);
-
+                title = this.options.tplTitle().replace(/namespace/g, this.namespace),
+                buttons = LABEL[this.options.lang].buttons;
             this.$picker = $(wrapper);
 
             //set model default property
@@ -172,20 +174,19 @@
             }
 
             //check mobileMode 
-            if(this.isMobile) {
-                var innerWidth = window.innerWidth;      
+            if (this.isMobile) {
+                var innerWidth = window.innerWidth;
                 var innerHeight = window.innerHeight;
                 var min = Math.min(innerWidth, innerHeight);
-
                 this.$el.attr('readonly', 'readonly');
                 this.$cover = $('<div class="' + this.namespace + '-cover"></div>');
 
                 this.$picker.append(title)
-                            // .append(buttons)
-                            .addClass(this.namespace + '_isMobile');
+                    .addClass(this.namespace + '_isMobile');
 
-                this.$picker.css({'font-size': Math.round(min * 0.04) + 'px'});
-      
+                this.$picker.css({
+                    'font-size': Math.round(min * 0.04) + 'px'
+                });
             }
 
             //make $wrapper can be focused
@@ -200,6 +201,10 @@
 
             for (var j = 0; j < this.calendarsNum; j++) {
                 this._manageViews(j);
+                if (this.isMobile) {
+                    this.buttonCancels.eq(j).html(buttons[0]);
+                    this.buttonSaves.eq(j).html(buttons[1]);
+                }
             }
 
             //init alwaysShow
@@ -238,6 +243,8 @@
             this.daypickers = this.calendars.find('.' + this.namespace + '-days');
             this.monthpickers = this.calendars.find('.' + this.namespace + '-months');
             this.yearpickers = this.calendars.find('.' + this.namespace + '-years');
+            this.buttonCancels = this.calendars.find('.' + this.namespace + '-button-cancel');
+            this.buttonSaves = this.calendars.find('.' + this.namespace + '-button-save');
         },
         _initShowHide: function(alwaysShow) {
             if (alwaysShow === true) {
@@ -519,7 +526,7 @@
                     }
                     break;
                 case 'multiple':
-                    if(this.calendarsNum > 1) {
+                    if (this.calendarsNum > 1) {
                         if (index === 0) {
                             nextLock = true;
                         } else if (index === this.calendarsNum - 1) {
@@ -527,7 +534,7 @@
                         } else {
                             prevLock = nextLock = true;
                         }
-                    } 
+                    }
                     break;
             }
             if (prevLock === true) {
@@ -1037,10 +1044,10 @@
                 top,
                 position = this.options.position;
 
-            if(this.isMobile) {
+            if (this.isMobile) {
                 left = (winWidth - calendar_width) / 2;
                 top = (winHeight - calendar_height) / 2;
-            }else{
+            } else {
                 switch (position) {
                     case 'bottom':
                     case 'right':
@@ -1149,9 +1156,9 @@
             var $target = $(e.target);
 
             if ($target.closest(this.$inputIcon).length === 0 && $target.closest(this.$picker).length === 0 && $target.closest(this.$el).length === 0 && this.options.alwaysShow === false) {
-                if(this.isMobile) {
+                if (this.isMobile) {
                     this.mobileCancel(0);
-                }else{
+                } else {
                     this.hide();
                 }
             } else if ($target.closest(this.$el).length !== 1 && $target.closest(this.$picker).length === 1) {
@@ -1200,21 +1207,23 @@
                                 this._manageViews(j + 1);
                                 break;
                         }
-                        if(!this.isMobile) { this._setValue(); }
+                        if (!this.isMobile) {
+                            this._setValue();
+                        }
                     }
                 }
 
                 if (_target.parent('.' + this.namespace + '-buttons').length === 1) {
                     var k = _target.parents('.' + this.namespace + '-content').index(),
-                        flag = _target[0].className === this.namespace + '-button-enter' ? true : false;
+                        flag = _target[0].className === this.namespace + '-button-save' ? true : false;
 
-                    if(flag) {
+                    if (flag) {
                         this.mobileEnter(k);
-                    }else{
+                    } else {
                         this.mobileCancel(k);
                     }
                 }
-                if(!this.isMobile) {
+                if (!this.isMobile) {
                     if (this.selected === true && this.options.alwaysShow === false && this.options.onceClick === true) {
                         this.hide();
                     } else {
@@ -1429,41 +1438,41 @@
         },
         mobilePrev: function(index) {
             this.calendars.eq(index).removeClass(this.namespace + '_show');
-            this.calendars.eq(index-1).addClass(this.namespace + '_show');
+            this.calendars.eq(index - 1).addClass(this.namespace + '_show');
         },
         mobileNext: function(index) {
             this.calendars.eq(index).removeClass(this.namespace + '_show');
-            this.calendars.eq(index+1).addClass(this.namespace + '_show');
+            this.calendars.eq(index + 1).addClass(this.namespace + '_show');
         },
         mobileInteDate: function(index) {
             var self = this;
-            if(this.mode === 'multiple') {
-                if(this._date.selectedDate.length > 0) {
+            if (this.mode === 'multiple') {
+                if (this._date.selectedDate.length > 0) {
                     self._date.currentDate[0] = new Date(this._date.selectedDate[0]);
                 }
-            }else{
+            } else {
                 this._date.currentDate[index] = new Date(this._date.selectedDate[index]);
             }
-            
+
             this.views[index] = 'days';
             this._updateDate(index);
         },
         mobileEnter: function(index) {
-            if(this.mode === 'range' && index === 0) {
+            if (this.mode === 'range' && index === 0) {
                 this.mobileNext(index);
                 this.views[index] = 'days';
-            }else{
+            } else {
                 this.mobileInteDate(index);
                 this._setValue();
                 this.hide();
             }
-            this._manageViews(index); 
+            this._manageViews(index);
         },
         mobileCancel: function(index) {
-            if(index === 1) {
+            if (index === 1) {
                 this.mobilePrev(index);
                 this.views[index] = 'days';
-            }else{
+            } else {
                 this.dateTransform(this._date.cache, this._date);
                 this.mobileInteDate(index);
                 this.hide();
@@ -1482,11 +1491,11 @@
             $.each(fromDate.selectedDate, function(n, v) {
                 var date = new Date(v);
                 toDate.selectedDate[n] = self.mode === 'multiple' ? Date.parse(date) : date;
-            });            
+            });
         },
         show: function() {
             var self = this;
-            if(this.isMobile) {
+            if (this.isMobile) {
                 this.dateTransform(this._date, this._date.cache);
             }
 
@@ -1505,37 +1514,47 @@
                     // this.$picker.removeClass(this.namespace + '_hide');
                     this.$picker.addClass(this.namespace + '_show');
 
-                    if(this.isMobile) {
+                    if (this.isMobile) {
                         this.calendars.eq(0).addClass(this.namespace + '_show');
-                        if(this.mode === 'range') {
-                            this.calendars.eq(1).removeClass(this.namespace + '_show');              
+                        if (this.mode === 'range') {
+                            this.calendars.eq(1).removeClass(this.namespace + '_show');
                         }
 
                         $('body').append(this.$cover).css('overflow', 'hidden');
                         //Prevent horizontal scroll for ios
-                        $doc.on('scrollstart.' + this.flag, function(e) { e.preventDefault(); });
-                        $doc.on('tap.' + this.flag, function(e) { self._click.call(self, e); });
-                        var handle = function(e){
+                        $doc.on('scrollstart.' + this.flag, function(e) {
+                            e.preventDefault();
+                        });
+                        $doc.on('tap.' + this.flag, function(e) {
+                            self._click.call(self, e);
+                        });
+                        var handle = function(e) {
                             var startX = e.swipestart.coords[0],
-                                stopX =  e.swipestop.coords[0];
+                                stopX = e.swipestop.coords[0];
 
-                            if(stopX > startX) {
+                            if (stopX > startX) {
                                 self.prev.call(self, 0);
-                            }else if(stopX < startX) {
+                            } else if (stopX < startX) {
                                 self.next.call(self, 0);
                             }
-                           
+
                             $doc.one('swipe.' + self.flag, handle);
                         };
 
-                        $doc.one('swipe.' + this.flag, handle);                      
-                    }else{
-                        $doc.on('click.' + this.flag, function(e) { self._click.call(self, e); });
+                        $doc.one('swipe.' + this.flag, handle);
+                    } else {
+                        $doc.on('click.' + this.flag, function(e) {
+                            self._click.call(self, e);
+                        });
                     }
 
-                    
+
                     this._position();
                     this.showed = true;
+
+                    $win.on('resize.' + this.flag, function() {
+                        self._position();
+                    });
                     // this.$el.focus();
                     this.$picker.on('mousedown.' + this.flag, function(e) {
                         self._prevent(e);
@@ -1545,19 +1564,20 @@
             this._trigger('show');
             return this;
         },
-        hide: function() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-            if (this.showed === true) {                                                             
+        hide: function() {
+            if (this.showed === true) {
                 this._trigger('beforeHide');
                 this.selected = false;
                 this.$inputWrap.removeClass(this.namespace + '_active');
                 this.$picker.removeClass(this.namespace + '_show');
                 this.showed = false;
                 this.$picker.off('mousedown.' + this.flag);
-                $doc.off('click.' + this.flag );
-                if(this.isMobile) {
+                $doc.off('click.' + this.flag);
+                $win.off('resize.' + this.flag);
+                if (this.isMobile) {
                     $('body').css('overflow', 'auto');
                     this.$cover.remove();
-                    $doc.off('click.' + this.flag + ' tap.' + this.flag + ' scrollstart.' + this.flag + ' swipe.' + this.flag);           
+                    $doc.off('click.' + this.flag + ' tap.' + this.flag + ' scrollstart.' + this.flag + ' swipe.' + this.flag);
                 }
 
                 this.$el.blur();
