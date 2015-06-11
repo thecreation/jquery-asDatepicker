@@ -2,7 +2,7 @@
   "name": "jquery-asDatepicker",
   "version": "0.4.2",
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">=0.10.0"
   },
   "devDependencies": {
     "grunt": "*",
@@ -15,6 +15,6 @@
     "grunt-contrib-watch": "*",
     "grunt-jsbeautifier": "*",
     "grunt-text-replace": "*",
-    "load-grunt-tasks": "^0.6.0"
+    "load-grunt-tasks": "*"
   }
 }

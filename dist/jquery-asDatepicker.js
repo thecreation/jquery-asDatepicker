@@ -1,5 +1,5 @@
 /*! asDatepicker - v0.4.1 - 2014-12-24
-* https://github.com/amazingsurge/jquery-asDatepicker
+* https://github.com/amazingSurge/jquery-asDatepicker
 * Copyright (c) 2014 amazingSurge; Licensed MIT */
 (function($, document, window, undefined) {
     // Optional, but considered best practice by some

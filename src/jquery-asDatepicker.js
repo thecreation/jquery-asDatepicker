@@ -1,6 +1,6 @@
 /*
  * asDatepicker
- * https://github.com/amazingsurge/jquery-asDatepicker
+ * https://github.com/amazingSurge/jquery-asDatepicker
  *
  * Copyright (c) 2014 amazingSurge
  * Licensed under the MIT license.
